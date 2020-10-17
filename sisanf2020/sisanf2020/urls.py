@@ -17,7 +17,10 @@ from django.contrib import admin
 from django.urls import include, path
 from sisanf2020.views import index
 
+
+
 urlpatterns = [
     path('', index, name="index"),
     path('admin/', admin.site.urls),
+    path('Giros/', include('Giros.urls', namespace='Giros')),
 ]

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # aplicaciones personalizadas
     'bootstrap4',
+    'Giros',
 ]
 
 MIDDLEWARE = [
@@ -78,8 +79,12 @@ WSGI_APPLICATION = 'sisanf2020.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'sisanf',
+        'USER': 'root',
+        'PASSWORD': 'G150719v@l',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
@@ -121,4 +126,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS=(os.path.join(BASE_DIR,'static'),)
+# Activo 'CookieStorage' que nos permite enviar los mensajes de respuesta al Crear, Eliminar y Actualizar un registro
+MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'

@@ -1,0 +1,45 @@
+{% extends 'base/base.html' %}
+{% block title %}
+Giro
+{% endblock %}
+
+{% block content %}
+<!doctype html>
+<div class="container">
+    <div class="row mt-3">
+      <div class="col-md-9 mx-auto">
+        <div>
+					<h2>Crear giro</h2>
+					<form method="POST">
+						{% csrf_token %}
+            {{ form.errors }}
+            <div class="row">
+							<div class="col-md-10 col-md-offset-2">
+								<div class="form-group">
+									<label >Nombre</label>
+									{{ form.nombreGiro }}
+								</div>
+							</div>
+						</div>
+            <div class="row">
+							<div class="col-md-10 col-md-offset-2">
+								<div class="form-group">
+									<label>Sector</label>
+									{{ form.sector }}
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-10 col-md-offset-2">
+								<div align= "left" class="btn_crear mb-3">
+									<button class="btn btn-primary btn-lg" type="submit"><i class="fas fa-save"></i> Guardar</button>
+                  <a type="button" class="btn btn-secondary btn-lg" href="javascript:window.history.back();"><i class="fas fa-times-circle"></i> Cancelar</a>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
