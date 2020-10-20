@@ -6,10 +6,10 @@ Giros
 {% block content %}
   <div class="container-fluid">
    <div class="container">
-     <h3>Giros</h3>
+     <h2>Giros</h2>
     <div class="col-sm">
       <div class="row container">
-        <a class="btn btn-primary btn-lg" href="{% url 'Giros:crear_giro' %}"><i class="fas fa-plus"></i> Agregar</a>
+        <a class="btn btn-primary btn-lg" href="{% url 'giros:crear_giro' %}"><i class="fas fa-plus"></i> Agregar</a>
         </div>
         <div class="row container text-center">
           <table class="table table-striped table-dark table-sm">
@@ -28,7 +28,7 @@ Giros
                 <td>{{ row.nombreGiro}}</td>
                 <td>{{ row.sector}}</td>
                 <td>
-                  <a href="{% url 'Giros:modificar_giro' row.pk %}" class="btn-info btn btn-lg">
+                  <a href="{% url 'giros:modificar_giro' row.pk %}" class="btn-info btn btn-lg">
                     <i class="fas fa-pencil-alt"></i>
                   </a>
                   <button class="btn-danger btn btn-lg" data-toggle='modal' data-target='#deleteModal' data-pk='{{ row.pk }}'>
@@ -75,7 +75,7 @@ Giros
         $('#deleteModal').on('shown.bs.modal', (event) => {
           var btn = $(event.relatedTarget);
           var pk = btn.data('pk');
-          $('#deleteForm').attr('action', "{% url 'Giros:administrar_giro' %}/" + pk + "/borrar");
+          $('#deleteForm').attr('action', "{% url 'giros:administrar_giros' %}/" + pk + "/borrar");
         })
       </script>
   {% endblock extrajs %}

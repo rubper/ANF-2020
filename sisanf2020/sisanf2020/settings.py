@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # aplicaciones personalizadas
     'bootstrap4',
-    'Giros',
+    'giros',
 ]
 
 MIDDLEWARE = [
@@ -79,12 +79,8 @@ WSGI_APPLICATION = 'sisanf2020.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'sisanf',
-        'USER': 'root',
-        'PASSWORD': 'G150719v@l',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 

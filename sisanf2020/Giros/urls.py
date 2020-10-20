@@ -1,8 +1,8 @@
 from django.urls import path
-from Giros.views import *
-from Giros import views
+from .views import *
 
-app_name = 'Giros'
+
+app_name = 'giros'
 
 urlpatterns = [
 
@@ -10,5 +10,5 @@ urlpatterns = [
     path('creargiro', CrearGiro.as_view(), name = 'crear_giro'),
     path('giro/<int:pk>', ModificarGiro.as_view(), name = 'modificar_giro'),
     path('giros/<int:pk>/borrar', EliminarGiro.as_view(), name = 'eliminar_giro'),
-    path('giros', MostrarGiros.as_view(), name = 'administrar_giro'),
+    path('giros', MostrarGiros.as_view(), name = 'administrar_giros'),
 ]
