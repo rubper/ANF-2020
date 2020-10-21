@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # aplicaciones personalizadas
     'bootstrap4',
     'giros',
+    'Empresa',
 ]
 
 MIDDLEWARE = [
