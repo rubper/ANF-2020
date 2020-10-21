@@ -23,7 +23,7 @@ class CrearGiro(SuccessMessageMixin, CreateView):
 
 class ModificarGiro(UpdateView):
     model = Giro
-    form_class = GiroForm
+    form_class = UpdateGiroForm
     template_name = 'giros/crear_giro.html'
     success_url = reverse_lazy('giros:administrar_giros')
     success_message = 'Cuenta creada con éxito'
