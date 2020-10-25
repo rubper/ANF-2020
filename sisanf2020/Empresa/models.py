@@ -10,5 +10,6 @@ class Empresa(models.Model):
     nrc= models.CharField(max_length =8)
     nit= models.CharField(max_length = 17)
     direccion= models.CharField(max_length = 100)
-
     
+    def __str__(self):
+     return  self.rasonsocial 

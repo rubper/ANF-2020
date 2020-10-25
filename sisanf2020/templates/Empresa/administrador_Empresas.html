@@ -1,0 +1,87 @@
+{% extends 'Base/base.html' %}
+
+{% block title %}
+Empresas
+{% endblock %}
+{% block content %}
+  <div class="container-fluid">
+   <div class="container">
+     <h2>Empresas</h2>
+    <div class="col-sm">
+      <div class="row container">
+        <a class="btn btn-primary btn-lg" href="{% url 'Empresa:crear' %}"><i class="fas fa-plus"></i> Agregar</a>
+        </div>
+        <div class="row container text-center">
+          <table class="table table-striped table-dark table-sm">
+            <thead class="table-dark">
+              <tr>
+                <th scope="col" align="center">Empresa</th>
+                <th scope="col">Giro</th>
+                <th scope="col">NCR</th>
+                <th scope="col">NIT</th>
+                <th scope="col">Direccion</th>
+                <th scope="col">Telefono</th>
+                <th scope="col" width="150px">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in object_list%}
+              <tr>
+                <td>{{row.rasonsocial}}</td>
+                <td>{{ row.idGiro}}</td>
+                <td>{{ row.nrc}}</td>
+                <td>{{ row.nit}}</td>
+                <td>{{ row.direccion}}</td>
+                <td>{{ row.telefono}}</td>
+                <td>
+                  <a href="" class="btn-info btn btn-lg">
+                    <i class="fas fa-edit"></i>
+                  </a>
+                  <button class="btn-danger btn btn-lg" data-toggle='modal' data-target='#deleteModal' data-pk='{{ row.pk }}'>
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ModalLabel">BORRAR</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+          ¿Desea borrar el giro seleccionado? Esta acción no se podrá deshacer
+        </p>
+      </div>
+      <div class="modal-footer">
+        <form id='deleteForm' method="post">
+          {% csrf_token %}
+          <input type="submit" class="btn btn-danger" value="Aceptar"></input>
+        </form>
+        <form method="post">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+  {% endblock %}
+  {% block extrajs %}
+      <script>
+        $('#deleteModal').on('shown.bs.modal', (event) => {
+          var btn = $(event.relatedTarget);
+          var pk = btn.data('pk');
+          
+        })
+      </script>
+  {% endblock extrajs %}

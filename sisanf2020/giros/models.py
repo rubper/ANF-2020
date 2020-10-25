@@ -14,4 +14,4 @@ class Giro(models.Model):
     sector = models.CharField(choices=SECTOR, max_length=2)
 
     def __str__(self):
-        return '{}'.format(self.idGiro)  + " " + self.nombreGiro
+        return  self.nombreGiro
