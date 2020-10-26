@@ -6,57 +6,57 @@ Empresa
 {% block content %}
 <!Doctype html>
 <div class="container">
-    <div class="row mt-3">
+    <div class="row mt-3" >
       <div class="col-md-9 mx-auto">
         <div>
-					<h2>Crear Empresa</h2>
+					<h2 style="text-align: center;">Crear Empresa</h2>
 					<form method="POST">
 						{% csrf_token %}
             {{ form.errors }}
             <div class="row">
 							<div class="col-md-10 col-md-offset-2">
-								<div class="form-group">
-									<label >Giro</label>
+								<div class="form-group" style="width: 25%;">
+									<label style="color: white;">Giro</label>
 									{{ form.idGiro }}
 								</div>
 							</div>
 						</div>
             <div class="row">
 							<div class="col-md-10 col-md-offset-2">
-								<div class="form-group">
-									<label >Razon social</label>
+								<div class="form-group" style="width: 50%;">
+									<label style="color: white;">Razon social</label>
 									{{ form.rasonsocial }}
 								</div>
 							</div>
 						</div>
             <div class="row">
 							<div class="col-md-10 col-md-offset-2">
-								<div class="form-group">
-									<label>Telefono</label>
+								<div class="form-group" style="width: 50%;">
+									<label style="color: white;">Telefono</label>
 									{{ form.telefono }}
 								</div>
 							</div>
                         </div>
             <div class="row">
 							<div class="col-md-10 col-md-offset-2">
-								<div class="form-group">
-									<label >NRC</label>
+								<div class="form-group" style="width: 50%;">
+									<label style="color: white;" >NRC</label>
 									{{ form.nrc }}
 								</div>
 							</div>
                         </div>
             <div class="row">
 							<div class="col-md-10 col-md-offset-2">
-								<div class="form-group">
-									<label >NIT</label>
+								<div class="form-group" style="width: 50%;">
+									<label style="color: white;" >NIT</label>
 									{{ form.nit }}
 								</div>
 							</div>
                         </div>
             <div class="row">
 							<div class="col-md-10 col-md-offset-2">
-								<div class="form-group">
-									<label >Direccion</label>
+								<div class="form-group" style="width: 50%;">
+									<label style="color: white;" >Direccion</label>
 									{{ form.direccion }}
 								</div>
 							</div>

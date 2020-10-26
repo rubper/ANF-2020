@@ -5,12 +5,13 @@ Empresas
 {% endblock %}
 {% block content %}
   <div class="container-fluid">
-   <div class="container">
-     <h2>Empresas</h2>
+   <div class="container" style="background: rgb(43, 44, 43); opacity: 80%; padding: 1px;">
+     <h2 style="text-align: center;">Empresas</h2>
     <div class="col-sm">
       <div class="row container">
         <a class="btn btn-primary btn-lg" href="{% url 'Empresa:crear' %}"><i class="fas fa-plus"></i> Agregar</a>
         </div>
+        <br>
         <div class="row container text-center">
           <table class="table table-striped table-dark table-sm">
             <thead class="table-dark">
@@ -34,7 +35,7 @@ Empresas
                 <td>{{ row.direccion}}</td>
                 <td>{{ row.telefono}}</td>
                 <td>
-                  <a href="" class="btn-info btn btn-lg">
+                  <a href="{%url 'Empresa:editar' row.pk %}" class="btn-info btn btn-lg">
                     <i class="fas fa-edit"></i>
                   </a>
                   <button class="btn-danger btn btn-lg" data-toggle='modal' data-target='#deleteModal' data-pk='{{ row.pk }}'>
@@ -81,7 +82,7 @@ Empresas
         $('#deleteModal').on('shown.bs.modal', (event) => {
           var btn = $(event.relatedTarget);
           var pk = btn.data('pk');
-          
+        $('#deleteForm').attr('action', "{% url 'Empresa:mostrar' %}/" + pk + "/borrar");
         })
       </script>
   {% endblock extrajs %}
