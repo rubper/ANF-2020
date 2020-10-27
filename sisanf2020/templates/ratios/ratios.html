@@ -1,0 +1,111 @@
+{% extends 'Base/base.html' %}
+{% block title %}
+Ratios
+{% endblock %}
+{% block content %}
+<div class="scrolling-box">
+<div class="container-fluid">
+  <div class="row align-items-start">
+    <div class="col-sm" align="center">
+      <div class="row" align="center">
+        <div class="col-lg-4 col-md col-sm col-xs mt-5">
+          <strong><h1>Razones financieras</h1></strong>
+          <div class="row container col-sm text-center" width="50%">
+            <div class="row container mt-3">
+              <a class="btn btn-primary btn-lg" href="{% url 'ratios:importar_ratios' %}"><i class="fas fa-upload"></i> Subir archivo</a>
+            </div>
+            <table class="table table-striped table-sm table-bordered table-dark mt-3">
+              <col style="width:2%"/>
+              <col style="width:8%"/>
+              <col style="width:90%"/>
+              <thead class="table-dark">
+                <tr>
+                  <th scope="col" align="center">Id</th>
+                  <th scope="col">Categoría</th>
+                  <th scope="col" >Nombre</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for row in object_list%}
+                <tr>
+                  <td>{{ row.idRatio}}</td>
+                  <td>{{ row.categoria}}</td>
+                  <td>{{ row.nomRatio}}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- ======= Category Section ======= -->
+        <div class="col-lg-8 col-md col-sm col-xs mt-4">
+          <div class="row container col-sm">
+            <section id="pricing" class="pricing section-bg">
+              <div class="container" data-aos="fade-up">
+                <div class="section-title">
+                  <h2>Categorías</h2>
+                  <p>Clasificación de las razones financieras.</p>
+                </div>
+                <div class="row">
+                  <div class="col-sm col-md-3">
+                    <div class="box"  data-aos="fade-up" data-aos-delay="100">
+                      <ul>
+                        <li>Razones de liquidez</li>
+                        <li>Las razones de Liquidez nos dan las herramientas de
+                          análisis, para establecer el grado de liquidez de una
+                          empresa y por ende su capacidad de generar efectivo,
+                          para atender en forma oportuna el pago de las
+                          obligaciones contraídas.
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="col-sm-3 col-md-3">
+                    <div class="box" data-aos="fade-up" data-aos-delay="100">
+                      <ul>
+                        <li>Razones de actividad</li>
+                        <li>Establecen el grado de eficiencia con el cual, la
+                          administración de la empresa, maneja los recursos y la
+                          recuperación de los mismos. Estas permiten evaluar los
+                          efectos de las decisiones y de las políticas seguidas por la
+                          empresa en la utilización de sus recursos respecto a cobros,
+                          pagos, inventarios y activos.
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="col-sm-3 col-md-3">
+                    <div class="box" data-aos="fade-up" data-aos-delay="100">
+                      <ul>
+                        <li>Razones de apalancamiento</li>
+                        <li>Los índices de endeudamiento analizan la capacidad de la empresa para
+                          responder por las obligaciones tanto a corto como a largo plazo,
+                          satisfaciendo los pagos de intereses y el pago uniforme de
+                          dividendos.
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="col-sm-3 col-md-3">
+                    <div class="box" data-aos="fade-up" data-aos-delay="100">
+                      <ul>
+                        <li>Razones de rentabilidad</li>
+                        <li>Las razones de rentabilidad evalúan los resultados de la gestión
+                          empresarial. Constituyen los índices más importantes porque
+                          reflejan el poder de generación de utilidades de la empresa y la
+                          capacidad de obtener un rendimiento sobre los recursos invertidos.
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div> <!-- End Category Section -->
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %}

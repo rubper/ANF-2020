@@ -38,10 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'import_export',
     # aplicaciones personalizadas
     'bootstrap4',
     'giros',
     'Empresa',
+    'ratios',
 ]
 
 MIDDLEWARE = [
