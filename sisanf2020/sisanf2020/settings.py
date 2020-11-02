@@ -41,9 +41,9 @@ INSTALLED_APPS = [
     'import_export',
     # aplicaciones personalizadas
     'bootstrap4',
-    'giros',
+    'Giro',
     'Empresa',
-    'ratios',
+    'Analisis',
 ]
 
 MIDDLEWARE = [

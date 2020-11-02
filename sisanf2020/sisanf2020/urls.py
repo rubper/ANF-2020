@@ -22,7 +22,7 @@ from sisanf2020.views import index
 urlpatterns = [
     path('', index, name="index"),
     path('admin/', admin.site.urls),
-    path('giros/', include('giros.urls', namespace='giros')),
+    path('Giro/', include('Giro.urls', namespace='Giro')),
     path('Empresa/', include('Empresa.urls', namespace='Empresa')),
-    path('ratios/', include('ratios.urls', namespace='ratios')),
+    path('Analisis/', include('Analisis.urls', namespace='Analisis')),
 ]

@@ -14,7 +14,7 @@ def uploadRatios(request):
 
         if not new_ratios.name.endswith('xlsx'):
             messages.error(request,'Error: Formato incorrecto')
-            return render(request, 'ratios/importar.html')
+            return render(request, 'Analisis/importar.html')
 
         imported_data = dataset.load(new_ratios.read(), format='xlsx')
         for data in imported_data:
@@ -26,8 +26,8 @@ def uploadRatios(request):
             value.save()
         messages.info(request, 'Ha importado los ratios, exitosamente')
 
-    return render(request, 'ratios/importar.html')
+    return render(request, 'Analisis/ImportarRatios.html')
 
 class MostrarRatios(ListView):
     model = Ratios
-    template_name = 'ratios/ratios.html'
+    template_name = 'Analisis/Ratios.html'

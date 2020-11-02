@@ -17,49 +17,49 @@ from django import forms
 class CrearGiro(SuccessMessageMixin, CreateView):
     model = Giro
     form_class = GiroForm
-    template_name = 'giros/crear_giro.html'
-    success_url = reverse_lazy('giros:administrar_giros')
+    template_name = 'Giro/CrearGiro.html'
+    success_url = reverse_lazy('Giro:AdministrarGiros')
     success_message = 'Giro creado con éxito'
 
 class ModificarGiro(SuccessMessageMixin, UpdateView):
     model = Giro
     form_class = UpdateGiroForm
-    template_name = 'giros/crear_giro.html'
-    success_url = reverse_lazy('giros:administrar_giros')
+    template_name = 'Giro/CrearGiro.html'
+    success_url = reverse_lazy('Giro:AdministrarGiros')
     success_message = 'Giro modificado con éxito'
 
 class MostrarGiros(ListView):
     model = Giro
-    template_name = 'giros/administrar_giros.html'
+    template_name = 'Giro/AdministrarGiros.html'
 
 class EliminarGiro(DeleteView):
     model = Giro
     form_class = GiroForm
-    success_url = reverse_lazy('giros:administrar_giros')
+    success_url = reverse_lazy('Giro:AdministrarGiros')
     def get_success_url(self):
-        return reverse_lazy('giros:administrar_giros')
+        return reverse_lazy('Giro:AdministrarGiros')
 
 class CrearDato(SuccessMessageMixin, CreateView):
     model = DatoGiro
     form_class = DatoGiroForm
-    template_name = 'giros/crear_dato.html'
-    success_url = reverse_lazy('giros:administrar_datos')
+    template_name = 'Giro/CrearDato.html'
+    success_url = reverse_lazy('Giro:AdministrarDatos')
     success_message = 'Dato de giro creado con éxito'
 
 class ModificarDato(SuccessMessageMixin, UpdateView):
     model = DatoGiro
     form_class = UpdateDatoGiroForm
-    template_name = 'giros/crear_dato.html'
-    success_url = reverse_lazy('giros:administrar_datos')
+    template_name = 'Giro/CrearDato.html'
+    success_url = reverse_lazy('Giro:AdministrarDatos')
     success_message = 'Dato de giro modificado con éxito'
 
 class EliminarDato(DeleteView):
     model = DatoGiro
     form_class = DatoGiroForm
-    success_url = reverse_lazy('giros:administrar_datos')
+    success_url = reverse_lazy('Giro:AdministrarDatos')
     def get_success_url(self):
-        return reverse_lazy('giros:administrar_datos')
+        return reverse_lazy('Giro:AdministrarDatos')
 
 class MostrarDatos(ListView):
     model = DatoGiro
-    template_name = 'giros/administrar_dato.html'
+    template_name = 'Giro/AdministrarDato.html'

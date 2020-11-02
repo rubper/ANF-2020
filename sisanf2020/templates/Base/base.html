@@ -57,9 +57,9 @@
           <nav class="nav-menu d-none d-lg-block">
             <ul>
               <li class="active"><a href="#header">Home</a></li>
-              <li><a href="#about">About</a></li>
-              <li><a href="#services">Services</a></li>
-              <li><a href="#portfolio">Portfolio</a></li>
+              <li><a href="{% url 'Analisis:ListaRatios' %}">Análisis</a>
+              <li><a href="{% url 'Giro:AdministrarGiros' %}">Giros</a></li>
+              <li><a href="{% url 'Empresa:mostrar' %}">Empresas</a></li>
               <li><a href="#team">Team</a></li>
               <li><a href="blog.html">Blog</a></li>
               <li class="drop-down"><a href="">Drop Down</a>
@@ -91,7 +91,7 @@
   </header><!-- End Header -->
   <!-- ======= Hero Section ======= -->
   <section id="hero" class="d-flex align-items-center">
-  <!-- insertar aquí el contenido de cada app/vista -->  
+  <!-- insertar aquí el contenido de cada app/vista -->
   {% block content %}
   {% endblock %}
   </section><!-- End Hero -->

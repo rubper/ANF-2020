@@ -1,7 +1,6 @@
 {% extends 'Base/base.html' %}
-
 {% block title %}
-Giros
+Datos de Giros
 {% endblock %}
 {% block content %}
 <div class="scrolling-box">
@@ -9,11 +8,12 @@ Giros
     <div class="row align-items-start">
       <div class="col-sm" align="center">
         <div class="row" align="center">
-          <div class="col-lg-4 col-md col-sm col-xs mt-5">
-            <strong><h1>Giros</h1></strong>
-            <div class="row container col-sm text-center" width="50%">
+        <div class="col-lg-12 col-md col-sm col-xs mt-4">
+          <div class="container col-sm text-center">
+            <div class="container col-sm text-center mt-5" width="50%">
+              <strong><h1>Datos de Giros</h1></strong>
               <div class="row container">
-                <a class="btn btn-primary btn-lg" href="{% url 'giros:crear_giro' %}"><i class="fas fa-plus"></i> Giro</a>
+                <a class="btn btn-primary btn-lg" href="{% url 'Giro:CrearDato' %}"><i class="fas fa-plus"></i> Dato de giro</a>
               </div>
               {% for message in messages %}
               <div class="alert alert-success mt-5 col-sm-3 text-center">
@@ -21,23 +21,28 @@ Giros
                     {{ message }}
               </div>
               {% endfor %}
-              <table class="table table-striped table-dark table-sm">
+              <div class="mt-5" style="background: rgb(255, 255, 255); opacity: 70%; padding: 8px;" align="center">
+              <table id="datosTable" class="table table-striped table-dark">
                 <thead class="table-dark">
                   <tr>
-                    <th scope="col" align="center">Id</th>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Sector</th>
+                    <th scope="col" align="center">Id de dato</th>
+                    <th scope="col" align="center">Id de giro</th>
+                    <th scope="col" align="center">Id de ratio</th>
+                    <th scope="col">Parámetro</th>
+                    <th scope="col">Promedio</th>
                     <th scope="col" width="150px">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {% for row in object_list%}
                     <tr>
+                      <td>{{ row.idDato}}</td>
                       <td>{{ row.idGiro}}</td>
-                      <td>{{ row.nombreGiro}}</td>
-                      <td>{{ row.sector}}</td>
+                      <td>{{ row.idRatio}}</td>
+                      <td>{{ row.valorParametro}}</td>
+                      <td>{{ row.valorPromedio}}</td>
                       <td>
-                        <a href="{% url 'giros:modificar_giro' row.pk %}" class="btn-info btn btn-lg">
+                        <a href="{% url 'Giro:ModificarDato' row.pk %}" class="btn-info btn btn-lg">
                           <i class="fas fa-pencil-alt"></i>
                         </a>
                         <button class="btn-danger btn btn-lg" data-toggle='modal' data-target='#deleteModal' data-pk='{{ row.pk }}'>
@@ -48,8 +53,10 @@ Giros
                   {% endfor %}
                 </tbody>
               </table>
+              </div>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>
@@ -66,7 +73,7 @@ Giros
       </div>
       <div class="modal-body">
         <p>
-          ¿Desea borrar el giro seleccionado? Esta acción no se podrá deshacer
+          ¿Desea borrar el dato de giro seleccionado? Esta acción no se podrá deshacer
         </p>
       </div>
       <div class="modal-footer">
@@ -87,7 +94,11 @@ Giros
     $('#deleteModal').on('shown.bs.modal', (event) => {
       var btn = $(event.relatedTarget);
       var pk = btn.data('pk');
-      $('#deleteForm').attr('action', "{% url 'giros:administrar_giros' %}/" + pk + "/borrar");
+      $('#deleteForm').attr('action', "{% url 'Giro:AdministrarDatos' %}/" + pk + "/Borrar");
     })
+
+    $(document).ready(function() {
+    $('#datosTable').DataTable();
+} );
   </script>
 {% endblock extrajs %}
