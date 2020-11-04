@@ -25,4 +25,5 @@ urlpatterns = [
     path('Giro/', include('Giro.urls', namespace='Giro')),
     path('Empresa/', include('Empresa.urls', namespace='Empresa')),
     path('Analisis/', include('Analisis.urls', namespace='Analisis')),
+    path('Usuarios/', include('Usuarios.urls', namespace='Usuarios')),
 ]

@@ -44,7 +44,10 @@ INSTALLED_APPS = [
     'Giro',
     'Empresa',
     'Analisis',
+    'Usuarios',
 ]
+
+AUTH_USER_MODEL = "Usuarios.User"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
