@@ -56,6 +56,7 @@
           {% block navbar %}
           <nav class="nav-menu d-none d-lg-block">
             <ul>
+              {% if user.is_authenticated %}
               <li class="active"><a href="#header">Home</a></li>
               <li><a href="{% url 'Analisis:ListaRatios' %}">Análisis</a>
               <li class="drop-down"><a href="">Giros</a>
@@ -65,8 +66,6 @@
                 </ul>
               </li>
               <li><a href="{% url 'Empresa:mostrar' %}">Empresas</a></li>
-              <li><a href="#team">Team</a></li>
-              <li><a href="blog.html">Blog</a></li>
               <li class="drop-down"><a href="">Drop Down</a>
                 <ul>
                   <li><a href="#">Drop Down 1</a></li>
@@ -84,8 +83,12 @@
                   <li><a href="#">Drop Down 4</a></li>
                 </ul>
               </li>
-              <li><a href="#contact">Contact</a></li>
               <li><a href="{% url 'Usuarios:AdministrarUsuarios' %}">Usuarios</a></li>
+              <li><a href="{% url 'Logout' %}">Cerrar sesión</a></li>              
+              {% else %}
+              <li><a href="#">Ayuda</a>
+              <li><a href="{% url 'Login' %}">Iniciar sesión</a></li>
+              {% endif %}
             </ul>
           </nav><!-- .nav-menu -->
 

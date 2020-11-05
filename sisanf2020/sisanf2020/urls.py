@@ -15,7 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.contrib.auth.decorators import login_required
 from sisanf2020.views import index
+from Usuarios.views import Login, Logout
 
 
 
@@ -26,4 +28,6 @@ urlpatterns = [
     path('Empresa/', include('Empresa.urls', namespace='Empresa')),
     path('Analisis/', include('Analisis.urls', namespace='Analisis')),
     path('Usuarios/', include('Usuarios.urls', namespace='Usuarios')),
+    path('accounts/login/', Login.as_view(), name = 'Login'),
+    path('logout', login_required(Logout), name = 'Logout'),
 ]

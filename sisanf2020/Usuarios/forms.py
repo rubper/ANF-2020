@@ -1,5 +1,6 @@
 from django import forms
 from .models import User
+from django.contrib.auth.forms import AuthenticationForm
 
 class UserForm(forms.ModelForm):
     password1 = forms.CharField(label = 'Contraseña', widget = forms.PasswordInput(
@@ -93,3 +94,11 @@ class UpdateUserForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
+class LoginForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super(LoginForm, self).__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs['class'] = 'form-control'
+        self.fields['username'].widget.attrs['placeholder'] = 'Nombre de usuario'
+        self.fields['password'].widget.attrs['class'] = 'form-control'
+        self.fields['password'].widget.attrs['placeholder'] = 'Contraseña'
