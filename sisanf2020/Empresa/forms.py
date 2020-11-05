@@ -32,12 +32,3 @@ class Empresa_Forms(forms.ModelForm):
             'nit':forms.TextInput(attrs={'class': 'form-control'}),
             'direccion':forms.TextInput(attrs={'class': 'form-control'}),
         }
-
-
-
-#class CuentaFormd(forms.ModelForm):
-#   class Meta:
-#       models=Cuenta,SaldoDeCuenta
-#       fields=[
-#
-#        ]
