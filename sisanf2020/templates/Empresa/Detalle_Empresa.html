@@ -1,0 +1,71 @@
+{% extends 'Base/base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<div class="container">
+    <div class="row mt-3" >
+      <div class="col-md-9 mx-auto">
+        <div>
+					<h2 style="text-align: center;">Detalle</h2>
+            <div class="row">
+							<div class="col-md-10 col-md-offset-2">
+								<div class="form-group" style="width: 25%;">
+									<label style="color: white;">Razon social: </label>
+									<label style="color:azure;">{{ object.rasonsocial}}</label>
+								</div>
+							</div>
+						</div>
+            <div class="row">
+							<div class="col-md-10 col-md-offset-2">
+								<div class="form-group" style="width: 50%;">
+									<label style="color: white;">Giro de la empresa: </label>
+                                    <label style="color:azure;">{{ object.idGiro}}</label>
+								</div>
+							</div>
+						</div>
+            <div class="row">
+							<div class="col-md-10 col-md-offset-2">
+								<div class="form-group" style="width: 50%;">
+									<label style="color: white;">Telefono: </label>
+									<label style="color:azure;">{{ object.telefono}}</label>
+								</div>
+							</div>
+                        </div>
+            <div class="row">
+							<div class="col-md-10 col-md-offset-2">
+								<div class="form-group" style="width: 50%;">
+									<label style="color: white;" >NRC: </label>
+									<label style="color:azure;">{{ object.nrc}}</label>
+								</div>
+							</div>
+                        </div>
+            <div class="row">
+							<div class="col-md-10 col-md-offset-2">
+								<div class="form-group" style="width: 50%;">
+									<label style="color: white;" >NIT: </label>
+									<label style="color:azure;">{{ object.nit}}</label>
+								</div>
+							</div>
+                        </div>
+            <div class="row">
+							<div class="col-md-10 col-md-offset-2">
+								<div class="form-group" style="width: 50%;">
+									<label style="color: white;" >Direccion: </label>
+                                    <label style="color:azure;">{{ object.direccion}}</label>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-10 col-md-offset-2">
+								<div align= "left" class="btn_crear mb-3">
+                                    <a type="button" class="btn btn-primary btn-lg" href="" role="button"><i class="fas fa-plus-circle"></i> Catalogo</a>
+                                    <a type="button" class="btn btn-info btn-lg" href="" role="button"style="margin: 2%;"><i class="fas fa-plus-circle"></i> Balance General</a>
+                                    <a type="button" class="btn btn-success btn-lg" href="" role="button"style="margin: 2%;"><i class="fas fa-plus-circle" style="margin: 2%;"></i> Estado resultado</a>
+                                    <a type="button" class="btn btn-secondary btn-lg" href="javascript:window.history.back();" style="margin: 2%;"><i class="fas fa-undo-alt"></i></i> Regresar</a>
+                                </div>
+							</div>
+						</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{%endblock%}

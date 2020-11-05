@@ -35,6 +35,9 @@ Empresas
                 <td>{{ row.direccion}}</td>
                 <td>{{ row.telefono}}</td>
                 <td>
+                <a href="{%url 'Empresa:detalle' row.pk %}" class="btn-info btn btn-lg">
+                    <i class="far fa-eye"></i>
+                  </a>
                   <a href="{%url 'Empresa:editar' row.pk %}" class="btn-info btn btn-lg">
                     <i class="fas fa-edit"></i>
                   </a>
@@ -61,7 +64,7 @@ Empresas
       </div>
       <div class="modal-body">
         <p>
-          ¿Desea borrar el giro seleccionado? Esta acción no se podrá deshacer
+          ¿Desea borrar la Empresa seleccionado? Esta acción no se podrá deshacer
         </p>
       </div>
       <div class="modal-footer">
