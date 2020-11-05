@@ -1,21 +1,21 @@
 from django.db import models
 from Empresa.models import Empresa, Cuenta
+from Giro.models import Ratios
+from Estados.models import EstadoDeResultado, Balance
 from datetime import datetime
 
 # Create your models here.
 
-class Ratios(models.Model):
-    idRatio = models.PositiveIntegerField(primary_key=True)
-    categoria = models.CharField(max_length=50)
-    nomRatio = models.CharField(max_length=50)
-    def __str__(self):
-        return self.nomRatio
+def yearActual():
+    return datetime.today().year
 
 class Analisis(models.Model):
     idAnalisis = models.AutoField(primary_key=True)
     idEmpresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
-    year_analisis = models.PositiveSmallIntegerField(default=yearActual)
+    year_analisis = models.PositiveSmallIntegerField(default=yearActual())
     year_previos = models.PositiveSmallIntegerField()
+    estadosParaAnalisis = models.ManyToManyField(EstadoDeResultado, through='EstadoAnalisis')
+    balancesParaAnalisis = models.ManyToManyField(Balance, through='BalanceAnalisis')
 
 class LineaDeInforme(models.Model):
     idLineaInfo = models.AutoField(primary_key=True)
@@ -25,5 +25,18 @@ class LineaDeInforme(models.Model):
     porcentaje_horizontal = models.DecimalField(max_digits=5,decimal_places=4)
     porcentaje_vertical = models.DecimalField(max_digits=5,decimal_places=4)
 
-def yearActual():
-    return datetime.today().year
+class RatiosAnalisis(models.Model):
+    idRatioAnalisis = models.AutoField(primary_key=True)
+    idAnalisis = models.ForeignKey(Analisis,on_delete=models.CASCADE)
+    idRatios = models.ForeignKey(Ratios, on_delete=models.CASCADE)
+    valorRatiosAnalisis = models.DecimalField(max_digits=8,decimal_places=4)
+
+#Muchos a muchos, clase intermedia
+
+class EstadoAnalisis(models.Model):
+    idResultado = models.ForeignKey(EstadoDeResultado, on_delete=models.CASCADE)
+    idAnalisis = models.ForeignKey(Analisis, on_delete=models.CASCADE)
+
+class BalanceAnalisis(models.Model):
+    idbalance = models.ForeignKey(Balance, on_delete=models.CASCADE)
+    idAnalisis = models.ForeignKey(Analisis,on_delete=models.CASCADE)

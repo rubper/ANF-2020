@@ -1,5 +1,5 @@
 from import_export import resources
-from .models import Ratios
+from Giro.models import Ratios
 
 class RatiosResource(resources.ModelResource):
     class Meta:

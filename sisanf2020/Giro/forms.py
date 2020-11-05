@@ -1,6 +1,6 @@
 from django import forms
 from .models import *
-from Analisis.models import Ratios
+from Giro.models import Ratios
 
 class GiroForm(forms.ModelForm):
     idGiro = forms.IntegerField(widget=forms.TextInput(attrs={'class': 'form-control',

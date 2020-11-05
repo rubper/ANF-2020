@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from tablib import Dataset
-from .models import Ratios
+from Giro.models import Ratios
 from .resources import RatiosResource
 from django.contrib import messages
 from django.views.generic import ListView

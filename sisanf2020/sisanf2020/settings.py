@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'Empresa',
     'Analisis',
     'Usuarios',
+    'Estados',
 ]
 
 AUTH_USER_MODEL = "Usuarios.User"
