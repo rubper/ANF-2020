@@ -5,19 +5,6 @@ from .resources import RatiosResource
 from django.contrib import messages
 from django.views.generic import ListView
 from django.urls import reverse
-from Analisis.models import Analisis, LineaDeInforme
-#Analisis
-#Horizontal
-def indexAnalisisHorizontal(request, empresa):
-    AnalisisDeEmpresa = Analisis.objects.filter(idEmpresa=empresa).order_by('idAnalisis')
-    LineasDeAnalisis = []
-    for analisis in AnalisisDeEmpresa:
-        LineasDeAnalisis += LineaDeInforme.objects.filter(idAnalisis=analisis.idAnalisis)
-    argumentos = {
-        'listaAnalisis':AnalisisDeEmpresa,
-        'detallesAnalisis':LineasDeAnalisis
-    }
-    return render(request, 'Analisis/AnalisisHorizontal.html', argumentos)
 
 def uploadRatios(request):
     if request.method == 'POST':
