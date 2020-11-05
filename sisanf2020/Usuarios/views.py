@@ -1,6 +1,12 @@
 from django.shortcuts import render
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_protect
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView
+from django.views.generic.edit import FormView
+from django.contrib.auth import login, logout
+from django.http import HttpResponseRedirect
 from django.contrib.messages.views import SuccessMessageMixin
 from .models import User
 from .forms import *
@@ -34,3 +40,24 @@ class EliminarUsuario(SuccessMessageMixin, DeleteView):
     success_url = reverse_lazy('Usuarios:AdministrarUsuarios')
     def get_success_url(self):
         return reverse_lazy('Usuarios:AdministrarUsuarios')
+
+class Login(FormView):
+    template_name = "Usuarios/Login.html"
+    form_class = LoginForm
+    success_url = reverse_lazy('index')
+
+    @method_decorator(csrf_protect)
+    @method_decorator(never_cache)
+    def dispatch(self, request, *args, **kwards):
+        if request.user.is_authenticated:
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            return super(Login, self).dispatch(request, *args, **kwards)
+
+    def form_valid(self, form):
+        login(self.request, form.get_user())
+        return super(Login, self).form_valid(form)
+
+def Logout(request):
+    logout(request)
+    return HttpResponseRedirect('/')
