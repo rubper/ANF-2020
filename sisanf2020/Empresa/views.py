@@ -9,6 +9,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic.base import TemplateView
 from django.contrib import messages
 from django.http import HttpResponse
+from django.views.generic.detail import DetailView
 
 # Create your views here.
 
@@ -16,18 +17,18 @@ from django.http import HttpResponse
 class crear_Empresa(SuccessMessageMixin,CreateView):
     model= Empresa
     form_class= Empresa_Forms
-    template_name= 'Empresa/crear_Empresa.html'
+    template_name= 'Empresa/Crear_Empresa.html'
     success_url = reverse_lazy('Empresa:mostrar')
     Success_message = 'Empresa creada con exito'
 
 class mostrar_Empresa(ListView):
     model=Empresa
-    template_name = 'Empresa/administrador_Empresas.html'
+    template_name = 'Empresa/Administrador_Empresas.html'
 
 class editar_Empreda(UpdateView):
     model = Empresa
     form_class = Empresa_Forms
-    template_name = 'Empresa/crear_Empresa.html'
+    template_name = 'Empresa/Crear_Empresa.html'
     success_url = reverse_lazy('Empresa:mostrar')
     success_message = 'Los datos han sido modifcado'
 
@@ -37,3 +38,7 @@ class eliminar_Empresa(DeleteView):
     success_url = reverse_lazy('Empresa:mostrar')
     def get_success_url(self):
         return reverse_lazy('Empresa:mostrar')
+
+class detalle_Empresa(DetailView):
+    model=Empresa
+    template_name = 'Empresa/Detalle_Empresa.html'
