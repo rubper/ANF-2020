@@ -19,7 +19,6 @@ class UserManager(BaseUserManager):
         usuario.save()
         return usuario
 
-
 class User(AbstractBaseUser):
     id = models.CharField(primary_key = True, max_length = 2)
     nomUsuario = models.CharField(unique = True, max_length = 100)
@@ -42,3 +41,21 @@ class User(AbstractBaseUser):
     @property
     def is_staff(self):
         return self.administrador
+
+class OpcionForm(models.Model):
+    idOpcion = models.CharField(primary_key = True, max_length = 3)
+    descOpcion = models.CharField(max_length = 100)
+    numForm = models.PositiveIntegerField()
+
+    class Meta:
+        unique_together = ("idOpcion", "descOpcion", "numForm")
+
+    def __str__(self):
+        return  self.descOpcion
+
+class AccesoUsuario(models.Model):    
+    idUsuario = models.ForeignKey(User, on_delete = models.CASCADE)
+    idOpcion = models.ForeignKey(OpcionForm, on_delete = models.CASCADE)
+
+    class Meta:
+        unique_together = ("idUsuario", "idOpcion")

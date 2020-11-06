@@ -83,8 +83,14 @@
                   <li><a href="#">Drop Down 4</a></li>
                 </ul>
               </li>
-              <li><a href="{% url 'Usuarios:AdministrarUsuarios' %}">Usuarios</a></li>
-              <li><a href="{% url 'Logout' %}">Cerrar sesión</a></li>              
+              <li class="drop-down"><a href="">Usuarios</a>
+                <ul>
+                  <li><a href="{% url 'Usuarios:AdministrarUsuarios' %}">Usuarios</a></li>
+                  <li><a href="{% url 'Usuarios:AdministrarOpcion' %}">Opciones</a></li>
+                  <li><a href="{% url 'Usuarios:AdministrarAcceso' %}">Acceso</a></li>
+                </ul>
+              </li>
+              <li><a href="{% url 'Logout' %}">Cerrar sesión</a></li>
               {% else %}
               <li><a href="#">Ayuda</a>
               <li><a href="{% url 'Login' %}">Iniciar sesión</a></li>

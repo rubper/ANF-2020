@@ -5,10 +5,11 @@ from django.views.generic import ListView , DetailView
 from django.views.generic.edit import CreateView , UpdateView , DeleteView
 from django.views.generic.base import TemplateView
 from django.contrib.messages.views import SuccessMessageMixin
-from .models import *
-from .forms import *
 from django.contrib import messages
 from django import forms
+from .models import *
+from .forms import *
+from Usuarios.models import AccesoUsuario
 
 # Create your views here.
 
@@ -31,6 +32,18 @@ class ModificarGiro(SuccessMessageMixin, UpdateView):
 class MostrarGiros(ListView):
     model = Giro
     template_name = 'Giro/AdministrarGiros.html'
+
+#    def get(self, request, *args, **kwards):
+#        if request.user.is_authenticated:
+#            usactivo = request.user #obtiene el id del usuario que se ha autenticado
+#            op = '003' #Código de lista de giros
+#            usac=AccesoUsuario.objects.filter(idUsuario=usactivo).filter(idOpcion=op).values('idUsuario').first()
+#            if usac is None:
+#                return HttpResponse('Unauthorized', status=401)
+#            else:
+#                return render(request, self.template_name)
+#        else:
+#            return HttpResponse("Error: Primero debe iniciar sesión")
 
 class EliminarGiro(DeleteView):
     model = Giro
