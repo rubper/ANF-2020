@@ -21,14 +21,14 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser):
     ROL=[
-        ('1', 'Administrador'),
-        ('2', 'Analista'),
-        ('3', 'Gerente'),
+        (1, 'Administrador'),
+        (2, 'Analista'),
+        (3, 'Gerente'),
     ]
     id = models.CharField(primary_key = True, max_length = 2)
     nomUsuario = models.CharField(unique = True, max_length = 100)
     activo = models.BooleanField(default = True)
-    rol = models.CharField(max_length = 10, choices = ROL, default = 1)
+    rol = models.SmallIntegerField(choices = ROL, default = 1)
     is_administrador = models.BooleanField(default = False)
     is_analista = models.BooleanField(default = False)
     is_gerente = models.BooleanField(default = False)
