@@ -66,6 +66,8 @@
                 </ul>
               </li>
               <li><a href="{% url 'Empresa:mostrar' %}">Empresas</a></li>
+              <li><a href="#team">Team</a></li>
+              <li><a href="blog.html">Blog</a></li>
               <li class="drop-down"><a href="">Drop Down</a>
                 <ul>
                   <li><a href="#">Drop Down 1</a></li>
@@ -83,8 +85,14 @@
                   <li><a href="#">Drop Down 4</a></li>
                 </ul>
               </li>
-              <li><a href="{% url 'Usuarios:AdministrarUsuarios' %}">Usuarios</a></li>
-              <li><a href="{% url 'Logout' %}">Cerrar sesión</a></li>              
+              <li class="drop-down"><a href="">Usuarios</a>
+                <ul>
+                  <li><a href="{% url 'Usuarios:AdministrarUsuarios' %}">Usuarios</a></li>
+                  <li><a href="{% url 'Usuarios:AdministrarOpcion' %}">Opciones</a></li>
+                  <li><a href="{% url 'Usuarios:AdministrarAcceso' %}">Acceso</a></li>
+                </ul>
+              </li>
+              <li><a href="{% url 'Logout' %}">Cerrar sesión</a></li>
               {% else %}
               <li><a href="#">Ayuda</a>
               <li><a href="{% url 'Login' %}">Iniciar sesión</a></li>

@@ -20,7 +20,6 @@ from sisanf2020.views import index
 from Usuarios.views import Login, Logout
 
 
-
 urlpatterns = [
     path('', index, name="index"),
     path('admin/', admin.site.urls),

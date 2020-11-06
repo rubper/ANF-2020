@@ -8,7 +8,7 @@ from django.views.generic.edit import FormView
 from django.contrib.auth import login, logout
 from django.http import HttpResponseRedirect
 from django.contrib.messages.views import SuccessMessageMixin
-from .models import User
+from .models import User, OpcionForm, AccesoUsuario
 from .forms import *
 
 # Create your views here.
@@ -31,8 +31,17 @@ class AdministrarUsuarios(ListView):
     model = User
     template_name = 'Usuarios/AdministrarUsuarios.html'
 
-    def get_queryset(self):
-        return self.model.objects.filter(activo = True)
+#    def get(self, request, *args, **kwards):
+#        if request.user.is_authenticated:
+#            usactivo = request.user #obtiene el id del usuario que se ha autenticado
+#            op = '000' #Código de lista de usuarios
+#            usac=AccesoUsuario.objects.filter(idUsuario=usactivo).filter(idOpcion=op).values('idUsuario').first()
+#            if usac is None:
+#                return HttpResponse('Unauthorized', status=401)
+#            else:
+#                return render(request, self.template_name)
+#        else:
+#            return HttpResponse("Error: Primero debe iniciar sesión")
 
 class EliminarUsuario(SuccessMessageMixin, DeleteView):
     model = User
@@ -61,3 +70,28 @@ class Login(FormView):
 def Logout(request):
     logout(request)
     return HttpResponseRedirect('/')
+
+#OpcionForm
+class CrearOpcion(CreateView):
+    model = OpcionForm
+    form_class = OpcionFormulario
+    template_name = 'Usuarios/CrearOpcionForm.html'
+    success_url = reverse_lazy('Usuarios:AdministrarOpcion')
+    success_message = 'Opción de form creado con éxito'
+
+class AdministrarOpciones(ListView):
+    model = OpcionForm
+    template_name = 'Usuarios/AdministrarOpcion.html'
+
+
+
+class CrearAcceso(CreateView):
+    model = AccesoUsuario
+    form_class = AccesoUsuarioForm
+    template_name = 'Usuarios/CrearAcceso.html'
+    success_url = reverse_lazy('Usuarios:AdministrarAcceso')
+    success_message = 'Acceso de usuario creado con éxito'
+
+class AdministrarAccesos(ListView):
+    model = AccesoUsuario
+    template_name = 'Usuarios/AdministrarAcceso.html'

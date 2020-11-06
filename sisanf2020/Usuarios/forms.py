@@ -1,6 +1,8 @@
 from django import forms
-from .models import User
+from .models import User, OpcionForm, AccesoUsuario
 from django.contrib.auth.forms import AuthenticationForm
+
+
 
 class UserForm(forms.ModelForm):
     password1 = forms.CharField(label = 'Contraseña', widget = forms.PasswordInput(
@@ -95,6 +97,7 @@ class UpdateUserForm(forms.ModelForm):
             user.save()
         return user
 
+
 class LoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super(LoginForm, self).__init__(*args, **kwargs)
@@ -102,3 +105,38 @@ class LoginForm(AuthenticationForm):
         self.fields['username'].widget.attrs['placeholder'] = 'Nombre de usuario'
         self.fields['password'].widget.attrs['class'] = 'form-control'
         self.fields['password'].widget.attrs['placeholder'] = 'Contraseña'
+
+class OpcionFormulario(forms.ModelForm):
+    class Meta:
+        model = OpcionForm
+        fields = [
+        'idOpcion',
+        'descOpcion',
+        'numForm',
+        ]
+        labels = {
+        'idOpcion' : 'Id',
+        'descOpcion' : 'Descripción',
+        'numForm' : 'Formulario',
+        }
+        widgets = {
+        'idOpcion' : forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el id de usuario'}),
+        'descOpcion' : forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese la descripción'}),
+        'numForm' : forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el número de formulario'}),
+        }
+
+class AccesoUsuarioForm(forms.ModelForm):
+    class Meta:
+        model = AccesoUsuario
+        fields = [
+        'idUsuario',
+        'idOpcion',
+        ]
+        labels = {
+        'idUsuario' : 'Usuario',
+        'idOpcion' : 'Opción',
+        }
+        widgets = {
+        'idUsuario' : forms.Select(attrs={'class': 'form-control'}),
+        'idOpcion' : forms.Select(attrs={'class': 'form-control'}),
+        }
