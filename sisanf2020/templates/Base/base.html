@@ -56,6 +56,7 @@
           {% block navbar %}
           <nav class="nav-menu d-none d-lg-block">
             <ul>
+              {% if user.is_authenticated %}
               <li class="active"><a href="#header">Home</a></li>
               <li><a href="{% url 'Analisis:ListaRatios' %}">Análisis</a>
               <li class="drop-down"><a href="">Giros</a>
@@ -84,7 +85,6 @@
                   <li><a href="#">Drop Down 4</a></li>
                 </ul>
               </li>
-<<<<<<< HEAD
               <li class="drop-down"><a href="">Usuarios</a>
                 <ul>
                   <li><a href="{% url 'Usuarios:AdministrarUsuarios' %}">Usuarios</a></li>
@@ -97,10 +97,6 @@
               <li><a href="#">Ayuda</a>
               <li><a href="{% url 'Login' %}">Iniciar sesión</a></li>
               {% endif %}
-=======
-              <li><a href="#contact">Contact</a></li>
-              <li><a href="{% url 'Usuarios:AdministrarUsuarios' %}">Usuarios</a></li>
->>>>>>> main
             </ul>
           </nav><!-- .nav-menu -->
 
