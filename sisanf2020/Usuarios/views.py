@@ -22,10 +22,10 @@ class CrearUsuario(SuccessMessageMixin, CreateView):
 
     def form_valid(self, form):
         user=form.save(commit=False)
-        if user.rol == "1":
+        if user.rol == 1:
             user.is_administrador=True
         else:
-            if user.rol == "2":
+            if user.rol == 2:
                 user.is_analista=True
             else:
                 user.is_gerente=True
@@ -41,15 +41,15 @@ class ModificarUsuario(SuccessMessageMixin, UpdateView):
 
     def form_valid(self, form):
         user=form.save(commit=False)
-        if user.rol == "1":
+        if user.rol == 1:
             user.is_administrador=True
         else:
-            if user.rol == "2":
+            if user.rol == 2:
                 user.is_analista=True
             else:
                 user.is_gerente=True
 
-        return super(CrearUsuario, self).form_valid(form)
+        return super(ModificarUsuario, self).form_valid(form)
 
 class AdministrarUsuarios(ListView):
     model = User
