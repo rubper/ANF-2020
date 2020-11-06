@@ -42,3 +42,9 @@ class eliminar_Empresa(DeleteView):
 class detalle_Empresa(DetailView):
     model=Empresa
     template_name = 'Empresa/Detalle_Empresa.html'
+
+class agregar_cuenta(CreateView):
+    models=Cuenta
+    form_class=CuentaForm
+    template_name='Cuenta/Administrador_Cuenta.html'
+    success_url = reverse_lazy('Cuenta:mostrar')

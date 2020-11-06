@@ -19,12 +19,24 @@ class Empresa(models.Model):
 
 #Cuentas de la empresa
 class Cuenta(models.Model):
+    tipo=(
+        ('1','Activo Corrinte'),
+        ('2','Activo no Corrinte'),
+        ('3','Pasivo Corrinte'),
+        ('4','Pasivo no Corrinte'),
+        ('5','Capital'),
+        ('6','Estado de Resultado'),
+    )
+    naturaleza=(
+        ('1','Acreedor'),
+        ('2','Deudor'), 
+    )
     idCuenta = models.AutoField(primary_key=True)
     idEmpresa = models.ForeignKey(Empresa,on_delete=models.CASCADE)
     codigo_cuenta = models.CharField(max_length=13)
     nombre_cuenta = models.CharField(max_length=100)
-    tipo_cuenta = models.CharField(max_length=25)
-    naturaleza_cuenta = models.CharField(max_length=12)
+    tipo_cuenta = models.CharField(choices=tipo, max_length=25)
+    naturaleza_cuenta = models.CharField(choices=naturaleza,max_length=12)
   
 # Valores de cuentas necesarios para los estados
 
