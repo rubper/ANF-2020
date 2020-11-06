@@ -40,14 +40,22 @@ class Cuenta(models.Model):
   
 # Valores de cuentas necesarios para los estados
 
-class SaldoDeCuenta(models.Model):
+class SaldoDeCuentaBalace(models.Model):
     idSaldo = models.AutoField(primary_key=True)
     idCuenta = models.ForeignKey(Cuenta,on_delete=models.CASCADE)
     idbalance = models.ForeignKey(Balance,on_delete=models.CASCADE)
-    idResultado = models.ForeignKey(EstadoDeResultado,on_delete=models.CASCADE)
     year_saldo = models.DateField()
     monto_saldo = models.DecimalField(max_digits=11, decimal_places=2)
     
+class SaldoDeCuentaResultado(models.Model):
+    idSaldoResul = models.AutoField(primary_key=True)
+    idCuenta = models.ForeignKey(Cuenta,on_delete=models.CASCADE)
+    idResultado = models.ForeignKey(EstadoDeResultado,on_delete=models.CASCADE)
+    year_saldo_Resul = models.DateField()
+    monto_saldo_Resul = models.DecimalField(max_digits=11, decimal_places=2)
+
+
+
 #Muchos a muchos, clase intermedia
 
 class EstadoEmpresa(models.Model):

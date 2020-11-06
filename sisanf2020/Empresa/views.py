@@ -48,3 +48,7 @@ class agregar_cuenta(CreateView):
     form_class=CuentaForm
     template_name='Cuenta/Administrador_Cuenta.html'
     success_url = reverse_lazy('Cuenta:mostrar')
+
+class mostrar_Cuenta(ListView):
+    models=Cuenta
+    template_name='cuenta/Administrador_Cuenta.html'

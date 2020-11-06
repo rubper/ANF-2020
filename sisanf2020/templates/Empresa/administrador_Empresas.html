@@ -22,7 +22,7 @@ Empresas
                 <th scope="col">NIT</th>
                 <th scope="col">Direccion</th>
                 <th scope="col">Telefono</th>
-                <th scope="col" width="150px">Acciones</th>
+                <th scope="col" >Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -35,13 +35,13 @@ Empresas
                 <td>{{ row.direccion}}</td>
                 <td>{{ row.telefono}}</td>
                 <td>
-                  <a href="{%url 'Empresa:detalle' row.pk %}" class="btn-info btn btn-lg">
+                  <a href="{%url 'Empresa:detalle' row.pk %}" class="btn-primary btn btn-lg" style="margin: 1%;">
                     <i class="far fa-eye"></i>
                   </a>
-                  <a href="{%url 'Empresa:editar' row.pk %}" class="btn-info btn btn-lg">
+                  <a href="{%url 'Empresa:editar' row.pk %}" class="btn-info btn btn-lg" style="margin: 1%;">
                     <i class="fas fa-edit"></i>
                   </a>
-                  <button class="btn-danger btn btn-lg" data-toggle='modal' data-target='#deleteModal' data-pk='{{ row.pk }}'>
+                  <button class="btn-danger btn btn-lg" data-toggle='modal' data-target='#deleteModal' data-pk='{{ row.pk }}' style="margin: 1%;">
                     <i class="fas fa-trash-alt"></i>
                   </button>
                 </td>
@@ -64,7 +64,7 @@ Empresas
       </div>
       <div class="modal-body">
         <p>
-          ¿Desea borrar la Empresa seleccionado? Esta acción no se podrá deshacer
+          ¿Desea borrar la Empresa seleccionada? Esta acción no se podrá deshacer
         </p>
       </div>
       <div class="modal-footer">
