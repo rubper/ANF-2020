@@ -15,15 +15,23 @@ class UserManager(BaseUserManager):
 
     def create_superuser(self, id, nomUsuario, password):
         usuario = self.create_user(id = id, nomUsuario = nomUsuario, password = password)
-        usuario.administrador = True
+        usuario.is_administrador = True
         usuario.save()
         return usuario
 
 class User(AbstractBaseUser):
+    ROL=[
+        ('1', 'Administrador'),
+        ('2', 'Analista'),
+        ('3', 'Gerente'),
+    ]
     id = models.CharField(primary_key = True, max_length = 2)
     nomUsuario = models.CharField(unique = True, max_length = 100)
     activo = models.BooleanField(default = True)
-    administrador = models.BooleanField(default = False)
+    rol = models.CharField(max_length = 10, choices = ROL, default = 1)
+    is_administrador = models.BooleanField(default = False)
+    is_analista = models.BooleanField(default = False)
+    is_gerente = models.BooleanField(default = False)
     objects = UserManager()
 
     USERNAME_FIELD = 'nomUsuario'
@@ -40,7 +48,7 @@ class User(AbstractBaseUser):
 
     @property
     def is_staff(self):
-        return self.administrador
+        return self.is_administrador
 
 class OpcionForm(models.Model):
     idOpcion = models.CharField(primary_key = True, max_length = 3)
@@ -53,7 +61,7 @@ class OpcionForm(models.Model):
     def __str__(self):
         return  self.descOpcion
 
-class AccesoUsuario(models.Model):    
+class AccesoUsuario(models.Model):
     idUsuario = models.ForeignKey(User, on_delete = models.CASCADE)
     idOpcion = models.ForeignKey(OpcionForm, on_delete = models.CASCADE)
 
