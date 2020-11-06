@@ -1,6 +1,10 @@
 from django import forms
+<<<<<<< HEAD
 from .models import User, OpcionForm, AccesoUsuario
 from django.contrib.auth.forms import AuthenticationForm
+=======
+from .models import User
+>>>>>>> main
 
 class UserForm(forms.ModelForm):
     password1 = forms.CharField(label = 'Contraseña', widget = forms.PasswordInput(
@@ -94,6 +98,7 @@ class UpdateUserForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+<<<<<<< HEAD
 
 class LoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
@@ -137,3 +142,5 @@ class AccesoUsuarioForm(forms.ModelForm):
         'idUsuario' : forms.Select(attrs={'class': 'form-control'}),
         'idOpcion' : forms.Select(attrs={'class': 'form-control'}),
         }
+=======
+>>>>>>> main

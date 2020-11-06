@@ -1,13 +1,14 @@
 from django.shortcuts import render
+<<<<<<< HEAD
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
+=======
+from django.urls import reverse_lazy, reverse
+>>>>>>> main
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView
-from django.views.generic.edit import FormView
-from django.contrib.auth import login, logout
-from django.http import HttpResponseRedirect
 from django.contrib.messages.views import SuccessMessageMixin
 from .models import User, OpcionForm, AccesoUsuario
 from .forms import *
@@ -51,6 +52,7 @@ class EliminarUsuario(SuccessMessageMixin, DeleteView):
     success_url = reverse_lazy('Usuarios:AdministrarUsuarios')
     def get_success_url(self):
         return reverse_lazy('Usuarios:AdministrarUsuarios')
+<<<<<<< HEAD
 
 class Login(FormView):
     template_name = "Usuarios/Login.html"
@@ -97,3 +99,5 @@ class CrearAcceso(CreateView):
 class AdministrarAccesos(ListView):
     model = AccesoUsuario
     template_name = 'Usuarios/AdministrarAcceso.html'
+=======
+>>>>>>> main

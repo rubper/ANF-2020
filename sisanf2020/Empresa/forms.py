@@ -34,7 +34,6 @@ class Empresa_Forms(forms.ModelForm):
         }
 
 
-
 #class CuentaFormd(forms.ModelForm):
 #   class Meta:
 #       models=Cuenta,SaldoDeCuenta
