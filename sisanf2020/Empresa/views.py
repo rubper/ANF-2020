@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import *
 from .forms import *
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
@@ -33,12 +33,12 @@ class mostrar_Empresa(ListView):
             op = '004' #Código de lista de usuarios
             usac=AccesoUsuario.objects.filter(idUsuario=usactivo).filter(idOpcion=op).values('idUsuario').first()
             if usac is None:
-                return HttpResponse('Error 401: Unauthorized', status=401)
+                return render(request, 'Usuarios/Error401.html')
             else:
                 empresas=Empresa.objects.all().only('idEmpresa')
                 return render(request, self.template_name, {"empresas" : empresas})
         else:
-            return HttpResponse("Error: Primero debe iniciar sesión")
+            return redirect('Login')
 
 class editar_Empreda(UpdateView):
     model = Empresa

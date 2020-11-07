@@ -131,6 +131,25 @@ class OpcionFormulario(forms.ModelForm):
         'numForm' : forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el número de formulario'}),
         }
 
+class UpdateOpcionFormulario(forms.ModelForm):
+    idOpcion = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control','readonly':'True'}))
+    class Meta:
+        model = OpcionForm
+        fields = [
+        'idOpcion',
+        'descOpcion',
+        'numForm',
+        ]
+        labels = {
+        'idOpcion' : 'Id',
+        'descOpcion' : 'Descripción',
+        'numForm' : 'Formulario',
+        }
+        widgets = {
+        'descOpcion' : forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese la descripción'}),
+        'numForm' : forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el número de formulario'}),
+        }
+
 class AccesoUsuarioForm(forms.ModelForm):
     class Meta:
         model = AccesoUsuario

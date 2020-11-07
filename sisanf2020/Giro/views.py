@@ -40,17 +40,16 @@ class MostrarGiros(ListView):
             op = '003' #Código de lista de usuarios
             usac=AccesoUsuario.objects.filter(idUsuario=usactivo).filter(idOpcion=op).values('idUsuario').first()
             if usac is None:
-                return HttpResponse('Error 401: Unauthorized', status=401)
+                return render(request, 'Usuarios/Error401.html')
             else:
                 giros=Giro.objects.all().only('idGiro')
                 return render(request, self.template_name, {"giros" : giros})
         else:
-            return HttpResponse("Error: Primero debe iniciar sesión")
+            return redirect('Login')
 
 class EliminarGiro(DeleteView):
     model = Giro
     form_class = GiroForm
-    success_url = reverse_lazy('Giro:AdministrarGiros')
     def get_success_url(self):
         return reverse_lazy('Giro:AdministrarGiros')
 
@@ -71,7 +70,6 @@ class ModificarDato(SuccessMessageMixin, UpdateView):
 class EliminarDato(DeleteView):
     model = DatoGiro
     form_class = DatoGiroForm
-    success_url = reverse_lazy('Giro:AdministrarDatos')
     def get_success_url(self):
         return reverse_lazy('Giro:AdministrarDatos')
 
