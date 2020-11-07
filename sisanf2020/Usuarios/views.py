@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 from django.views.generic.edit import FormView
 from django.contrib.auth import login, logout
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.messages.views import SuccessMessageMixin
 from .models import User, OpcionForm, AccesoUsuario
 from .forms import *
@@ -20,6 +20,18 @@ class CrearUsuario(SuccessMessageMixin, CreateView):
     success_url = reverse_lazy('Usuarios:AdministrarUsuarios')
     success_message = 'Usuario creado con éxito'
 
+    def form_valid(self, form):
+        user=form.save(commit=False)
+        if user.rol == 1:
+            user.is_administrador=True
+        else:
+            if user.rol == 2:
+                user.is_analista=True
+            else:
+                user.is_gerente=True
+
+        return super(CrearUsuario, self).form_valid(form)
+
 class ModificarUsuario(SuccessMessageMixin, UpdateView):
     model = User
     form_class = UpdateUserForm
@@ -27,26 +39,38 @@ class ModificarUsuario(SuccessMessageMixin, UpdateView):
     success_url = reverse_lazy('Usuarios:AdministrarUsuarios')
     success_message = 'Usuario modificado con éxito'
 
+    def form_valid(self, form):
+        user=form.save(commit=False)
+        if user.rol == 1:
+            user.is_administrador=True
+        else:
+            if user.rol == 2:
+                user.is_analista=True
+            else:
+                user.is_gerente=True
+
+        return super(ModificarUsuario, self).form_valid(form)
+
 class AdministrarUsuarios(ListView):
     model = User
     template_name = 'Usuarios/AdministrarUsuarios.html'
 
-#    def get(self, request, *args, **kwards):
-#        if request.user.is_authenticated:
-#            usactivo = request.user #obtiene el id del usuario que se ha autenticado
-#            op = '000' #Código de lista de usuarios
-#            usac=AccesoUsuario.objects.filter(idUsuario=usactivo).filter(idOpcion=op).values('idUsuario').first()
-#            if usac is None:
-#                return HttpResponse('Unauthorized', status=401)
-#            else:
-#                return render(request, self.template_name)
-#        else:
-#            return HttpResponse("Error: Primero debe iniciar sesión")
+    def get(self, request, *args, **kwards):
+        if request.user.is_authenticated:
+            usactivo = request.user #obtiene el id del usuario que se ha autenticado
+            op = '000' #Código de lista de usuarios
+            usac=AccesoUsuario.objects.filter(idUsuario=usactivo).filter(idOpcion=op).values('idUsuario').first()
+            if usac is None:
+                return render(request, 'Usuarios/Error401.html')
+            else:
+                u=User.objects.all().only('id')
+                return render(request, self.template_name, {"u" : u})
+        else:
+            return redirect('Login')
 
 class EliminarUsuario(SuccessMessageMixin, DeleteView):
     model = User
     form_class = UserForm
-    success_url = reverse_lazy('Usuarios:AdministrarUsuarios')
     def get_success_url(self):
         return reverse_lazy('Usuarios:AdministrarUsuarios')
 
@@ -72,7 +96,7 @@ def Logout(request):
     return HttpResponseRedirect('/')
 
 #OpcionForm
-class CrearOpcion(CreateView):
+class CrearOpcion(SuccessMessageMixin, CreateView):
     model = OpcionForm
     form_class = OpcionFormulario
     template_name = 'Usuarios/CrearOpcionForm.html'
@@ -83,15 +107,59 @@ class AdministrarOpciones(ListView):
     model = OpcionForm
     template_name = 'Usuarios/AdministrarOpcion.html'
 
+    def get(self, request, *args, **kwards):
+        if request.user.is_authenticated:
+            usactivo = request.user #obtiene el id del usuario que se ha autenticado
+            op = '001' #Código de lista de usuarios
+            usac=AccesoUsuario.objects.filter(idUsuario=usactivo).filter(idOpcion=op).values('idUsuario').first()
+            if usac is None:
+                return render(request, 'Usuarios/Error401.html')
+            else:
+                opf=OpcionForm.objects.all().only('idOpcion')
+                return render(request, self.template_name, {"opf" : opf})
+        else:
+            return redirect('Login')
 
+class ModificarOpcion(SuccessMessageMixin, UpdateView):
+    model = OpcionForm
+    form_class = UpdateOpcionFormulario
+    template_name = 'Usuarios/CrearOpcionForm.html'
+    success_url = reverse_lazy('Usuarios:AdministrarOpcion')
+    success_message = 'Opción de form modificado con éxito'
 
-class CrearAcceso(CreateView):
+class CrearAcceso(SuccessMessageMixin, CreateView):
     model = AccesoUsuario
     form_class = AccesoUsuarioForm
     template_name = 'Usuarios/CrearAcceso.html'
     success_url = reverse_lazy('Usuarios:AdministrarAcceso')
     success_message = 'Acceso de usuario creado con éxito'
 
+class ModificarAcceso(SuccessMessageMixin, UpdateView):
+    model = AccesoUsuario
+    form_class = AccesoUsuarioForm
+    template_name = 'Usuarios/CrearAcceso.html'
+    success_url = reverse_lazy('Usuarios:AdministrarAcceso')
+    success_message = 'Acceso de usuario modificado con éxito'
+
+class EliminarAcceso(DeleteView):
+    model = AccesoUsuario
+    form_class = AccesoUsuarioForm
+    def get_success_url(self):
+        return reverse_lazy('Usuarios:AdministrarAcceso')
+
 class AdministrarAccesos(ListView):
     model = AccesoUsuario
     template_name = 'Usuarios/AdministrarAcceso.html'
+
+    def get(self, request, *args, **kwards):
+        if request.user.is_authenticated:
+            usactivo = request.user #obtiene el id del usuario que se ha autenticado
+            op = '002' #Código de lista de usuarios
+            usac=AccesoUsuario.objects.filter(idUsuario=usactivo).filter(idOpcion=op).values('idUsuario').first()
+            if usac is None:
+                return render(request, 'Usuarios/Error401.html')
+            else:
+                accus=AccesoUsuario.objects.all().only('id')
+                return render(request, self.template_name, {"accus" : accus})
+        else:
+            return redirect('Login')

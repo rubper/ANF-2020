@@ -25,20 +25,20 @@ Usuarios
                   <tr>
                     <th scope="col" align="center">Id</th>
                     <th scope="col">Nombre de usuario</th>
-                    <th scope="col">Contraseña</th>
+                    <th scope="col">Rol</th>
                     <th scope="col" width="150px">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {% for row in object_list%}
+                  {% for row in u %}
                     <tr>
                       <td>{{ row.id}}</td>
                       <td>{{ row.nomUsuario}}</td>
-                      <td>{{ row.password}}</td>
+                      <td>{{ row.rol}}</td>
                       <td>
                         <a href="{% url 'Usuarios:ModificarUsuario' row.pk %}" class="btn-info btn btn-lg">
                           <i class="fas fa-pencil-alt"></i>
-                        </a>                        
+                        </a>
                         <button class="btn-danger btn btn-lg" data-toggle='modal' data-target='#deleteModal' data-pk='{{ row.pk }}'>
                           <i class="fas fa-trash-alt"></i>
                         </button>

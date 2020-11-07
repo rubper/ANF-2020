@@ -27,14 +27,17 @@ class UserForm(forms.ModelForm):
         fields = [
         'id',
         'nomUsuario',
+        'rol',
         ]
         labels = {
         'id' : 'Id',
         'nomUsuario' : 'Nombre de usuario',
+        'rol' : 'Rol',
         }
         widgets = {
         'id' : forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el id'}),
         'nomUsuario' : forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el nombre de usuario'}),
+        'rol' : forms.Select(attrs={'class': 'form-control'}),
         }
 
     def clean_password2(self):
@@ -74,13 +77,16 @@ class UpdateUserForm(forms.ModelForm):
         fields = [
         'id',
         'nomUsuario',
+        'rol',
         ]
         labels = {
         'id' : 'Id',
         'nomUsuario' : 'Nombre de usuario',
+        'rol' : 'Rol',
         }
         widgets = {
         'nomUsuario' : forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el nombre de usuario'}),
+        'rol' : forms.Select(attrs={'class': 'form-control'}),
         }
 
     def clean_password2(self):
@@ -121,6 +127,25 @@ class OpcionFormulario(forms.ModelForm):
         }
         widgets = {
         'idOpcion' : forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el id de usuario'}),
+        'descOpcion' : forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese la descripción'}),
+        'numForm' : forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el número de formulario'}),
+        }
+
+class UpdateOpcionFormulario(forms.ModelForm):
+    idOpcion = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control','readonly':'True'}))
+    class Meta:
+        model = OpcionForm
+        fields = [
+        'idOpcion',
+        'descOpcion',
+        'numForm',
+        ]
+        labels = {
+        'idOpcion' : 'Id',
+        'descOpcion' : 'Descripción',
+        'numForm' : 'Formulario',
+        }
+        widgets = {
         'descOpcion' : forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese la descripción'}),
         'numForm' : forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el número de formulario'}),
         }

@@ -13,7 +13,10 @@ urlpatterns = [
     path('Usuarios', AdministrarUsuarios.as_view(), name = 'AdministrarUsuarios'),
     path('Usuarios', AdministrarUsuarios.as_view(), name = 'AdministrarUsuarios'),
     path('CrearOpcion', CrearOpcion.as_view(), name = 'CrearOpcion'),
+    re_path(r'^Opcion/(?P<pk>\d+)', ModificarOpcion.as_view(), name = 'ModificarOpcion'),
     path('Opciones', AdministrarOpciones.as_view(), name = 'AdministrarOpcion'),
     path('CrearAcceso', CrearAcceso.as_view(), name = 'CrearAcceso'),
+    path('Acceso/<int:pk>', ModificarAcceso.as_view(),name='ModificarAcceso'),
+    path('Accesos/<int:pk>/Borrar', EliminarAcceso.as_view(), name = 'EliminarAcceso'),
     path('Accesos', AdministrarAccesos.as_view(), name = 'AdministrarAcceso'),
 ]
