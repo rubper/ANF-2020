@@ -1,85 +1,100 @@
-{%extends 'Base/base.html'%}
-{%block title%}
+{% extends 'Base/base.html'%}
+{% block title %}
 Cuenta
-{%endblock%}
-{% block content%}
+{% endblock %}
+{% block content %}
 <div class="container-fluid">
-    <div class="container" style="background: rgb(43, 44, 43); opacity: 80%; padding: 1px;">
-      <h2 style="text-align: center;">Catalogo</h2>
-     <div class="col-sm">
-       <div class="row container">
-         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-pk='{{object.idEmpresa}}'><i class="fas fa-plus"></i>Agregar</button>
-         </div>
-         <br>
-         <div class="row container text-center">
-           <table class="table table-striped table-dark table-sm">
-             <thead class="table-dark">
-               <tr>
-                 <th scope="col" align="center">codigo</th>
-                 <th scope="col">cuenta</th>
-                 <th scope="col">tipo de cuenta</th>
-                 <th scope="col">naturaleza</th>
-               </tr>
-             </thead>
-             <tbody>
-               {% for row in object_list%}
-               <tr>
-                 <td>{{row.codigo_cuenta}}</td>
-                 <td>{{ row.nombre_cuenta}}</td>
-                 <td>{{ row.tipo_cuenta}}</td>
-                 <td>{{ row.naturaleza_cuenta}}</td>
-                 <th scope="col" width="150px">Acciones</th>
-                 <td>
-                   <a href="{%url 'Empresa:editar' row.pk %}" class="btn-info btn btn-lg">
-                     <i class="fas fa-edit"></i>
-                   </a>
-                   <button class="btn-danger btn btn-lg" data-toggle='modal' data-target='#deleteModal' data-pk='{{ row.pk }}'>
-                     <i class="fas fa-trash-alt"></i>
-                   </button>
-                 </td>
-               </tr>
-               {% endfor %}
-             </tbody>
-           </table>
-         </div>
+  <div class="container" style="background: rgb(43, 44, 43); opacity: 80%; padding: 1px;">
+    <h2 style="text-align: center;">Catalogo</h2>
+   <div class="col-sm">
+     <div class="row container">
+     <button onclick="abrir_modal_add('{% url 'Empresa:nueva' %}')" class="btn btn-danger"><i class="fas fa-plus"></i> Agregar</button>
        </div>
-     </div>
-   </div>
- <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
-   <div class="modal-dialog" role="document">
-     <div class="modal-content">
-       <div class="modal-header">
-         <h5 class="modal-title" id="ModalLabel">BORRAR</h5>
-         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-           <span aria-hidden="true">&times;</span>
-         </button>
-       </div>
-       <div class="modal-body">
-         <p>
-           ¿Desea borrar la Empresa seleccionado? Esta acción no se podrá deshacer
-         </p>
-       </div>
-       <div class="modal-footer">
-         <form id='deleteForm' method="post">
-           {% csrf_token %}
-           <input type="submit" class="btn btn-danger" value="Aceptar"></input>
-         </form>
-         <form method="post">
-             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-         </form>
+       <br>
+       <div class="row container text-center">
+         <table class="table table-striped table-dark table-sm">
+           <thead class="table-dark">
+             <tr>
+               <th scope="col">Codigo</th>
+               <th scope="col">Nombre de Cuenta</th>
+               <th scope="col">Tipo</th>
+               <th scope="col">Narutaleza</th>
+               <th scope="col">Actividad</th>
+             </tr>
+           </thead>
+           <tbody>
+             {% for row in object_list%}
+             <tr>
+               <td>{{row.codigo_cuenta}}</td>
+               <td>{{ row.nombre_cuenta}}</td>
+               <td>{{ row.tipo_cuenta}}</td>
+               <td>{{ row.naturaleza_cuenta}}</td>
+               <td>
+                 <a href="{%url 'Empresa:detalle' row.pk %}" class="btn-primary btn btn-lg" style="margin: 1%;">
+                   <i class="far fa-eye"></i>
+                 </a>
+                 <a href="{%url 'Empresa:editar' row.pk %}" class="btn-info btn btn-lg" style="margin: 1%;">
+                   <i class="fas fa-edit"></i>
+                 </a>
+                 <button class="btn-danger btn btn-lg" data-toggle='modal' data-target='#deleteModal' data-pk='{{ row.pk }}' style="margin: 1%;">
+                   <i class="fas fa-trash-alt"></i>
+                 </button>
+               </td>
+             </tr>
+             {% endfor %}
+           </tbody>
+         </table>
        </div>
      </div>
    </div>
  </div>
-   {% endblock %}
-   {% block extrajs %}
-       <script>
-         $('#deleteModal').on('shown.bs.modal', (event) => {
-           var btn = $(event.relatedTarget);
-           var pk = btn.data('pk');
-         $('#deleteForm').attr('action', "{% url 'Empresa:mostrar' %}/" + pk + "/borrar");
-         })
-       </script>
+ <!-- modal del borrado-->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+ <div class="modal-dialog" role="document">
+   <div class="modal-content">
+     <div class="modal-header">
+       <h5 class="modal-title" id="ModalLabel">BORRAR</h5>
+       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+         <span aria-hidden="true">&times;</span>
+       </button>
+     </div>
+     <div class="modal-body">
+       <p>
+         ¿Desea borrar la Empresa seleccionada? Esta acción no se podrá deshacer
+       </p>
+     </div>
+     <div class="modal-footer">
+       <form id='deleteForm' method="post">
+         {% csrf_token %}
+         <input type="submit" class="btn btn-danger" value="Aceptar"></input>
+       </form>
+       <form method="post">
+           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+       </form>
+     </div>
+   </div>
+ </div>
+</div>
+
+<!--modal de agregar cuenta-->
+<div class="modal fade" id="addModal" tabindex="-1" data-backdrop="static" data-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
 
 
+</div>
+
+
+ {% endblock %}
+ {% block extrajs %}
+ <script type="text/javascript">
+       $('#deleteModal').on('shown.bs.modal', (event) => {
+         var btn = $(event.relatedTarget);
+         var pk = btn.data('pk');
+       $('#deleteForm').attr('action', "{% url 'Empresa:mostrar' %}/" + pk + "/borrar");
+       })
+   
+       function abrir_modal_add(url){
+         $('#addModal').load(url,function(){
+           $(this).modal('show');
+         })}
+     </script>
 {%endblock%}

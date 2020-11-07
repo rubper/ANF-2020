@@ -57,11 +57,12 @@ class detalle_Empresa(DetailView):
     template_name = 'Empresa/Detalle_Empresa.html'
 
 class agregar_cuenta(CreateView):
-    models=Cuenta
+    model=Cuenta
     form_class=CuentaForm
-    template_name='Cuenta/Administrador_Cuenta.html'
-    success_url = reverse_lazy('Cuenta:mostrar')
+    template_name= 'Cuenta/Crear_Cuenta.html'
+    success_url = reverse_lazy('Empresa:cuentas')
+
 
 class mostrar_Cuenta(ListView):
-    models=Cuenta
-    template_name='cuenta/Administrador_Cuenta.html'
+    model=Cuenta
+    template_name='Cuenta/Administrador_Cuenta.html'

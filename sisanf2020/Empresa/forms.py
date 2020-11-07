@@ -36,7 +36,7 @@ class Empresa_Forms(forms.ModelForm):
 
 class CuentaForm(forms.ModelForm):
    class Meta:
-        models= Cuenta
+        model= Cuenta
         fields=[
            'idCuenta',
            'idEmpresa',

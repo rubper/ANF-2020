@@ -37,6 +37,9 @@ class Cuenta(models.Model):
     nombre_cuenta = models.CharField(max_length=100)
     tipo_cuenta = models.CharField(choices=tipo, max_length=25)
     naturaleza_cuenta = models.CharField(choices=naturaleza,max_length=12)
+    
+    def __str__(self):
+     return  self.nombre_cuenta
   
 # Valores de cuentas necesarios para los estados
 
