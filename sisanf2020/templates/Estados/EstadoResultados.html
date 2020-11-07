@@ -1,0 +1,59 @@
+{% extends 'Base/base.html' %}
+{% block title %}
+Estado de Resultados
+{% endblock %}
+{% block content %}
+<div style="background:white;position:relative">CUENTAS EMPRESA<br>
+{% for salidas in salidaDebug1 %} -->
+{{salidas.codigo_cuenta}}<br>
+{% endfor %}-->
+</div>
+<div style="background:white;position:relative">SALDO CUENTAS EMPRESA<br>
+{% for salidas in salidaDebug2 %} -->
+{{salidas.monto_saldo_Resul}}<br>
+{% endfor %}-->
+</div>
+<div style="background:white;position:relative">SALDOS ESTADO<br>
+{% for salidas in salidaDebug3 %} -->
+{{salidas.year_saldo_Resul.year}}<br>
+{{salidas.monto_saldo_Resul}}<br>
+{% endfor %}-->
+</div>
+<div style="background:white;position:relative">ESTADOS<br>
+{% for salidas in salidaDebug4 %} -->
+{{salidas.yearEstado}}<br>
+{% endfor %}-->
+</div>
+
+<table style="border:none; width:100%;">
+    <col style="width:34%"/>
+    <col style="width:66%"/>
+    <tr>
+        <!--Lado izquierdo-->
+        <td>
+
+        </td>
+        <!--Lado derecho-->
+        <td>
+
+        </td>
+    </tr>
+</table>
+
+
+    <!--Barra de navegacion inferior-->
+    <div class="fixed-bottom header-scrolled" style="background: #fff">
+        <div class ="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-xl-10 d-flex align-items-right">
+                    <div class="nav-menu d-none d-lg-block">
+                        <ul>
+                            <li><a href="{% url 'Estados:EstadoResultado' empresa=1 anio=2020 %}">Balance General</a></li>
+                            <li class="active"><a href="#header">Estado de Resultados</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

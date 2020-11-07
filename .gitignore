@@ -88,3 +88,4 @@ db.sqlite3
 desktop.ini
 sisanf2020/db.sqlite3
 *.code-workspace
+.vscode/
