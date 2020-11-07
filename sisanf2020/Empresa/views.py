@@ -26,17 +26,19 @@ class mostrar_Empresa(ListView):
     model=Empresa
     template_name = 'Empresa/Administrador_Empresas.html'
 
-#    def get(self, request, *args, **kwards):
-#        if request.user.is_authenticated:
-#            usactivo = request.user #obtiene el id del usuario que se ha autenticado
-#            op = '004' #Código de lista de empresas
-#            usac=AccesoUsuario.objects.filter(idUsuario=usactivo).filter(idOpcion=op).values('idUsuario').first()
-#            if usac is None:
-#                return HttpResponse('Unauthorized', status=401)
-#            else:
-#                return render(request, self.template_name)
-#        else:
-#            return HttpResponse("Error: Primero debe iniciar sesión")
+    def get(self, request, *args, **kwards):
+        if request.user.is_authenticated:
+            usactivo = request.user #obtiene el id del usuario que se ha autenticado
+            print("Prueba Acceso ******", usactivo)
+            op = '004' #Código de lista de usuarios
+            usac=AccesoUsuario.objects.filter(idUsuario=usactivo).filter(idOpcion=op).values('idUsuario').first()
+            if usac is None:
+                return HttpResponse('Error 401: Unauthorized', status=401)
+            else:
+                empresas=Empresa.objects.all().only('idEmpresa')
+                return render(request, self.template_name, {"empresas" : empresas})
+        else:
+            return HttpResponse("Error: Primero debe iniciar sesión")
 
 class editar_Empreda(UpdateView):
     model = Empresa

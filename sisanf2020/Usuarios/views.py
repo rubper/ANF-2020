@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.generic import CreateView, ListView, DeleteView, UpdateView
 from django.views.generic.edit import FormView
 from django.contrib.auth import login, logout
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.messages.views import SuccessMessageMixin
 from .models import User, OpcionForm, AccesoUsuario
 from .forms import *
@@ -55,17 +55,18 @@ class AdministrarUsuarios(ListView):
     model = User
     template_name = 'Usuarios/AdministrarUsuarios.html'
 
-#    def get(self, request, *args, **kwards):
-#        if request.user.is_authenticated:
-#            usactivo = request.user #obtiene el id del usuario que se ha autenticado
-#            op = '000' #Código de lista de usuarios
-#            usac=AccesoUsuario.objects.filter(idUsuario=usactivo).filter(idOpcion=op).values('idUsuario').first()
-#            if usac is None:
-#                return HttpResponse('Unauthorized', status=401)
-#            else:
-#                return render(request, self.template_name)
-#        else:
-#            return HttpResponse("Error: Primero debe iniciar sesión")
+    def get(self, request, *args, **kwards):
+        if request.user.is_authenticated:
+            usactivo = request.user #obtiene el id del usuario que se ha autenticado
+            op = '000' #Código de lista de usuarios
+            usac=AccesoUsuario.objects.filter(idUsuario=usactivo).filter(idOpcion=op).values('idUsuario').first()
+            if usac is None:
+                return HttpResponse('Error 401: Unauthorized', status=401)
+            else:
+                u=User.objects.all().only('id')
+                return render(request, self.template_name, {"u" : u})
+        else:
+            return HttpResponse("Error: Primero debe iniciar sesión")
 
 class EliminarUsuario(SuccessMessageMixin, DeleteView):
     model = User
@@ -107,6 +108,19 @@ class AdministrarOpciones(ListView):
     model = OpcionForm
     template_name = 'Usuarios/AdministrarOpcion.html'
 
+    def get(self, request, *args, **kwards):
+        if request.user.is_authenticated:
+            usactivo = request.user #obtiene el id del usuario que se ha autenticado
+            op = '001' #Código de lista de usuarios
+            usac=AccesoUsuario.objects.filter(idUsuario=usactivo).filter(idOpcion=op).values('idUsuario').first()
+            if usac is None:
+                return HttpResponse('Error 401: Unauthorized', status=401)
+            else:
+                opf=OpcionForm.objects.all().only('idOpcion')
+                return render(request, self.template_name, {"opf" : opf})
+        else:
+            return HttpResponse("Error: Primero debe iniciar sesión")
+
 
 
 class CrearAcceso(CreateView):
@@ -119,3 +133,16 @@ class CrearAcceso(CreateView):
 class AdministrarAccesos(ListView):
     model = AccesoUsuario
     template_name = 'Usuarios/AdministrarAcceso.html'
+
+    def get(self, request, *args, **kwards):
+        if request.user.is_authenticated:
+            usactivo = request.user #obtiene el id del usuario que se ha autenticado
+            op = '002' #Código de lista de usuarios
+            usac=AccesoUsuario.objects.filter(idUsuario=usactivo).filter(idOpcion=op).values('idUsuario').first()
+            if usac is None:
+                return HttpResponse('Error 401: Unauthorized', status=401)
+            else:
+                accus=AccesoUsuario.objects.all().only('id')
+                return render(request, self.template_name, {"accus" : accus})
+        else:
+            return HttpResponse("Error: Primero debe iniciar sesión")
