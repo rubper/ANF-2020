@@ -16,6 +16,8 @@ class Analisis(models.Model):
     year_previos = models.PositiveSmallIntegerField()
     estadosParaAnalisis = models.ManyToManyField(EstadoDeResultado, through='EstadoAnalisis')
     balancesParaAnalisis = models.ManyToManyField(Balance, through='BalanceAnalisis')
+    conclusion_horizontal = models.TextField(max_length=1500,null=True)
+    conclusion_vertical = models.TextField(max_length=1500,null=True)
 
 class LineaDeInforme(models.Model):
     idLineaInfo = models.AutoField(primary_key=True)
@@ -30,6 +32,7 @@ class RatiosAnalisis(models.Model):
     idAnalisis = models.ForeignKey(Analisis,on_delete=models.CASCADE)
     idRatios = models.ForeignKey(Ratios, on_delete=models.CASCADE)
     valorRatiosAnalisis = models.DecimalField(max_digits=8,decimal_places=4)
+    conclusion = models.TextField(max_length=1500,null=True)
 
 #Muchos a muchos, clase intermedia
 

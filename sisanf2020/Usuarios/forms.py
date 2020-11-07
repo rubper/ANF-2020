@@ -27,14 +27,17 @@ class UserForm(forms.ModelForm):
         fields = [
         'id',
         'nomUsuario',
+        'rol',
         ]
         labels = {
         'id' : 'Id',
         'nomUsuario' : 'Nombre de usuario',
+        'rol' : 'Rol',
         }
         widgets = {
         'id' : forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el id'}),
         'nomUsuario' : forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el nombre de usuario'}),
+        'rol' : forms.Select(attrs={'class': 'form-control'}),
         }
 
     def clean_password2(self):
@@ -74,13 +77,16 @@ class UpdateUserForm(forms.ModelForm):
         fields = [
         'id',
         'nomUsuario',
+        'rol',
         ]
         labels = {
         'id' : 'Id',
         'nomUsuario' : 'Nombre de usuario',
+        'rol' : 'Rol',
         }
         widgets = {
         'nomUsuario' : forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el nombre de usuario'}),
+        'rol' : forms.Select(attrs={'class': 'form-control'}),
         }
 
     def clean_password2(self):
