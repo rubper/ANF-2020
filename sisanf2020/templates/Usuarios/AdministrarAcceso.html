@@ -28,12 +28,12 @@ Accesos
                 </tr>
               </thead>
               <tbody>
-                {% for row in object_list%}
-                <tr>                  
+                {% for row in accus %}
+                <tr>
                   <td>{{ row.idUsuario}}</td>
                   <td>{{ row.idOpcion}}</td>
                   <td>
-                    <a href="#" class="btn-info btn btn-lg">
+                    <a href="{% url 'Usuarios:ModificarAcceso' row.pk %}" class="btn-info btn btn-lg">
                       <i class="fas fa-pencil-alt"></i>
                     </a>
                     <button class="btn-danger btn btn-lg" data-toggle='modal' data-target='#deleteModal' data-pk='{{ row.pk }}'>
@@ -78,5 +78,11 @@ Accesos
 </div>
 {% endblock %}
 {% block extrajs %}
-
+<script>
+  $('#deleteModal').on('shown.bs.modal', (event) => {
+    var btn = $(event.relatedTarget);
+    var pk = btn.data('pk');
+    $('#deleteForm').attr('action', "{% url 'Usuarios:AdministrarAcceso' %}/" + pk + "/Borrar");
+  })
+</script>
 {% endblock extrajs %}

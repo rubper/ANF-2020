@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title>No autorizado</title>
+  <!-- Template Main CSS File -->
+  <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+</head>
+<body bgcolor="#06172a">
+  <div class="container-fluid" align="center">
+    <div class="card text-align-center" style="background-color: rgb(6, 23, 42); opacity: 70%;">
+      <strong><hr/><hr/></strong>
+      <div class="section-title">
+        <strong><h2 style="color:#FFFFFF; margin:0px; font-size:200px; font-family: Helvetica" class="border mt-1 p-0">401</h2></strong>
+        <strong><p style="color:#606060; margin:0px; font-size:40px; font-family: Helvetica" class="border p-0">No autorizado</p></strong>
+        <strong><hr/><hr/></strong>
+      </div>
+    </div>
+    <div class="card" style="background-color: rgb(6, 23, 42); opacity: 70%; width: 90%" align="center" class="mt-5">
+      <strong><h2 style="color:#FFFFFF; margin:3px; font-size:25px; font-family: Helvetica">No tiene permiso para ver este directorio o página con las credenciales que proporcionó.</h2></strong>
+      <div class="section-title">
+        <p style="color:#FFFFFF; margin:3px; font-size:18px; font-family: Helvetica"><strong>Usted puede: </strong></p>
+        <p><strong><li style="color:#FFFFFF; margin:3px; font-size:15px; font-family: Helvetica"><a href="javascript:window.history.back()">Retornar</a></li></strong></p>
+        <p><strong><li style="color:#FFFFFF; margin:3px; font-size:15px; font-family: Helvetica"><a href="{% url 'Logout' %}">Cerrar sesión y acceder con otra cuenta</a></li></strong></p>
+      </div>
+    </div>
+  </div>
+  <!-- Template Main JS File -->
+  <script src="{% static 'assets/js/main.js' %}"></script>
+</body>
+</html>

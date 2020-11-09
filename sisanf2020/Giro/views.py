@@ -33,22 +33,23 @@ class MostrarGiros(ListView):
     model = Giro
     template_name = 'Giro/AdministrarGiros.html'
 
-#    def get(self, request, *args, **kwards):
-#        if request.user.is_authenticated:
-#            usactivo = request.user #obtiene el id del usuario que se ha autenticado
-#            op = '003' #Código de lista de giros
-#            usac=AccesoUsuario.objects.filter(idUsuario=usactivo).filter(idOpcion=op).values('idUsuario').first()
-#            if usac is None:
-#                return HttpResponse('Unauthorized', status=401)
-#            else:
-#                return render(request, self.template_name)
-#        else:
-#            return HttpResponse("Error: Primero debe iniciar sesión")
+    def get(self, request, *args, **kwards):
+        if request.user.is_authenticated:
+            usactivo = request.user #obtiene el id del usuario que se ha autenticado
+            print("Prueba Acceso ******", usactivo)
+            op = '003' #Código de lista de usuarios
+            usac=AccesoUsuario.objects.filter(idUsuario=usactivo).filter(idOpcion=op).values('idUsuario').first()
+            if usac is None:
+                return render(request, 'Usuarios/Error401.html')
+            else:
+                giros=Giro.objects.all().only('idGiro')
+                return render(request, self.template_name, {"giros" : giros})
+        else:
+            return redirect('Login')
 
 class EliminarGiro(DeleteView):
     model = Giro
     form_class = GiroForm
-    success_url = reverse_lazy('Giro:AdministrarGiros')
     def get_success_url(self):
         return reverse_lazy('Giro:AdministrarGiros')
 
@@ -69,7 +70,6 @@ class ModificarDato(SuccessMessageMixin, UpdateView):
 class EliminarDato(DeleteView):
     model = DatoGiro
     form_class = DatoGiroForm
-    success_url = reverse_lazy('Giro:AdministrarDatos')
     def get_success_url(self):
         return reverse_lazy('Giro:AdministrarDatos')
 
