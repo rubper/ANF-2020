@@ -1,0 +1,13 @@
+{% extends 'Base/base.html' %}
+{% block title %}
+Estados Financieros
+{% endblock %}
+{% block content %}
+<form id='uploadForm'  method='post' enctype="multipart/form-data" align="center">
+{% csrf_token %}
+    <div class="col-md-12  p-0">
+        <input type="file" name="subirEstados" class='form-control'>
+        <button class="btn btn-primary btn-lg mt-3" style="background:#2d4f6c" type="submit">Enviar</button>
+    </div>
+</form>
+{% endblock %}

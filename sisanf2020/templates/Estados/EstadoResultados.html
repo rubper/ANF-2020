@@ -3,43 +3,254 @@
 Estado de Resultados
 {% endblock %}
 {% block content %}
-<div style="background:white;position:relative">CUENTAS EMPRESA<br>
-{% for salidas in salidaDebug1 %} -->
-{{salidas.codigo_cuenta}}<br>
-{% endfor %}-->
-</div>
-<div style="background:white;position:relative">SALDO CUENTAS EMPRESA<br>
-{% for salidas in salidaDebug2 %} -->
-{{salidas.monto_saldo_Resul}}<br>
-{% endfor %}-->
-</div>
-<div style="background:white;position:relative">SALDOS ESTADO<br>
-{% for salidas in salidaDebug3 %} -->
-{{salidas.year_saldo_Resul.year}}<br>
-{{salidas.monto_saldo_Resul}}<br>
-{% endfor %}-->
-</div>
-<div style="background:white;position:relative">ESTADOS<br>
-{% for salidas in salidaDebug4 %} -->
-{{salidas.yearEstado}}<br>
-{% endfor %}-->
-</div>
+<div style="width:100vw">
+    <div style="background:white;position:relative;text-align:center; padding-bottom:20px;">
+{{Resultado}}<br><br>
+<!--Para cada una de las relaciones estado-empresa-->
 
-<table style="border:none; width:100%;">
-    <col style="width:34%"/>
-    <col style="width:66%"/>
-    <tr>
-        <!--Lado izquierdo-->
-        <td>
-
-        </td>
-        <!--Lado derecho-->
-        <td>
-
-        </td>
-    </tr>
-</table>
-
+        <h3>{{empresa}}</h3>
+    <!--Año del estado de resultado-->
+    <div style="background:white;position:relative;text-align:center"><h5>Periodo del estado de resultado<br>
+        {% for resultado in resultadosAnio %} 
+        del {{resultado.fechaInicioEstado}} al {{resultado.fechaFinEstado}}</h5>
+        {% endfor %}   
+    </div>
+</div>
+    <div style="background:white;position:relative;">
+        <table style="border:none; width:100%;">
+            <col style="width:34%"/>
+            <col style="width:66%"/>
+            <tr>
+                <!--======Lado izquierdo======-->
+                <td style="vertical-align:top;">
+                <!--Años que tienen estados de resultado-->
+                    <div class="table" style="background:white;position:relative;padding-top:-30px;padding-bottom:25px;padding-left:20%;padding-right:20%;">
+                        <div style="text-align:center;border:solid 1px;padding-top:25px;padding-bottom:25px;">
+                            <h6><b>Estados de resultado</b></h6><br>
+                            {% for anios in aniosConEstados %} 
+                            <a href="{% url 'Estados:EstadoResultado' empresa.idEmpresa anios %}">Año {{anios}}<br><br>
+                            {% endfor %}   
+                        </div>
+                    </div>
+                </td>
+                <!--======Lado derecho======-->
+                <td>
+                    <div style="position:relative;height:68vh;overflow:auto;">
+                        <table style="width:100%;position:relative;">
+                            <colgroup>
+                                <col style="width:34%"/>
+                                <col style="width:66%"/>
+                            </colgroup>
+                            <tr>
+                                <th style="text-align:right; padding-right:30px">
+                                    <h6><b>Cuenta</b></h6>
+                                </th>
+                                <th>
+                                    <h6><b>Saldo</b></h6>
+                                </th>
+                            </tr>
+                            <!--Saldos de las cuentas del estado año actual-->
+                            {% for saldo in saldosEstados %} 
+                            <tr>
+                                <td style="text-align:right; padding-right:30px">
+                                    {{saldo.idCuenta.nombre_cuenta}}:  
+                                </td>
+                                <td style="text-align:left">
+                                    {{saldo.monto_saldo_Resul}}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            <tr>
+                                <td style="text-align:right; padding-right:30px">
+                                    placeholder:  
+                                </td>
+                                <td style="text-align:left">
+                                    00000.000}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right; padding-right:30px">
+                                    placeholder:  
+                                </td>
+                                <td style="text-align:left">
+                                    00000.000}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right; padding-right:30px">
+                                    placeholder:  
+                                </td>
+                                <td style="text-align:left">
+                                    00000.000}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right; padding-right:30px">
+                                    placeholder:  
+                                </td>
+                                <td style="text-align:left">
+                                    00000.000}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right; padding-right:30px">
+                                    placeholder:  
+                                </td>
+                                <td style="text-align:left">
+                                    00000.000}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right; padding-right:30px">
+                                    placeholder:  
+                                </td>
+                                <td style="text-align:left">
+                                    00000.000}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right; padding-right:30px">
+                                    placeholder:  
+                                </td>
+                                <td style="text-align:left">
+                                    00000.000}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right; padding-right:30px">
+                                    placeholder:  
+                                </td>
+                                <td style="text-align:left">
+                                    00000.000}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right; padding-right:30px">
+                                    placeholder:  
+                                </td>
+                                <td style="text-align:left">
+                                    00000.000}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right; padding-right:30px">
+                                    placeholder:  
+                                </td>
+                                <td style="text-align:left">
+                                    00000.000}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right; padding-right:30px">
+                                    placeholder:  
+                                </td>
+                                <td style="text-align:left">
+                                    00000.000}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right; padding-right:30px">
+                                    placeholder:  
+                                </td>
+                                <td style="text-align:left">
+                                    00000.000}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right; padding-right:30px">
+                                    placeholder:  
+                                </td>
+                                <td style="text-align:left">
+                                    00000.000}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right; padding-right:30px">
+                                    placeholder:  
+                                </td>
+                                <td style="text-align:left">
+                                    00000.000}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right; padding-right:30px">
+                                    placeholder:  
+                                </td>
+                                <td style="text-align:left">
+                                    00000.000}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right; padding-right:30px">
+                                    placeholder:  
+                                </td>
+                                <td style="text-align:left">
+                                    00000.000}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right; padding-right:30px">
+                                    placeholder:  
+                                </td>
+                                <td style="text-align:left">
+                                    00000.000}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right; padding-right:30px">
+                                    placeholder:  
+                                </td>
+                                <td style="text-align:left">
+                                    00000.000}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right; padding-right:30px">
+                                    placeholder:  
+                                </td>
+                                <td style="text-align:left">
+                                    00000.000}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right; padding-right:30px">
+                                    placeholder:  
+                                </td>
+                                <td style="text-align:left">
+                                    00000.000}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right; padding-right:30px">
+                                    placeholder:  
+                                </td>
+                                <td style="text-align:left">
+                                    00000.000}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right; padding-right:30px">
+                                    placeholder:  
+                                </td>
+                                <td style="text-align:left">
+                                    00000.000}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right; padding-right:30px">
+                                    placeholder:  
+                                </td>
+                                <td style="text-align:left">
+                                    00000.000}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
 
     <!--Barra de navegacion inferior-->
     <div class="fixed-bottom header-scrolled" style="background: #fff">

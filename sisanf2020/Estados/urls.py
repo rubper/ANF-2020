@@ -7,5 +7,6 @@ app_name = 'Estados'
 
 urlpatterns = [
 
-    path('EstadoResultado/<int:empresa>+<int:anio>',views.indexEstadoResultado, name='EstadoResultado'),
+    path('EstadoResultado/e<int:empresa>/<int:anio>',views.indexEstadoResultado, name='EstadoResultado'),
+    path('EstadosFinancieros/e<int:empresa>',views.indexEstados, name='EstadosFinancieros'),
 ]
