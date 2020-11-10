@@ -64,7 +64,21 @@ class agregar_cuenta(CreateView):
     template_name= 'Cuenta/Crear_Cuenta.html'
     success_url = reverse_lazy('Empresa:cuentas')
 
+#def agregar_cuenta(request,empresa):
+#    if request.method == 'POST':
+#        form= CuentaForm(request.POST)
+#        if form.is_valid():
+#            form.save()
+#        return redirect('Empresa:cuentas')
+#    else:
+#        form = CuentaForm()
+#    return render(request,'Cuenta/Crear_Cuenta.html', {'form':form}) 
 
-class mostrar_Cuenta(ListView):
-    model=Cuenta
-    template_name='Cuenta/Administrador_Cuenta.html'
+
+
+def mostrar_Cuenta(request,empresa):
+    c = Cuenta.objects.filter(idEmpresa=empresa)
+    cuenta ={'cuentas':c} 
+    return render(request,'Cuenta/Administrador_Cuenta.html',cuenta)
+
+

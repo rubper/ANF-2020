@@ -20,16 +20,16 @@ class Empresa(models.Model):
 #Cuentas de la empresa
 class Cuenta(models.Model):
     tipo=(
-        ('1','Activo Corrinte'),
-        ('2','Activo no Corrinte'),
-        ('3','Pasivo Corrinte'),
-        ('4','Pasivo no Corrinte'),
-        ('5','Capital'),
-        ('6','Estado de Resultado'),
+        ('Activo Corrinte','Activo Corrinte'),
+        ('Activo no Corrinte','Activo no Corrinte'),
+        ('Pasivo Corrinte','Pasivo Corrinte'),
+        ('Pasivo no Corrinte','Pasivo no Corrinte'),
+        ('Capital','Capital'),
+        ('Estado de Resultado','Estado de Resultado'),
     )
     naturaleza=(
-        ('1','Acreedor'),
-        ('2','Deudor'), 
+        ('Acreedor','Acreedor'),
+        ('Deudor','Deudor'), 
     )
     idCuenta = models.AutoField(primary_key=True)
     idEmpresa = models.ForeignKey(Empresa,on_delete=models.CASCADE)

@@ -23,7 +23,7 @@ Cuenta
              </tr>
            </thead>
            <tbody>
-             {% for row in object_list%}
+             {% for row in cuentas%}
              <tr>
                <td>{{row.codigo_cuenta}}</td>
                <td>{{ row.nombre_cuenta}}</td>
@@ -78,7 +78,6 @@ Cuenta
 
 <!--modal de agregar cuenta-->
 <div class="modal fade" id="addModal" tabindex="-1" data-backdrop="static" data-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
-
 
 </div>
 
