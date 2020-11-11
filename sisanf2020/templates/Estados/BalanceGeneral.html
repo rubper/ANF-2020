@@ -1,0 +1,93 @@
+{% extends 'Base/base.html' %}
+{% block title %}
+Balance General
+{% endblock %}
+{% block content %}
+<div style="width:100vw">
+    <div style="background:white;position:relative;text-align:center; padding-bottom:20px;">
+<!--Para cada una de las relaciones estado-empresa-->
+
+        <h3>{{empresa}}</h3>
+    <!--Año del estado de resultado-->
+    <div style="background:white;position:relative;text-align:center"><h5>Periodo del balance general<br>
+        {% for balance in balancesAnio %} 
+        del {{balance.fechaInicioBalance}} al {{balance.fechaFinBalance}}</h5>
+        {% endfor %}   
+    </div>
+</div>
+    <div style="background:white;position:relative;">
+        <table style="border:none; width:100%;">
+            <col style="width:34%"/>
+            <col style="width:66%"/>
+            <tr>
+                <!--======Lado izquierdo======-->
+                <td style="vertical-align:top;">
+                <!--Años que tienen estados de resultado-->
+                    <div class="table" style="background:white;position:relative;padding-top:-30px;padding-bottom:25px;padding-left:20%;padding-right:20%;">
+                        <div class="nav-menu" style="text-align:center;border:solid 1px;padding-top:25px;padding-bottom:25px;">
+                            <h6><b>Balances generales</b></h6><br>
+                            {% for balance in balancesAnio %} 
+                            {% for anios in aniosConEstados %} 
+                            {% if anios != balance.yearEstado %}
+                            <div style="padding-bottom:20px"><a href="{% url 'Estados:BalanceGeneral' empresa.idEmpresa anios %}">Año {{anios}}</a></div>
+                            {% else %}
+                            <div style="color: #e03a3c; text-decoration: none; font-size: 15px; font-weight: 600; font-family: 'Raleway', sans-serif;padding-bottom:20px">Año {{anios}}</div>
+                            {% endif %}
+                            {% endfor %}   
+                            {% endfor %}   
+                        </div>
+                    </div>
+                </td>
+                <!--======Lado derecho======-->
+                <td>
+                    <div style="position:relative;height:68vh;overflow:auto;">
+                        <table style="width:100%;position:relative;">
+                            <colgroup>
+                                <col style="width:34%"/>
+                                <col style="width:66%"/>
+                            </colgroup>
+                            <tr>
+                                <th style="text-align:right; padding-right:30px">
+                                    <h6><b>Cuenta</b></h6>
+                                </th>
+                                <th>
+                                    <h6><b>Saldo</b></h6>
+                                </th>
+                            </tr>
+                            <!--Saldos de las cuentas del estado año actual-->
+                            {% for saldo in saldosBalance %} 
+                            <tr>
+                                <td style="text-align:right; padding-right:30px">
+                                    {{saldo.idCuenta.nombre_cuenta}}:  
+                                </td>
+                                <td style="text-align:left">
+                                    {{saldo.monto_saldo}}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+    <!--Barra de navegacion inferior-->
+    <div class="fixed-bottom header-scrolled" style="background: #fff">
+        <div class ="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-xl-10 d-flex align-items-right">
+                    <div class="nav-menu d-none d-lg-block">
+                        <ul>
+                            {% for balance in balancesAnio %} 
+                            <li class="active"><div style="color: #e03a3c; text-decoration: none; font-size: 15px; font-weight: 600; font-family: 'Raleway', sans-serif;">Balance General</div></li>
+                            <li><a href="{% url 'Estados:EstadoResultado' empresa=empresa.idEmpresa anio=balance.yearEstado %}">Estado de Resultados</a></li>
+                            {% endfor %} 
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

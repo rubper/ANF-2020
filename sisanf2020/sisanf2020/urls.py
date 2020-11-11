@@ -27,6 +27,7 @@ urlpatterns = [
     path('Empresa/', include('Empresa.urls', namespace='Empresa')),
     path('Analisis/', include('Analisis.urls', namespace='Analisis')),
     path('Usuarios/', include('Usuarios.urls', namespace='Usuarios')),
+    path('Estados/', include('Estados.urls', namespace='Estados')),
     path('accounts/login/', Login.as_view(), name = 'Login'),
     path('logout', login_required(Logout), name = 'Logout'),
 ]

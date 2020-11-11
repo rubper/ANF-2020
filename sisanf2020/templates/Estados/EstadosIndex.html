@@ -1,0 +1,44 @@
+{% extends 'Base/base.html' %}
+{% block title %}
+Estados Financieros
+{% endblock %}
+{% block content %}
+<div style="margin:auto;position:relative;">
+<div style="background:white;">{{conexito}}
+    <table class="table table-striped table-bordered table-sm">  
+        <thead class="thead-dark">  
+            <tr>  
+                <th>Estados financieros</th>
+            </tr>  
+        </thead> 
+        <tbody>
+            {% for balance in ListaBalances%}
+            <tr>
+                <td><a href="{% url 'Estados:BalanceGeneral' empresa=idEmpresaActual anio=balance.yearEstado %}">{{balance.idBalance}} {{balance.yearEstado}}{{balance.fechaInicioBalance}}{{balance.fechaFinBalance}}({{balance.moneda_codigo_balance}}) {{balance.moneda_balance}}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <form id='uploadForm'  method='post' enctype="multipart/form-data" align="center">
+    Ingresa el detalle de un estado financiero aquí:
+    {% csrf_token %}
+        <div class="col-md-12  p-0">
+            <input type="file" name="subirEstados" class='form-control'>
+            <button class="btn btn-primary btn-lg mt-3" style="background:#2d4f6c" type="submit">Enviar</button>
+        </div>
+    </form>
+    
+    <form id='ingresarEstado'  method='post' style="position:relative" >
+    {% csrf_token %}
+        Fecha de Inicio del período del Estado Financiero : 
+        {{formIngresarEstado.fechaInicioBalance}}<br>
+        Fecha de Fin del período del Estado Financiero : 
+        {{formIngresarEstado.fechaFinBalance}}<br>
+        Año del Estado Financiero : 
+        {{formIngresarEstado.yearEstado}}<br>
+        Moneda utilizada en el estado : 
+        {{formIngresarEstado.moneda_codigo_balance}}<br>
+        <input id="submit" type="submit" value="enviar"></button>
+    </form>
+</div>
+{% endblock %}
