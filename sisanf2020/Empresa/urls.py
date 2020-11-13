@@ -11,6 +11,8 @@ urlpatterns = [
     path('mostrar',mostrar_Empresa.as_view(), name='mostrar'),
     path('editar/<int:pk>',editar_Empreda.as_view(),name='editar'),    
     path('detalle/<int:pk>/',detalle_Empresa.as_view(),name='detalle'),
-    path('cuenta/',agregar_cuenta.as_view(),name='nueva'),
+    path('cuenta/<int:empresa>',agregar_cuenta,name='nueva_cuenta'),
     path('cuentas/<int:empresa>',mostrar_Cuenta, name='cuentas'),
+    path('cuentas/<int:empresa>/<int:pk>/borrar',eliminar_cuenta,name='eliminar_cuenta'),
+    path('cuentas/editar/<int:pk>/<int:empresa>',editatar_cuenta,name='editar_cuenta'),
 ]
