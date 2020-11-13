@@ -58,7 +58,14 @@
             <ul>
               {% if user.is_authenticated %}
               <li class="active"><a href="#header">Home</a></li>
-              <li><a href="{% url 'Analisis:ListaRatios' %}">Análisis</a>
+              <li class="drop-down"><a href="">Analisis</a>
+                <ul>
+                  <li><a href="{% url 'Analisis:VerOverView' %}">OverView</a></li>
+                  <li><a href="#">Analisis Horizontal</a></li>
+                  <li><a href="#">Análisis Vertical</a></li>
+                  <li><a href="#">Ratios</a></li>
+                </ul>
+              </li>
               <li class="drop-down"><a href="">Giros</a>
                 <ul>
                     <li><a href="{% url 'Giro:AdministrarGiros' %}">Giros</a></li>
