@@ -4,7 +4,7 @@
     <div class="row mt-3" >
       <div class="col-md-9 mx-auto">
         <div>
-					<h2 style="text-align: center;">Crear Empresa</h2>
+					<h2 style="text-align: center;">Editar Cuenta</h2>
 					<form method="POST">
 						{% csrf_token %}
             {{ form.errors }}
@@ -45,6 +45,14 @@
 								<div class="form-group" style="width: 50%;">
 									<label style="color: white;" >Tipo de cuenta</label>
 									{{ form.tipo_cuenta }}
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-10 col-md-offset-2">
+								<div class="form-group" style="width: 50%;">
+									<label style="color: white;" >Razon</label>
+									{{ form.idSobreNombre}}
 								</div>
 							</div>
 						</div>

@@ -40,3 +40,5 @@ class DatoGiro(models.Model):
 
     def __str__(self):
         return '{}'.format(self.idDato)  + " " + '{}'.format(self.idGiro)   + " " + '{}'.format(self.idRatio)
+
+ 

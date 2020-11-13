@@ -12,6 +12,8 @@ from django.http import HttpResponse
 from django.views.generic.detail import DetailView
 from Usuarios.models import AccesoUsuario
 from django.shortcuts import get_object_or_404
+from tablib import Dataset
+from .resources import CuentaResouce
 
 # Create your views here.
 
@@ -68,13 +70,16 @@ def agregar_cuenta(request,empresa):
         if form.is_valid():
             #carga el objeto empresa de la base
             p = Empresa.objects.get(idEmpresa=empresa)
+            pk = form.data.get("idSobreNombre")
+            s = SobreNombre.objects.get(idSobreNombre=pk)
             cuen = Cuenta(
                 idEmpresa = p,
                 idCuenta = form.data.get("idCuenta"),
                 codigo_cuenta = form.data.get("codigo_cuenta"),
                 nombre_cuenta = form.data.get("nombre_cuenta"),
                 tipo_cuenta = form.data.get("tipo_cuenta"),
-                naturaleza_cuenta = form.data.get("naturaleza_cuenta")
+                naturaleza_cuenta = form.data.get("naturaleza_cuenta"),
+                idSobreNombre = s,
             ) 
             cuen.save()
         return redirect('Empresa:cuentas',empresa)
@@ -83,9 +88,12 @@ def agregar_cuenta(request,empresa):
         #se envia un diccionario con el valos de la empresa para postriotmte evaluarlo
     return render(request,'Cuenta/Crear_Cuenta.html', {'form':form,'empresa':empresa}) 
 
-def agregar_cuenta_Xls():
-    if request.method = 'POST':
+#def agregar_cuenta_Xls():
+#     if request.method == 'POST':
+#       cuenta_Resoucer = CuentaResouce()
+
         
+
 
 def mostrar_Cuenta(request,empresa):
     c = Cuenta.objects.filter(idEmpresa=empresa).order_by('codigo_cuenta')

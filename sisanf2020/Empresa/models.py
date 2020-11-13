@@ -17,6 +17,15 @@ class Empresa(models.Model):
     def __str__(self):
      return  self.rasonsocial
 
+#este modelo servira pera relacionar las cuentas con los ratios 
+class SobreNombre(models.Model):
+    idSobreNombre = models.AutoField(primary_key=True)
+    sobreNombre = models.CharField(max_length=100)
+    
+    def __str__(self):
+     return  self.sobreNombre
+  
+
 #Cuentas de la empresa
 class Cuenta(models.Model):
     tipo=(
@@ -37,6 +46,7 @@ class Cuenta(models.Model):
     nombre_cuenta = models.CharField(max_length=100)
     tipo_cuenta = models.CharField(choices=tipo, max_length=25)
     naturaleza_cuenta = models.CharField(choices=naturaleza,max_length=12)
+    idSobreNombre = models.ForeignKey(SobreNombre,on_delete=models.CASCADE,null=True)
     
     def __str__(self):
      return  self.nombre_cuenta

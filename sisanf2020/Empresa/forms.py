@@ -44,6 +44,7 @@ class CuentaFor(forms.ModelForm):
            'nombre_cuenta',
            'tipo_cuenta',
            'naturaleza_cuenta',
+           'idSobreNombre',
         ]
         labels = {
            'idCuenta':'id',
@@ -52,6 +53,7 @@ class CuentaFor(forms.ModelForm):
            'nombre_cuenta':'cuenta',
            'tipo_cuenta':'tipo',
            'naturaleza_cuenta':'narturaleza',
+           'idSobreNombre':'Razones',
         }
         widgets = {
            'idCuenta':forms.TextInput(attrs={'class':'form-control'}),
@@ -60,7 +62,9 @@ class CuentaFor(forms.ModelForm):
            'nombre_cuenta':forms.TextInput(attrs={'class':'form-control'}),
            'tipo_cuenta':forms.Select(attrs={'class':'form-control'}),
            'naturaleza_cuenta':forms.Select(attrs={'class':'form-control'}),
+           'idSobreNombre':forms.Select(attrs={'class':'form-control'}),
         }
+
 
 class CuentaForm(forms.Form):
     tipo=(
@@ -79,3 +83,4 @@ class CuentaForm(forms.Form):
     nombre_cuenta = forms.CharField(max_length=100,widget=forms.TextInput(attrs={'class':'form-control'}))
     tipo_cuenta = forms.ChoiceField(choices=tipo,required=True,widget=forms.Select(attrs={'class':'form-control'}))
     naturaleza_cuenta = forms.ChoiceField(choices=naturaleza,required=True,widget=forms.Select(attrs={'class':'form-control'}))
+    idSobreNombre =forms.ModelChoiceField(queryset= SobreNombre.objects.all(),widget=forms.Select(attrs={'class':'form-control'}))

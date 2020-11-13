@@ -43,3 +43,5 @@ class EstadoAnalisis(models.Model):
 class BalanceAnalisis(models.Model):
     idbalance = models.ForeignKey(Balance, on_delete=models.CASCADE)
     idAnalisis = models.ForeignKey(Analisis,on_delete=models.CASCADE)
+
+   
