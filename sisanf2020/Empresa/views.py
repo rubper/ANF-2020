@@ -10,17 +10,22 @@ from django.views.generic.base import TemplateView
 from django.contrib import messages
 from django.http import HttpResponse
 from django.views.generic.detail import DetailView
-from Usuarios.models import AccesoUsuario
+from Usuarios.models import AccesoUsuario, User
 
 # Create your views here.
 
 
-class crear_Empresa(SuccessMessageMixin,CreateView):
-    model= Empresa
-    form_class= Empresa_Forms
-    template_name= 'Empresa/Crear_Empresa.html'
-    success_url = reverse_lazy('Empresa:mostrar')
-    Success_message = 'Empresa creada con exito'
+def crear_Empresa(request):
+    if request.method == 'POST':
+        ger = request.POST['gerente']        
+        gere = User.objects.get(id=ger)
+        empresa_form = Empresa_Forms(request.POST)
+        if empresa_form.is_valid():
+            empresa_form.save()
+            return redirect('Empresa:mostrar')
+    else:
+        empresa_form = Empresa_Forms()
+    return render(request, 'Empresa/crear_Empresa.html', {'empresa_form':empresa_form, 'gere':gere})
 
 class mostrar_Empresa(ListView):
     model=Empresa
@@ -28,24 +33,36 @@ class mostrar_Empresa(ListView):
 
     def get(self, request, *args, **kwards):
         if request.user.is_authenticated:
-            usactivo = request.user #obtiene el id del usuario que se ha autenticado
-            print("Prueba Acceso ******", usactivo)
+            usactivo = request.user.id #obtiene el id del usuario que se ha autenticado
             op = '004' #Código de lista de usuarios
             usac=AccesoUsuario.objects.filter(idUsuario=usactivo).filter(idOpcion=op).values('idUsuario').first()
+            g = User.objects.filter(id=usactivo).values('rol')
+            rolg=g.get()
+            rolgerente = rolg.get('rol')
+            print(rolgerente)
             if usac is None:
                 return render(request, 'Usuarios/Error401.html')
             else:
-                empresas=Empresa.objects.all().only('idEmpresa')
-                return render(request, self.template_name, {"empresas" : empresas})
+                if rolgerente == 3:
+                    empresas = Empresa.objects.filter(gerente=usactivo)
+                    return render(request, self.template_name, {"empresas" : empresas})
+                else:
+                    empresas=Empresa.objects.all().only('idEmpresa')
+                    return render(request, self.template_name, {"empresas" : empresas})
         else:
             return redirect('Login')
 
-class editar_Empreda(UpdateView):
-    model = Empresa
-    form_class = Empresa_Forms
-    template_name = 'Empresa/Crear_Empresa.html'
-    success_url = reverse_lazy('Empresa:mostrar')
-    success_message = 'Los datos han sido modifcado'
+def editar_Empresa(request, idEmpresa):
+    empr = Empresa.objects.get(idEmpresa = idEmpresa)
+    if request.method == 'GET':
+        empresa_form = Empresa_Forms(instance = empr)
+    else:
+        empresa_form = Empresa_Forms(request.POST, instance = empr)
+        if empresa_form.is_valid():
+            empresa_form.save()
+        return redirect('Empresa:mostrar')
+    return render(request, 'Empresa/crear_Empresa.html', {'empresa_form':empresa_form})
+
 
 class eliminar_Empresa(DeleteView):
     model= Empresa

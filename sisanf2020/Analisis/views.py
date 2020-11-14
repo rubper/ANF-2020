@@ -53,8 +53,7 @@ def indexAnalisisHorizontal(request, empresa):
 def OverView(request):
     if request.method == "POST":
         empresa = request.POST['empresa']
-        year = request.POST['year']
-        print(year)
+        year = request.POST['year']        
 
     #Listado de análisis
     AnEmp = Analisis.objects.filter(idEmpresa=empresa).filter(year_analisis=year)

@@ -56,7 +56,7 @@
           {% block navbar %}
           <nav class="nav-menu d-none d-lg-block">
             <ul>
-              {% if user.is_authenticated %}
+              {% if request.user.is_authenticated %}
               <li class="active"><a href="#header">Home</a></li>
               <li class="drop-down"><a href="">Analisis</a>
                 <ul>
@@ -72,7 +72,11 @@
                     <li><a href="{% url 'Giro:AdministrarDatos' %}">Datos de giros</a></li>
                 </ul>
               </li>
+              {% if request.user.rol == 3 %}
+              <li><a href="{% url 'Empresa:mostrar' %}">Mi empresa</a></li>
+              {% else %}
               <li><a href="{% url 'Empresa:mostrar' %}">Empresas</a></li>
+              {% endif %}
               <li><a href="#team">Team</a></li>
               <li><a href="blog.html">Blog</a></li>
               <li class="drop-down"><a href="">Drop Down</a>
@@ -92,6 +96,7 @@
                   <li><a href="#">Drop Down 4</a></li>
                 </ul>
               </li>
+              {% if request.user.rol == 1 %}
               <li class="drop-down"><a href="">Usuarios</a>
                 <ul>
                   <li><a href="{% url 'Usuarios:AdministrarUsuarios' %}">Usuarios</a></li>
@@ -99,6 +104,7 @@
                   <li><a href="{% url 'Usuarios:AdministrarAcceso' %}">Acceso</a></li>
                 </ul>
               </li>
+              {% endif %}
               <li><a href="{% url 'Logout' %}">Cerrar sesión</a></li>
               {% else %}
               <li><a href="#">Ayuda</a>

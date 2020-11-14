@@ -6,73 +6,89 @@ Empresa
 {% block content %}
 <!Doctype html>
 <div class="container">
-    <div class="row mt-3" >
-      <div class="col-md-9 mx-auto">
-        <div>
-					<h2 style="text-align: center;">Crear Empresa</h2>
-					<form method="POST">
-						{% csrf_token %}
-            {{ form.errors }}
-            <div class="row">
-							<div class="col-md-10 col-md-offset-2">
-								<div class="form-group" style="width: 25%;">
-									<label style="color: white;">Giro</label>
-									{{ form.idGiro }}
-								</div>
-							</div>
-						</div>
-            <div class="row">
-							<div class="col-md-10 col-md-offset-2">
-								<div class="form-group" style="width: 50%;">
-									<label style="color: white;">Razon social</label>
-									{{ form.rasonsocial }}
-								</div>
-							</div>
-						</div>
-            <div class="row">
-							<div class="col-md-10 col-md-offset-2">
-								<div class="form-group" style="width: 50%;">
-									<label style="color: white;">Telefono</label>
-									{{ form.telefono }}
-								</div>
-							</div>
-                        </div>
-            <div class="row">
-							<div class="col-md-10 col-md-offset-2">
-								<div class="form-group" style="width: 50%;">
-									<label style="color: white;" >NRC</label>
-									{{ form.nrc }}
-								</div>
-							</div>
-                        </div>
-            <div class="row">
-							<div class="col-md-10 col-md-offset-2">
-								<div class="form-group" style="width: 50%;">
-									<label style="color: white;" >NIT</label>
-									{{ form.nit }}
-								</div>
-							</div>
-                        </div>
-            <div class="row">
-							<div class="col-md-10 col-md-offset-2">
-								<div class="form-group" style="width: 50%;">
-									<label style="color: white;" >Direccion</label>
-									{{ form.direccion }}
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-10 col-md-offset-2">
-								<div align= "left" class="btn_crear mb-3">
-									<button class="btn btn-primary btn-lg" type="submit"><i class="fas fa-save"></i> Guardar</button>
-                  <a type="button" class="btn btn-secondary btn-lg" href="javascript:window.history.back();"><i class="fas fa-times-circle"></i> Cancelar</a>
-								</div>
-							</div>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
+  <div class="row mt-3" >
+    <div class="col-md-9 mx-auto">
+      <div>
+        <h2 style="text-align: center;">Crear Empresa</h2>
+        <form method="POST">
+          {% csrf_token %}
+          {% if form.errors %}
+          {% for field in form %}
+          {% for error in field.errors %}
+          <div class="alert alert-danger">
+            <strong>{{ error|escape }}</strong>
+          </div>
+          {% endfor %}
+          {% endfor %}
+          {% endif %}
+          <div class="row">
+            <div class="col-md-10 col-md-offset-2">
+              <div class="form-group" style="width: 25%;">
+                <label style="color: white;">Gerente</label>
+                {{ empresa_form.gerente }}
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-10 col-md-offset-2">
+              <div class="form-group" style="width: 25%;">
+                <label style="color: white;">Giro</label>
+                {{ empresa_form.idGiro }}
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-10 col-md-offset-2">
+              <div class="form-group" style="width: 50%;">
+                <label style="color: white;">Razon social</label>
+                {{ empresa_form.rasonsocial }}
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-10 col-md-offset-2">
+              <div class="form-group" style="width: 50%;">
+                <label style="color: white;">Telefono</label>
+                {{ empresa_form.telefono }}
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-10 col-md-offset-2">
+              <div class="form-group" style="width: 50%;">
+                <label style="color: white;" >NRC</label>
+                {{ empresa_form.nrc }}
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-10 col-md-offset-2">
+              <div class="form-group" style="width: 50%;">
+                <label style="color: white;" >NIT</label>
+                {{ empresa_form.nit }}
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-10 col-md-offset-2">
+              <div class="form-group" style="width: 50%;">
+                <label style="color: white;" >Direccion</label>
+                {{ empresa_form.direccion }}
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-10 col-md-offset-2">
+              <div align= "left" class="btn_crear mb-3">
+                <button class="btn btn-primary btn-lg" type="submit"><i class="fas fa-save"></i> Guardar</button>
+                <a class="btn btn-danger btn-lg" href="{% url 'Empresa:mostrar'%}"><i class="fas fa-times-circle"></i> Cancelar</a>                
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% endblock%}
