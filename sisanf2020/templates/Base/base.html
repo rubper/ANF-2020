@@ -57,7 +57,16 @@
           <nav class="nav-menu d-none d-lg-block">
             <ul>
               {% if request.user.is_authenticated %}
-              <li class="active"><a href="#header">Home</a></li>
+              <li class="active"><a href="{% url 'index' %}">Inicio</a></li>
+              {% if request.user.rol == 3 %}
+                {% for i in emp %}
+                  {% if i.gerente == request.user.id %}
+                  <li><a href="{% url 'Empresa:mostrar' %}">{{ i.rasonsocial }}</a></li>
+                  {% endif %}
+                {% endfor %}
+              {% else %}
+              <li><a href="{% url 'Empresa:mostrar' %}">Empresas</a></li>
+              {% endif %}
               <li class="drop-down"><a href="">Analisis</a>
                 <ul>
                   <li><a href="{% url 'Analisis:VerOverView' %}">OverView</a></li>
@@ -66,19 +75,14 @@
                   <li><a href="#">Ratios</a></li>
                 </ul>
               </li>
+              {% if request.user.rol == 1 or request.user.rol == 2 %}
               <li class="drop-down"><a href="">Giros</a>
                 <ul>
                     <li><a href="{% url 'Giro:AdministrarGiros' %}">Giros</a></li>
                     <li><a href="{% url 'Giro:AdministrarDatos' %}">Datos de giros</a></li>
                 </ul>
               </li>
-              {% if request.user.rol == 3 %}
-              <li><a href="{% url 'Empresa:mostrar' %}">Mi empresa</a></li>
-              {% else %}
-              <li><a href="{% url 'Empresa:mostrar' %}">Empresas</a></li>
               {% endif %}
-              <li><a href="#team">Team</a></li>
-              <li><a href="blog.html">Blog</a></li>
               <li class="drop-down"><a href="">Drop Down</a>
                 <ul>
                   <li><a href="#">Drop Down 1</a></li>
@@ -112,9 +116,6 @@
               {% endif %}
             </ul>
           </nav><!-- .nav-menu -->
-
-          <a href="#about" class="get-started-btn scrollto">Get Started</a>
-
           {% endblock %}
         </div>
       </div>

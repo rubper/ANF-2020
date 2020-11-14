@@ -53,7 +53,7 @@ def indexAnalisisHorizontal(request, empresa):
 def OverView(request):
     if request.method == "POST":
         empresa = request.POST['empresa']
-        year = request.POST['year']        
+        year = request.POST['year']
 
     #Listado de análisis
     AnEmp = Analisis.objects.filter(idEmpresa=empresa).filter(year_analisis=year)
@@ -74,6 +74,7 @@ def OverView(request):
         'dato': dato,
         'Razones': Razones,
         'rasonsocial': rasonsocial,
+        'year': year,
     }
     return render(request, 'Analisis/OverView.html', Contexto)
 
