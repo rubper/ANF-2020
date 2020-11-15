@@ -44,8 +44,8 @@ class Cuenta(models.Model):
     idEmpresa = models.ForeignKey(Empresa,on_delete=models.CASCADE)
     codigo_cuenta = models.CharField(max_length=13)
     nombre_cuenta = models.CharField(max_length=100)
-    tipo_cuenta = models.CharField(choices=tipo, max_length=25)
-    naturaleza_cuenta = models.CharField(choices=naturaleza,max_length=12)
+    tipo_cuenta = models.CharField(choices=tipo, max_length=25,null=True)
+    naturaleza_cuenta = models.CharField(choices=naturaleza,max_length=12,null=True)
     idSobreNombre = models.ForeignKey(SobreNombre,on_delete=models.CASCADE,null=True)
     
     def __str__(self):

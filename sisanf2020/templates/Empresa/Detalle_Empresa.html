@@ -58,8 +58,7 @@
 							<div class="col-md-10 col-md-offset-2">
 								<div align= "left" class="btn_crear mb-3">
                                     <a type="button" class="btn btn-primary btn-lg" href="{%url 'Empresa:cuentas' empresa=object.idEmpresa%}" role="button"><i class="fas fa-plus-circle"></i> Catalogo</a>
-                                    <a type="button" class="btn btn-info btn-lg" href="" role="button"style="margin: 2%;"><i class="fas fa-plus-circle"></i> Balance General</a>
-                                    <a type="button" class="btn btn-success btn-lg" href="" role="button"style="margin: 2%;"><i class="fas fa-plus-circle" style="margin: 2%;"></i> Estado resultado</a>
+                                    <a type="button" class="btn btn-info btn-lg" href="{% url 'Estados:EstadosFinancieros' empresa=object.idEmpresa %}" role="button"style="margin: 2%;"><i class="fas fa-plus-circle"></i> Estados Finacieros</a>
                                     <a type="button" class="btn btn-secondary btn-lg" href="javascript:window.history.back();" style="margin: 2%;"><i class="fas fa-undo-alt"></i></i> Regresar</a>
                                 </div>
 							</div>

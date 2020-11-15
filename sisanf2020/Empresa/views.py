@@ -133,7 +133,6 @@ def eliminar_cuenta(request,pk,empresa):
     messages.warning(request,'La cuenta a sido eliminada')
     return redirect('Empresa:cuentas',empresa)
 
-
 def editatar_cuenta(request,pk,empresa):
     cuenta = Cuenta.objects.get(idCuenta=pk)
     p = Empresa.objects.get(idEmpresa=empresa)
