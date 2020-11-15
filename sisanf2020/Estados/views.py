@@ -7,7 +7,8 @@ from django.contrib import messages
 from datetime import datetime
 from django.shortcuts import get_object_or_404, redirect
 from Estados.forms import EstadoForm
-from Analisis.models import Analisis, LineaDeInforme
+from Analisis.models import Analisis, LineaDeInforme, RatiosAnalisis
+from Giro.models import Ratios, Giro, DatoGiro
 
 #Metodos para el sort()
 def obtenerPorHorizontal(objeto):
@@ -17,6 +18,7 @@ def obtenerPorVertical(objeto):
     return objeto.porcentaje_vertical
 
 def indexEstados(request, empresa):
+    empresaActual = Empresa.objects.get(idEmpresa=empresa)
     ###################REQUEST POST######################
     #se ejecuta solo cuando la request es post
     if request.method == 'POST':
@@ -51,8 +53,7 @@ def indexEstados(request, empresa):
             #si el archivo no es xlsx
             if not archivo.name.endswith('xlsx'):
                 #mostrar error
-                messages.error(request,'Error: Formato incorrecto')  
-                return render(request)  
+                    return redirect('Estados:redireccionConfirmacion',empresa=empresa,mensaje="Error: El formato del archivo no es el correcto. Por favor, asegurese que ha subido un archivo con extensión .xlsx")
             #crear instancia tablib Dataset
             conjuntoDatos = Dataset()
             #Definir headers del dataset
@@ -103,10 +104,11 @@ def indexEstados(request, empresa):
             #para cada registro en los datos importados
             cuentas=[]
             for registro in datosImportados:   
-                try:
-                    Cuenta.objects.get(idEmpresa=empresa,codigo_cuenta=registro[0])
-                except:
+                if(Cuenta.objects.get(idEmpresa=empresa,codigo_cuenta=registro[0])==None):
                     return redirect('Estados:redireccionConfirmacion',empresa=empresa,mensaje="Error:No existe una de las cuentas ingresadas, verifique su archivo.")
+                anioIntentaIngresar = Balance.objects.filter(yearEstado=int(registro[2]))
+                if(anioIntentaIngresar!=None):
+                    return redirect('Estados:redireccionConfirmacion',empresa=empresa,mensaje="Error:Ya ha añadido saldos para este estado.")
             for registro in datosImportados:   
                 anioAnalisis=registro[2]
                 #Se obtiene la cuenta con el id de la empresa y el codigo
@@ -114,50 +116,51 @@ def indexEstados(request, empresa):
                 cuentaObtenida = Cuenta.objects.get(idEmpresa=empresa,codigo_cuenta=registro[0])
                 ################VERIFICAR TIPO DE CUENTA#####################
                 #Reclasificar las cuentas por su tipo
-                if(cuentaObtenida.idSobreNombre.sobreNombre=="Inventario"):
-                    inventario = float(registro[3])
-                    try:
-                        inventarioAnteriorObj = SaldoDeCuentaBalace.objects.get(idCuenta=cuentaObtenida.idCuenta,year_saldo_Resul=datetime(registro[2]-1,1,1))
-                        inventarioAnterior=float(inventarioAnteriorObj.monto_saldo)
-                    except:
-                        inventarioAnterior = 0
-                elif(cuentaObtenida.idSobreNombre.sobreNombre=="Activo de corto plazo"):
-                    activosCortoPlazo+=float(registro[3])
-                elif(cuentaObtenida.idSobreNombre.sobreNombre=="Costo de servicio o ventas"):
-                    costoVentas+=float(registro[3])
-                elif(cuentaObtenida.idSobreNombre.sobreNombre=="Cuenta por cobrar"):
-                    cuentasPorCobrar+=float(registro[3])
-                    try:
-                        cuentasPorCobraranteriorObj=SaldoDeCuentaBalace.objects.get(idCuenta=cuentaObtenida.idCuenta,year_saldo_Resul=datetime(registro[2]-1,1,1))
-                        cuentasPorCobraranterior=float(cuentasPorCobraranteriorObj.monto_saldo)
-                    except:
-                        cuentasPorCobraranterior=0      
-                elif(cuentaObtenida.idSobreNombre.sobreNombre=="Cuenta por pagar"):
-                    cuentasPorPagar+=float(registro[3])
-                    try:
-                        cuentasPorPagaranteriorObj = SaldoDeCuentaBalace.objects.get(idCuenta=cuentaObtenida.idCuenta,year_saldo_Resul=datetime(registro[2]-1,1,1))
-                        cuentasPorPagaranterior = float(cuentasPorPagaranteriorObj.monto_saldo)
-                    except:
-                        cuentasPorPagaranterior = 0                  
-                elif(cuentaObtenida.idSobreNombre.sobreNombre=="Ventas netas"):
-                    ventasNetas+=float(registro[3])
-                elif(cuentaObtenida.idSobreNombre.sobreNombre=="Activo Fijo"):
-                    activoFijo+=float(registro[3])
-                    try:
-                        activoFijoAnteriorObj = SaldoDeCuentaBalace.objects.get(idCuenta=cuentaObtenida.idCuenta,year_saldo_Resul=datetime(registro[2]-1,1,1))
-                        activoFijoAnterior = float(activoFijoAnteriorObj.monto_saldo)
-                    except:
-                        activoFijoAnterior=0
-                elif(cuentaObtenida.idSobreNombre.sobreNombre=="Costo de operación o administración"):
-                    costoOperacion+=float(registro[3])
-                elif(cuentaObtenida.idSobreNombre.sobreNombre=="Gastos financieros"):
-                    gastoFinanciero+=float(registro[3])
-                elif(cuentaObtenida.idSobreNombre.sobreNombre=="Otros gastos"):
-                    otrosGastos+=float(registro[3])
-                elif(cuentaObtenida.idSobreNombre.sobreNombre=="Otros ingresos"):
-                    otrosIngresos+=float(registro[3])
-                elif(cuentaObtenida.idSobreNombre.sobreNombre=="Impuestos"):
-                    impuesto+=float(registro[3])
+                if(cuentaObtenida.idSobreNombre!=None):
+                    if(cuentaObtenida.idSobreNombre.sobreNombre=="Inventario"):
+                        inventario = float(registro[3])
+                        try:
+                            inventarioAnteriorObj = SaldoDeCuentaBalace.objects.get(idCuenta=cuentaObtenida.idCuenta,year_saldo_Resul=datetime(registro[2]-1,1,1))
+                            inventarioAnterior=float(inventarioAnteriorObj.monto_saldo)
+                        except:
+                            inventarioAnterior = 0
+                    elif(cuentaObtenida.idSobreNombre.sobreNombre=="Activo de corto plazo"):
+                        activosCortoPlazo+=float(registro[3])
+                    elif(cuentaObtenida.idSobreNombre.sobreNombre=="Costo de servicio o ventas"):
+                        costoVentas+=float(registro[3])
+                    elif(cuentaObtenida.idSobreNombre.sobreNombre=="Cuenta por cobrar"):
+                        cuentasPorCobrar+=float(registro[3])
+                        try:
+                            cuentasPorCobraranteriorObj=SaldoDeCuentaBalace.objects.get(idCuenta=cuentaObtenida.idCuenta,year_saldo_Resul=datetime(registro[2]-1,1,1))
+                            cuentasPorCobraranterior=float(cuentasPorCobraranteriorObj.monto_saldo)
+                        except:
+                            cuentasPorCobraranterior=0      
+                    elif(cuentaObtenida.idSobreNombre.sobreNombre=="Cuenta por pagar"):
+                        cuentasPorPagar+=float(registro[3])
+                        try:
+                            cuentasPorPagaranteriorObj = SaldoDeCuentaBalace.objects.get(idCuenta=cuentaObtenida.idCuenta,year_saldo_Resul=datetime(registro[2]-1,1,1))
+                            cuentasPorPagaranterior = float(cuentasPorPagaranteriorObj.monto_saldo)
+                        except:
+                            cuentasPorPagaranterior = 0                  
+                    elif(cuentaObtenida.idSobreNombre.sobreNombre=="Ventas netas"):
+                        ventasNetas+=float(registro[3])
+                    elif(cuentaObtenida.idSobreNombre.sobreNombre=="Activo Fijo"):
+                        activoFijo+=float(registro[3])
+                        try:
+                            activoFijoAnteriorObj = SaldoDeCuentaBalace.objects.get(idCuenta=cuentaObtenida.idCuenta,year_saldo_Resul=datetime(registro[2]-1,1,1))
+                            activoFijoAnterior = float(activoFijoAnteriorObj.monto_saldo)
+                        except:
+                            activoFijoAnterior=0
+                    elif(cuentaObtenida.idSobreNombre.sobreNombre=="Costo de operación o administración"):
+                        costoOperacion+=float(registro[3])
+                    elif(cuentaObtenida.idSobreNombre.sobreNombre=="Gastos financieros"):
+                        gastoFinanciero+=float(registro[3])
+                    elif(cuentaObtenida.idSobreNombre.sobreNombre=="Otros gastos"):
+                        otrosGastos+=float(registro[3])
+                    elif(cuentaObtenida.idSobreNombre.sobreNombre=="Otros ingresos"):
+                        otrosIngresos+=float(registro[3])
+                    elif(cuentaObtenida.idSobreNombre.sobreNombre=="Impuestos"):
+                        impuesto+=float(registro[3])
                 
                 if(cuentaObtenida.tipo_cuenta=="Estado de Resultado" or cuentaObtenida.tipo_cuenta=="6"):
                     #aumentar 1 al id
@@ -226,8 +229,9 @@ def indexEstados(request, empresa):
                     )
                     #ejecutar insert
                     valor.save()
-                    saldoAnterior = SaldoDeCuentaBalace.objects.get(idCuenta=cuentaObtenida.idCuenta,year_saldo_Resul=datetime(registro[2]-1,1,1))
-                    activoTotalAnterior += saldoAnterior.monto_saldo
+                    saldoAnterior = SaldoDeCuentaBalace.objects.filter(idCuenta=cuentaObtenida.idCuenta,year_saldo=datetime(registro[2]-1,1,1)).first()
+                    if(saldoAnterior!=None):
+                        activoTotalAnterior += float(saldoAnterior.monto_saldo)
                     #anexar ese saldo a una lista de saldos de activos corrientes
                     ActivoCorrienteMonto.append(valor)
                     #sumar el saldo
@@ -264,8 +268,9 @@ def indexEstados(request, empresa):
                     )
                     #ejecutar insert
                     valor.save()
-                    saldoAnterior = SaldoDeCuentaBalace.objects.get(idCuenta=cuentaObtenida.idCuenta,year_saldo_Resul=datetime(registro[2]-1,1,1))
-                    activoTotalAnterior += saldoAnterior.monto_saldo
+                    saldoAnterior = SaldoDeCuentaBalace.objects.filter(idCuenta=cuentaObtenida.idCuenta,year_saldo=datetime(registro[2]-1,1,1)).first()
+                    if(saldoAnterior!=None):
+                        activoTotalAnterior += float(saldoAnterior.monto_saldo)
                     ActivoNoCorrienteMonto.append(valor)
                     totalActivosNoCorriente+=valor.monto_saldo
                 elif(cuentaObtenida.tipo_cuenta=="Pasivo Corriente" or cuentaObtenida.tipo_cuenta=="3"):
@@ -567,7 +572,115 @@ def indexEstados(request, empresa):
                 gradoPropiedad = totalCapital / totalActivos
                 endeudamientoPatrimonial = totalPasivos / totalCapital
                 coberturaGastosFinancieros = utilidadAntesImpuesto / gastoFinanciero
-                return redirect('Estados:redireccionConfirmacion',empresa=empresa,mensaje="Se agregaron los saldos correctamente.")
+                ratios=[]
+                ratios.append(razonLiquidezCorriente)
+                ratios.append(razonLiquidezRapida)
+                ratios.append(razonCapitalTrabajo)
+                ratios.append(razonEfectivo)
+                ratios.append(razonRotacionInventario)
+                ratios.append(diasInventario)
+                ratios.append(razonRotacionCobros)
+                ratios.append(periodoMedioCobranza)
+                ratios.append(razonRotacionPagos)
+                ratios.append(periodoMedioPagos)
+                ratios.append(razonRotacionActivosTotales)
+                ratios.append(razonRotacionActivosFijos)
+                ratios.append(indiceMargenBruto)
+                ratios.append(indiceMargenOperativo)
+                ratios.append(gradoEndeudamiento)
+                ratios.append(gradoPropiedad)
+                ratios.append(endeudamientoPatrimonial)
+                ratios.append(coberturaGastosFinancieros)
+                RatioUltimo = None
+                #Inicializa variables de id a cero
+                IdRatioUltimo = 0
+                try:
+                    #Obtener el último Balance ingresado
+                    RatioUltimo = RatiosAnalisis.objects.latest('idRatioAnalisis')
+                #Si no existe
+                except RatiosAnalisis.DoesNotExist:
+                    #Asegurarse que sea None
+                    RatioUltimo = None
+                #Si el último balance no existe
+                if(RatioUltimo==None):
+                    #Definir el Id como 1
+                    IdRatioUltimo = 1
+                else:
+                    #Caso contrario, tomar el id del último balance y sumar 1
+                    IdRatioUltimo = RatioUltimo.idRatioAnalisis + 1
+                for ratio in enumerate(ratios):
+                    ratioanalisis=None
+                    RatioActual = Ratios.objects.filter(idRatio=int(ratio[0]) + 1).first()
+                    ratioanalisis = RatiosAnalisis(
+                        idRatioAnalisis = IdRatioUltimo,
+                        idAnalisis = anali,
+                        idRatios = RatioActual,
+                        valorRatiosAnalisis = float(ratio[1]),
+                        conclusion = "",
+                    )
+                    #Se guarda el ratio
+                    ratioanalisis.save()
+                    #Se obtiene el giro actual
+                    GiroActual = empresaActual.idGiro
+                    #Se traen las empresas del giro actual
+                    EmpresasDelGiro = Empresa.objects.filter(idGiro = GiroActual.idGiro)
+                    #Se obtienen todos los detalles de ratios de todas las empresas del ratio actual
+                    DetallesDelRatioActual = RatiosAnalisis.objects.filter(idRatios = RatioActual.idRatio)
+                    sumatoria=0.0
+                    cantidad=0
+                    promedio=0
+                    for detalle in DetallesDelRatioActual:
+                        for empresaGiro in EmpresasDelGiro:
+                            #Si es detalle del ratio actual de una empresa del giro actual
+                            if(detalle.idAnalisis.idEmpresa == empresaGiro):
+                                #sumatoria general
+                                sumatoria=sumatoria+float(detalle.valorRatiosAnalisis)
+                                #contador
+                                cantidad=cantidad+1
+                    if(cantidad!=0):
+                        promedio = sumatoria / cantidad
+                    else:
+                        promedio = 0
+                    #Se obtiene el dato de giro del giro actual y ratio actual
+                    DatoGiroActual = DatoGiro.objects.filter(idGiro = GiroActual.idGiro, idRatio = RatioActual.idRatio).first()
+                    UltimoDatoGiro = None
+                    #Inicializa variables de id a cero
+                    IdUltimoDatoGiro = 0
+                    try:
+                        #Obtener el último Balance ingresado
+                        UltimoDatoGiro = DatoGiro.objects.latest('idDato')
+                    #Si no existe
+                    except DatoGiro.DoesNotExist:
+                        #Asegurarse que sea None
+                        UltimoDatoGiro = None
+                    #Si el último balance no existe
+                    if(UltimoDatoGiro==None):
+                        #Definir el Id como 1
+                        IdUltimoDatoGiro = 1
+                    else:
+                        #Caso contrario, tomar el id del último balance y sumar 1
+                        IdUltimoDatoGiro = UltimoDatoGiro.idDato + 1
+                    if(DatoGiroActual==None):
+                        datosDeGiro = DatoGiro(
+                            idDato = IdUltimoDatoGiro,
+                            idGiro = GiroActual,
+                            idRatio = RatioActual,
+                            valorParametro = 0,
+                            valorPromedio = promedio,
+                        )
+                        datosDeGiro.save()
+                    else:
+                        datosDeGiro = DatoGiro(
+                            idDato = DatoGiroActual.idDato,
+                            idGiro = GiroActual,
+                            idRatio = RatioActual,
+                            valorParametro = DatoGiroActual.valorParametro,
+                            valorPromedio = promedio,
+                        )
+                        datosDeGiro.save()
+                    IdRatioUltimo = IdRatioUltimo + 1
+                exito="Se agregaron los saldos correctamente"
+                return redirect('Estados:redireccionConfirmacion', empresa=empresa,mensaje=exito)
         ###############POST SIN ARCHIVOS################
         #para request post sin archivos, obtendrá el form
         else:
@@ -575,7 +688,6 @@ def indexEstados(request, empresa):
             formulario=EstadoForm(request.POST)
             #Si el form POSTeado es válido (pendiente de modificar is_valid)
             if(formulario.is_valid()):
-                empresaActual = Empresa.objects.get(idEmpresa=empresa)
                 #Obtiene todos los balances de la empresa
                 BalancesEmpresa = BalanceEmpresa.objects.filter(idEmpresa=empresa).order_by('idbalance')
                 #Luz verde para empezar a insertar
