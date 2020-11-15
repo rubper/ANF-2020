@@ -10,7 +10,7 @@ from django.views.generic.base import TemplateView
 from django.contrib import messages
 from django.http import HttpResponse
 from django.views.generic.detail import DetailView
-from Usuarios.models import AccesoUsuario
+from Usuarios.models import AccesoUsuario, User
 from django.shortcuts import get_object_or_404
 from tablib import Dataset
 from .resources import CuentaResouce
@@ -18,12 +18,17 @@ from .resources import CuentaResouce
 # Create your views here.
 
 
-class crear_Empresa(SuccessMessageMixin,CreateView):
-    model= Empresa
-    form_class= Empresa_Forms
-    template_name= 'Empresa/Crear_Empresa.html'
-    success_url = reverse_lazy('Empresa:mostrar')
-    Success_message = 'Empresa creada con exito'
+def crear_Empresa(request):
+    if request.method == 'POST':
+        ger = request.POST['gerente']
+        gere = User.objects.get(id=ger)
+        empresa_form = Empresa_Forms(request.POST)
+        if empresa_form.is_valid():
+            empresa_form.save()
+            return redirect('Empresa:mostrar')
+    else:
+        empresa_form = Empresa_Forms()
+    return render(request, 'Empresa/crear_Empresa.html', {'empresa_form':empresa_form, 'gere':gere})
 
 class mostrar_Empresa(ListView):
     model=Empresa
@@ -31,24 +36,36 @@ class mostrar_Empresa(ListView):
 
     def get(self, request, *args, **kwards):
         if request.user.is_authenticated:
-            usactivo = request.user #obtiene el id del usuario que se ha autenticado
-            print("Prueba Acceso ******", usactivo)
+            usactivo = request.user.id #obtiene el id del usuario que se ha autenticado
             op = '004' #Código de lista de usuarios
             usac=AccesoUsuario.objects.filter(idUsuario=usactivo).filter(idOpcion=op).values('idUsuario').first()
+            g = User.objects.filter(id=usactivo).values('rol')
+            rolg=g.get()
+            rolgerente = rolg.get('rol')
+            print(rolgerente)
             if usac is None:
                 return render(request, 'Usuarios/Error401.html')
             else:
-                empresas=Empresa.objects.all().only('idEmpresa')
-                return render(request, self.template_name, {"empresas" : empresas})
+                if rolgerente == 3:
+                    empresas = Empresa.objects.filter(gerente=usactivo)
+                    return render(request, self.template_name, {"empresas" : empresas})
+                else:
+                    empresas=Empresa.objects.all().only('idEmpresa')
+                    return render(request, self.template_name, {"empresas" : empresas})
         else:
             return redirect('Login')
 
-class editar_Empreda(UpdateView):
-    model = Empresa
-    form_class = Empresa_Forms
-    template_name = 'Empresa/Crear_Empresa.html'
-    success_url = reverse_lazy('Empresa:mostrar')
-    success_message = 'Los datos han sido modifcado'
+def editar_Empresa(request, idEmpresa):
+    empr = Empresa.objects.get(idEmpresa = idEmpresa)
+    if request.method == 'GET':
+        empresa_form = Empresa_Forms(instance = empr)
+    else:
+        empresa_form = Empresa_Forms(request.POST, instance = empr)
+        if empresa_form.is_valid():
+            empresa_form.save()
+        return redirect('Empresa:mostrar')
+    return render(request, 'Empresa/crear_Empresa.html', {'empresa_form':empresa_form})
+
 
 class eliminar_Empresa(DeleteView):
     model= Empresa
@@ -64,7 +81,7 @@ class detalle_Empresa(DetailView):
 #CRUD de Cuetas "CATALOGO DE CUENTA"
 
 def agregar_cuenta(request,empresa):
-   
+
     if request.method == 'POST':
         form= CuentaForm(request.POST)
         if form.is_valid():
@@ -79,13 +96,13 @@ def agregar_cuenta(request,empresa):
                 tipo_cuenta = form.data.get("tipo_cuenta"),
                 naturaleza_cuenta = form.data.get("naturaleza_cuenta"),
                 idSobreNombre = s,
-            ) 
+            )
             cuen.save()
         return redirect('Empresa:cuentas',empresa)
     else:
         form = CuentaForm()
         #se envia un diccionario con el valos de la empresa para postriotmte evaluarlo
-    return render(request,'Cuenta/Crear_Cuenta.html', {'form':form,'empresa':empresa}) 
+    return render(request,'Cuenta/Crear_Cuenta.html', {'form':form,'empresa':empresa})
 
 def agregar_cuenta_Xls(request,empresa):
     if request.method == 'POST':
@@ -118,13 +135,13 @@ def agregar_cuenta_Xls(request,empresa):
             return redirect('Empresa:cuentas',empresa)
         return redirect('Empresa:cuentas',empresa)
     else:
-        return render(request,'cuenta/importar.html',{'empresa':empresa})      
+        return render(request,'cuenta/importar.html',{'empresa':empresa})
 
 
 def mostrar_Cuenta(request,empresa):
     c = Cuenta.objects.filter(idEmpresa=empresa).order_by('codigo_cuenta')
     cuenta ={'cuentas':c,
-             'empresa':empresa} 
+             'empresa':empresa}
     return render(request,'Cuenta/Administrador_Cuenta.html',cuenta)
 
 def eliminar_cuenta(request,pk,empresa):
@@ -143,4 +160,4 @@ def editatar_cuenta(request,pk,empresa):
         if form.is_valid():
             form.save()
         return redirect('Empresa:cuentas',empresa)
-    return render(request,'Cuenta/Editar_cuenta.html', {'form':form,'empresa':empresa}) 
+    return render(request,'Cuenta/Editar_cuenta.html', {'form':form,'empresa':empresa})

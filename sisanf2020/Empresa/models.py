@@ -1,10 +1,12 @@
 from django.db import models
 from Giro.models import Giro
 from Estados.models import EstadoDeResultado, Balance
+from Usuarios.models import User
 
 # Información general de la empresa
 class Empresa(models.Model):
     idEmpresa= models.AutoField(primary_key=True)
+    gerente = models.OneToOneField(User, on_delete = models.CASCADE, null=False, blank=False)
     idGiro=models.ForeignKey(Giro, on_delete= models.CASCADE)
     rasonsocial =models.CharField(max_length= 50)
     telefono = models.CharField(max_length = 9)
@@ -17,14 +19,14 @@ class Empresa(models.Model):
     def __str__(self):
      return  self.rasonsocial
 
-#este modelo servira pera relacionar las cuentas con los ratios 
+#este modelo servira pera relacionar las cuentas con los ratios
 class SobreNombre(models.Model):
     idSobreNombre = models.AutoField(primary_key=True)
     sobreNombre = models.CharField(max_length=100)
-    
+
     def __str__(self):
      return  self.sobreNombre
-  
+
 
 #Cuentas de la empresa
 class Cuenta(models.Model):
@@ -38,7 +40,7 @@ class Cuenta(models.Model):
     )
     naturaleza=(
         ('Acreedor','Acreedor'),
-        ('Deudor','Deudor'), 
+        ('Deudor','Deudor'),
     )
     idCuenta = models.AutoField(primary_key=True)
     idEmpresa = models.ForeignKey(Empresa,on_delete=models.CASCADE)
@@ -47,10 +49,10 @@ class Cuenta(models.Model):
     tipo_cuenta = models.CharField(choices=tipo, max_length=25,null=True)
     naturaleza_cuenta = models.CharField(choices=naturaleza,max_length=12,null=True)
     idSobreNombre = models.ForeignKey(SobreNombre,on_delete=models.CASCADE,null=True)
-    
+
     def __str__(self):
      return  self.nombre_cuenta
-  
+
 # Valores de cuentas necesarios para los estados
 
 class SaldoDeCuentaBalace(models.Model):
@@ -59,7 +61,7 @@ class SaldoDeCuentaBalace(models.Model):
     idbalance = models.ForeignKey(Balance,on_delete=models.CASCADE)
     year_saldo = models.DateField()
     monto_saldo = models.DecimalField(max_digits=11, decimal_places=2)
-    
+
 class SaldoDeCuentaResultado(models.Model):
     idSaldoResul = models.AutoField(primary_key=True)
     idCuenta = models.ForeignKey(Cuenta,on_delete=models.CASCADE)

@@ -9,31 +9,33 @@ Análisis Financiero
       <ul class="nav nav-tabs row d-flex">
         <li class="nav-item col-3">
           <a class="nav-link active show" data-toggle="tab" href="#tab-1">
-            <i class="ri-gps-line"></i>
+            <i class="">RL</i>
             <h4 class="d-none d-lg-block">Razones de liquidez</h4>
           </a>
         </li>
         <li class="nav-item col-3">
           <a class="nav-link" data-toggle="tab" href="#tab-2">
-            <i class="ri-body-scan-line"></i>
+            <i class="">RA</i>
             <h4 class="d-none d-lg-block">Razones de actividad</h4>
           </a>
         </li>
         <li class="nav-item col-3">
           <a class="nav-link" data-toggle="tab" href="#tab-3">
-            <i class="ri-sun-line"></i>
-            <h4 class="d-none d-lg-block">Razones de apalancamiento</h4>
+            <i class="">RE</i>
+            <h4 class="d-none d-lg-block">Razones de endeudamiento</h4>
           </a>
         </li>
         <li class="nav-item col-3">
           <a class="nav-link" data-toggle="tab" href="#tab-4">
-            <i class="ri-store-line"></i>
+            <i class="">RR</i>
             <h4 class="d-none d-lg-block">Razones de rentabilidad</h4>
           </a>
         </li>
       </ul>
       {%if AnEmp.count == 0%}
-      <h2 class="mt-5" style="color:#000000">No existe análisis para la empresa {{ rasonsocial }} en el año ingresado.</h2>
+      <h2 class="mt-5" style="color:#000000">No existe análisis de {{ year }} para {{ rasonsocial }}.</h2>
+      {% else %}
+      <h2 class="mt-5" style="color:#000000">{{ rasonsocial }}, {{ year }}</h2>
       {% endif %}
       <div class="tab-content mt-0">
         <div class="tab-pane active show" id="tab-1">
@@ -67,17 +69,29 @@ Análisis Financiero
                                 <td>{{ valor.valorParametro }}</td>
                                 <td>Su resultado es menor que el valor parametro</td>
                               {% else %}
-                                <td>{{ resultado.idRatios }}</td>
-                                <td>{{ resultado.valorRatiosAnalisis }}</td>
-                                <td>{{ valor.valorParametro }}</td>
-                                <td>Su resultado es mayor que el valor parametro</td>
+                                {% if resultado.valorRatiosAnalisis == valor.valorParametro %}
+                                  <td>{{ resultado.idRatios }}</td>
+                                  <td>{{ resultado.valorRatiosAnalisis }}</td>
+                                  <td>{{ valor.valorParametro }}</td>
+                                  <td>Su resultado es igual que el valor parametro</td>
+                                {% else %}
+                                  <td>{{ resultado.idRatios }}</td>
+                                  <td>{{ resultado.valorRatiosAnalisis }}</td>
+                                  <td>{{ valor.valorParametro }}</td>
+                                  <td>Su resultado es mayor que el valor parametro</td>
+                                {% endif %}
                               {% endif %}
                               {% if resultado.valorRatiosAnalisis < valor.valorPromedio %}
                                 <td>{{ valor.valorPromedio }}</td>
                                 <td>Su resultado es menor que el valor promedio</td>
                               {% else %}
-                                <td>{{ valor.valorPromedio }}</td>
-                                <td>Su resultado es mayor que el valor promedio</td>
+                                {% if resultado.valorRatiosAnalisis == valor.valorPromedio %}
+                                  <td>{{ valor.valorPromedio }}</td>
+                                  <td>Su resultado es igual que el valor promedio</td>
+                                {% else %}
+                                  <td>{{ valor.valorPromedio }}</td>
+                                  <td>Su resultado es mayor que el valor promedio</td>
+                                {% endif %}
                               {% endif %}
                             {% endif %}
                           {% endif %}

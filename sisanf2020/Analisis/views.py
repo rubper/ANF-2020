@@ -54,7 +54,6 @@ def OverView(request):
     if request.method == "POST":
         empresa = request.POST['empresa']
         year = request.POST['year']
-        print(year)
 
     #Listado de análisis
     AnEmp = Analisis.objects.filter(idEmpresa=empresa).filter(year_analisis=year)
@@ -75,6 +74,7 @@ def OverView(request):
         'dato': dato,
         'Razones': Razones,
         'rasonsocial': rasonsocial,
+        'year': year,
     }
     return render(request, 'Analisis/OverView.html', Contexto)
 

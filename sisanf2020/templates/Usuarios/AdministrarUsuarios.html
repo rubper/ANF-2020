@@ -36,12 +36,20 @@ Usuarios
                       <td>{{ row.nomUsuario}}</td>
                       <td>{{ row.rol}}</td>
                       <td>
-                        <a href="{% url 'Usuarios:ModificarUsuario' row.pk %}" class="btn-info btn btn-lg">
-                          <i class="fas fa-pencil-alt"></i>
-                        </a>
-                        <button class="btn-danger btn btn-lg" data-toggle='modal' data-target='#deleteModal' data-pk='{{ row.pk }}'>
-                          <i class="fas fa-trash-alt"></i>
-                        </button>
+                        <div class="row justify-content-center">
+                          {% if row.rol == 3 %}
+                          <form class="p-0 col-3" action="{% url 'Empresa:crear' %}" method="post"> {% csrf_token %}
+                            <input class="form-control p-0" type="hidden" name="gerente" value="{{ row.id }}">
+                            <button style="height:36px;" class="form-control btn-primary btn btn-lg col-12" type="submit"><i class="far fa-building fa-lg"></i></button>
+                          </form>
+                          {% endif %}
+                          <a href="{% url 'Usuarios:ModificarUsuario' row.pk %}" class="btn-info btn btn-lg">
+                            <i class="fas fa-pencil-alt"></i>
+                          </a>
+                          <button class="btn-danger btn btn-lg" data-toggle='modal' data-target='#deleteModal' data-pk='{{ row.pk }}'>
+                            <i class="fas fa-trash-alt"></i>
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   {% endfor %}
