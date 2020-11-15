@@ -51,7 +51,7 @@ def indexEstados(request, empresa):
             datosImportados = conjuntoDatos.load(archivo.read(),format='xlsx')
             if(SaldoultimoResul != None):
                 #obtener el id del ultimo saldo de estado ingresado
-                idSaldoUltimoResul = SaldoultimoResul.idSaldoResul
+                idSaldoUltimoResul =  SaldoultimoResul.idSaldoResul
             else:
                 idSaldoUltimoResul = 0
             if(SaldoultimoBalance != None):

@@ -69,17 +69,29 @@ Análisis Financiero
                                 <td>{{ valor.valorParametro }}</td>
                                 <td>Su resultado es menor que el valor parametro</td>
                               {% else %}
-                                <td>{{ resultado.idRatios }}</td>
-                                <td>{{ resultado.valorRatiosAnalisis }}</td>
-                                <td>{{ valor.valorParametro }}</td>
-                                <td>Su resultado es mayor que el valor parametro</td>
+                                {% if resultado.valorRatiosAnalisis == valor.valorParametro %}
+                                  <td>{{ resultado.idRatios }}</td>
+                                  <td>{{ resultado.valorRatiosAnalisis }}</td>
+                                  <td>{{ valor.valorParametro }}</td>
+                                  <td>Su resultado es igual que el valor parametro</td>
+                                {% else %}
+                                  <td>{{ resultado.idRatios }}</td>
+                                  <td>{{ resultado.valorRatiosAnalisis }}</td>
+                                  <td>{{ valor.valorParametro }}</td>
+                                  <td>Su resultado es mayor que el valor parametro</td>
+                                {% endif %}
                               {% endif %}
                               {% if resultado.valorRatiosAnalisis < valor.valorPromedio %}
                                 <td>{{ valor.valorPromedio }}</td>
                                 <td>Su resultado es menor que el valor promedio</td>
                               {% else %}
-                                <td>{{ valor.valorPromedio }}</td>
-                                <td>Su resultado es mayor que el valor promedio</td>
+                                {% if resultado.valorRatiosAnalisis == valor.valorPromedio %}
+                                  <td>{{ valor.valorPromedio }}</td>
+                                  <td>Su resultado es igual que el valor promedio</td>
+                                {% else %}
+                                  <td>{{ valor.valorPromedio }}</td>
+                                  <td>Su resultado es mayor que el valor promedio</td>
+                                {% endif %}
                               {% endif %}
                             {% endif %}
                           {% endif %}

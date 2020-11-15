@@ -91,7 +91,6 @@ def agregar_cuenta(request,empresa):
             s = SobreNombre.objects.get(idSobreNombre=pk)
             cuen = Cuenta(
                 idEmpresa = p,
-                idCuenta = form.data.get("idCuenta"),
                 codigo_cuenta = form.data.get("codigo_cuenta"),
                 nombre_cuenta = form.data.get("nombre_cuenta"),
                 tipo_cuenta = form.data.get("tipo_cuenta"),
@@ -105,11 +104,38 @@ def agregar_cuenta(request,empresa):
         #se envia un diccionario con el valos de la empresa para postriotmte evaluarlo
     return render(request,'Cuenta/Crear_Cuenta.html', {'form':form,'empresa':empresa})
 
-#def agregar_cuenta_Xls():
-#     if request.method == 'POST':
-#       cuenta_Resoucer = CuentaResouce()
-
-
+def agregar_cuenta_Xls(request,empresa):
+    if request.method == 'POST':
+        if len(request.FILES)!=0:
+            cuenta_Resoucer = CuentaResouce()
+            archivo = request.FILES['subircuenta']
+            if not archivo.name.endswith('xlsx'):
+                messages.error(request,'Error:El formato es incorrecto debe de ser en formato .xlsx')
+                return redirect('Empresa:cuentas',empresa)
+            dato = Dataset()
+            dato.headers = ('codigo','nombre','tipo','naturaleza','Razon')
+            importado= dato.load(archivo.read(),format='xlsx')
+            for cuen in importado:
+                e = Empresa.objects.get(idEmpresa=empresa)
+                cuenta = Cuenta(
+                    idEmpresa=e,
+                    codigo_cuenta =cuen[0],
+                    nombre_cuenta = cuen[1],
+                    tipo_cuenta = cuen[2],
+                    naturaleza_cuenta = cuen[3],
+                    idSobreNombre =cuen[4]
+                )
+                #guarda los datos hasta encontrar uno vacio de archivo subido
+                if(cuenta.codigo_cuenta != None):
+                    cuenta.save()
+                e=None
+            messages.info(request, 'Ha importado las cuentas, exitosamente')
+        else:
+            messages.error(request,'no a elegido un archivo')
+            return redirect('Empresa:cuentas',empresa)
+        return redirect('Empresa:cuentas',empresa)
+    else:
+        return render(request,'cuenta/importar.html',{'empresa':empresa})
 
 
 def mostrar_Cuenta(request,empresa):
@@ -121,6 +147,7 @@ def mostrar_Cuenta(request,empresa):
 def eliminar_cuenta(request,pk,empresa):
     cuenta = Cuenta.objects.get(idCuenta=pk)
     cuenta.delete()
+    messages.warning(request,'La cuenta a sido eliminada')
     return redirect('Empresa:cuentas',empresa)
 
 
