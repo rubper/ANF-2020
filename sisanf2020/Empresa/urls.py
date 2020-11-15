@@ -15,4 +15,5 @@ urlpatterns = [
     path('cuentas/<int:empresa>',mostrar_Cuenta, name='cuentas'),
     path('cuentas/<int:empresa>/<int:pk>/borrar',eliminar_cuenta,name='eliminar_cuenta'),
     path('cuentas/editar/<int:pk>/<int:empresa>',editatar_cuenta,name='editar_cuenta'),
+    path('cuenta/importar/<int:empresa>',agregar_cuenta_Xls,name='importar_cuenta')
 ]

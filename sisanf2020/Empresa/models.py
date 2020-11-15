@@ -31,7 +31,7 @@ class Cuenta(models.Model):
     tipo=(
         ('Activo Corrinte','Activo Corrinte'),
         ('Activo no Corrinte','Activo no Corrinte'),
-        ('Pasivo Corrinte','Pasivo Corrinte'),
+        ('Pasivo Corriente','Pasivo Corrinte'),
         ('Pasivo no Corrinte','Pasivo no Corrinte'),
         ('Capital','Capital'),
         ('Estado de Resultado','Estado de Resultado'),
