@@ -5,6 +5,7 @@ class Empresa_Forms(forms.ModelForm):
     class Meta:
         model = Empresa
         fields=[
+            'gerente',
             'idEmpresa',
             'idGiro',
             'rasonsocial',
@@ -14,6 +15,7 @@ class Empresa_Forms(forms.ModelForm):
             'direccion',
         ]
         labels={
+            'gerente' : 'gerente',
             'idEmpresa' :'id',
             'idGiro': 'Giro',
             'rasonsocial': 'rasonsocial',
@@ -24,6 +26,7 @@ class Empresa_Forms(forms.ModelForm):
         }
 
         widgets = {
+            'gerente' : forms.TextInput(attrs={'class': 'form-control','readonly':'True'}),
             'idEmpresa': forms.TextInput(attrs={'class': 'form-control'}),
             'idGiro':forms.Select(attrs={'class': 'form-control'}),
             'rasonsocial':forms.TextInput(attrs={'class': 'form-control'}),
@@ -70,7 +73,7 @@ class CuentaForm(forms.Form):
     tipo=(
         ('Activo Corrinte','Activo Corrinte'),
         ('Activo no Corrinte','Activo no Corrinte'),
-        ('Pasivo Corrinte','Pasivo Corrinte'),
+        ('Pasivo Corriente','Pasivo Corrinte'),
         ('Pasivo no Corrinte','Pasivo no Corrinte'),
         ('Capital','Capital'),
         ('Estado de Resultado','Estado de Resultado'),
