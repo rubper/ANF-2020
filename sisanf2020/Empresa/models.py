@@ -29,10 +29,10 @@ class SobreNombre(models.Model):
 #Cuentas de la empresa
 class Cuenta(models.Model):
     tipo=(
-        ('Activo Corrinte','Activo Corrinte'),
-        ('Activo no Corrinte','Activo no Corrinte'),
-        ('Pasivo Corrinte','Pasivo Corrinte'),
-        ('Pasivo no Corrinte','Pasivo no Corrinte'),
+        ('Activo Corriente','Activo Corriente'),
+        ('Activo no Corriente','Activo no Corriente'),
+        ('Pasivo Corriente','Pasivo Corriente'),
+        ('Pasivo no Corriente','Pasivo no Corriente'),
         ('Capital','Capital'),
         ('Estado de Resultado','Estado de Resultado'),
     )

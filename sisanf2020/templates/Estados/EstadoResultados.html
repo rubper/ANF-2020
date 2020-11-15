@@ -72,7 +72,10 @@ Estado de Resultados
         </table>
     </div>
 </div>
-
+<form method='post' style="margin:auto;position:relative;">
+    {% csrf_token %}
+        <input id="submit" type="submit" value="redirigir"></button>
+</form>
     <!--Barra de navegacion inferior-->
     <div class="fixed-bottom header-scrolled" style="background: #fff">
         <div class ="container-fluid">

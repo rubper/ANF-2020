@@ -1,0 +1,12 @@
+{% extends 'Base/base.html' %}
+{% block title %}
+Estados Financieros
+{% endblock %}
+{% block content %}
+<div style="margin:auto;position:relative;background:white;">
+    <div style="margin:50px;">
+        <h2 style="color:black;">{{mensaje}}</h2>
+    </div>
+</div>
+<meta http-equiv="refresh" content="3;url={% url 'Estados:EstadosFinancieros' empresa=empresa %}"> 
+{% endblock %}
