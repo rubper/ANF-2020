@@ -37,9 +37,9 @@ class Empresa_Forms(forms.ModelForm):
         }
 
 
-class CuentaForm(forms.ModelForm):
+class CuentaFor(forms.ModelForm):
    class Meta:
-        models= Cuenta
+        model= Cuenta
         fields=[
            'idCuenta',
            'idEmpresa',
@@ -47,6 +47,7 @@ class CuentaForm(forms.ModelForm):
            'nombre_cuenta',
            'tipo_cuenta',
            'naturaleza_cuenta',
+           'idSobreNombre',
         ]
         labels = {
            'idCuenta':'id',
@@ -55,6 +56,7 @@ class CuentaForm(forms.ModelForm):
            'nombre_cuenta':'cuenta',
            'tipo_cuenta':'tipo',
            'naturaleza_cuenta':'narturaleza',
+           'idSobreNombre':'Razones',
         }
         widgets = {
            'idCuenta':forms.TextInput(attrs={'class':'form-control'}),
@@ -63,4 +65,25 @@ class CuentaForm(forms.ModelForm):
            'nombre_cuenta':forms.TextInput(attrs={'class':'form-control'}),
            'tipo_cuenta':forms.Select(attrs={'class':'form-control'}),
            'naturaleza_cuenta':forms.Select(attrs={'class':'form-control'}),
+           'idSobreNombre':forms.Select(attrs={'class':'form-control'}),
         }
+
+
+class CuentaForm(forms.Form):
+    tipo=(
+        ('Activo Corrinte','Activo Corrinte'),
+        ('Activo no Corrinte','Activo no Corrinte'),
+        ('Pasivo Corrinte','Pasivo Corrinte'),
+        ('Pasivo no Corrinte','Pasivo no Corrinte'),
+        ('Capital','Capital'),
+        ('Estado de Resultado','Estado de Resultado'),
+    )
+    naturaleza=(
+        ('Acreedor','Acreedor'),
+        ('Deudor','Deudor'), 
+    )
+    codigo_cuenta = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}), max_length=13)
+    nombre_cuenta = forms.CharField(max_length=100,widget=forms.TextInput(attrs={'class':'form-control'}))
+    tipo_cuenta = forms.ChoiceField(choices=tipo,required=True,widget=forms.Select(attrs={'class':'form-control'}))
+    naturaleza_cuenta = forms.ChoiceField(choices=naturaleza,required=True,widget=forms.Select(attrs={'class':'form-control'}))
+    idSobreNombre =forms.ModelChoiceField(queryset= SobreNombre.objects.all(),widget=forms.Select(attrs={'class':'form-control'}))

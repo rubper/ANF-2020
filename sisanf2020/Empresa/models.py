@@ -19,19 +19,28 @@ class Empresa(models.Model):
     def __str__(self):
      return  self.rasonsocial
 
+#este modelo servira pera relacionar las cuentas con los ratios
+class SobreNombre(models.Model):
+    idSobreNombre = models.AutoField(primary_key=True)
+    sobreNombre = models.CharField(max_length=100)
+
+    def __str__(self):
+     return  self.sobreNombre
+
+
 #Cuentas de la empresa
 class Cuenta(models.Model):
     tipo=(
-        ('1','Activo Corrinte'),
-        ('2','Activo no Corrinte'),
-        ('3','Pasivo Corrinte'),
-        ('4','Pasivo no Corrinte'),
-        ('5','Capital'),
-        ('6','Estado de Resultado'),
+        ('Activo Corrinte','Activo Corrinte'),
+        ('Activo no Corrinte','Activo no Corrinte'),
+        ('Pasivo Corrinte','Pasivo Corrinte'),
+        ('Pasivo no Corrinte','Pasivo no Corrinte'),
+        ('Capital','Capital'),
+        ('Estado de Resultado','Estado de Resultado'),
     )
     naturaleza=(
-        ('1','Acreedor'),
-        ('2','Deudor'),
+        ('Acreedor','Acreedor'),
+        ('Deudor','Deudor'),
     )
     idCuenta = models.AutoField(primary_key=True)
     idEmpresa = models.ForeignKey(Empresa,on_delete=models.CASCADE)
@@ -39,6 +48,10 @@ class Cuenta(models.Model):
     nombre_cuenta = models.CharField(max_length=100)
     tipo_cuenta = models.CharField(choices=tipo, max_length=25)
     naturaleza_cuenta = models.CharField(choices=naturaleza,max_length=12)
+    idSobreNombre = models.ForeignKey(SobreNombre,on_delete=models.CASCADE,null=True)
+
+    def __str__(self):
+     return  self.nombre_cuenta
 
 # Valores de cuentas necesarios para los estados
 
