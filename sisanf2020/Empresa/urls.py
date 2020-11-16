@@ -6,7 +6,7 @@ app_name = 'Empresa'
 
 urlpatterns = [
     path('crear',views.crear_Empresa, name='crear'),
-    path('mostrar/<int:pk>/borrar',eliminar_Empresa.as_view(),name='eliminar'),
+    path('mostrar/<int:idEmpresa>/borrar',views.eliminar_Empresa,name='eliminar'),
     path('mostrar',mostrar_Empresa.as_view(), name='mostrar'),
     path('editar/', views.editar_Empresa,name='editar'),
     path('editar/<int:idEmpresa>', views.editar_Empresa,name='editar'),

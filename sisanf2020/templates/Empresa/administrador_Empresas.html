@@ -43,7 +43,7 @@ Empresas
                   <a href="{% if esGerente %}{%url 'Empresa:editar' %}{% else %}{%url 'Empresa:editar' row.pk %}{% endif %}" class="btn-info btn btn-lg" style="margin: 1%;">
                     <i class="fas fa-edit"></i>
                   </a>
-                  <button class="btn-danger btn btn-lg" data-toggle='modal' data-target='#deleteModal' data-pk='{{ row.pk }}' style="margin: 1%;">
+                  <button class="btn-danger btn btn-lg" data-toggle='modal' data-target='#deleteModal' data-pk='{{ row.idEmpresa }}' style="margin: 1%;">
                     <i class="fas fa-trash-alt"></i>
                   </button>
                 </td>
