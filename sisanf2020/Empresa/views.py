@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.http.response import HttpResponseRedirect
 from .models import *
 from .forms import *
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
@@ -32,8 +33,8 @@ def crear_Empresa(request):
                 if empresa_form.is_valid():
                     empresa_form.save()
                     return redirect('Empresa:mostrar')
-            else:
-                empresa_form = Empresa_Forms()
+            else:                
+                return HttpResponseRedirect(reverse_lazy('Usuarios:CrearUsuario'))
             return render(request, 'Empresa/crear_Empresa.html', {'empresa_form':empresa_form, 'gere':gere})
     else:
         return redirect('Login')
