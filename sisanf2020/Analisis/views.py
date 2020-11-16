@@ -17,7 +17,7 @@ from Usuarios.models import AccesoUsuario, User
 def VerOverView(request):
     if request.user.is_authenticated:
         usactivo = request.user.id #obtiene el id del usuario que se ha autenticado
-        op = '005' #Código de lista de usuarios
+        op = '009' #Código opción análisis
         usac=AccesoUsuario.objects.filter(idUsuario=usactivo).filter(idOpcion=op).values('idUsuario').first()
         g = User.objects.filter(id=usactivo).values('rol')
         rolg=g.get()
@@ -26,7 +26,7 @@ def VerOverView(request):
             return render(request, 'Usuarios/Error401.html')
         else:
             if rolgerente == 3:
-                empGerente = Empresa.objects.filter(gerente=usactivo)                
+                empGerente = Empresa.objects.filter(gerente=usactivo)
                 if empGerente.count() != 0:
                     return render(request, 'Analisis/VerOverView.html', {})
                 else:
