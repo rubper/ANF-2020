@@ -37,10 +37,10 @@ Empresas
                 <td>{{ row.direccion}}</td>
                 <td>{{ row.telefono}}</td>
                 <td>
-                  <a href="{%url 'Empresa:detalle' row.pk %}" class="btn-primary btn btn-lg" style="margin: 1%;">
+                  <a href="{% if esGerente %}{%url 'Empresa:detalle' %}{% else %}{%url 'Empresa:detalle' pk=row.pk %}{% endif %}" class="btn-primary btn btn-lg" style="margin: 1%;">
                     <i class="far fa-eye"></i>
                   </a>
-                  <a href="{%url 'Empresa:editar' row.pk %}" class="btn-info btn btn-lg" style="margin: 1%;">
+                  <a href="{% if esGerente %}{%url 'Empresa:editar' %}{% else %}{%url 'Empresa:editar' row.pk %}{% endif %}" class="btn-info btn btn-lg" style="margin: 1%;">
                     <i class="fas fa-edit"></i>
                   </a>
                   <button class="btn-danger btn btn-lg" data-toggle='modal' data-target='#deleteModal' data-pk='{{ row.idEmpresa }}' style="margin: 1%;">

@@ -72,6 +72,7 @@ class EstadosConfig(AppConfig):
                         cursor.execute("INSERT INTO Usuarios_opcionform (idOpcion, descOpcion, numForm) VALUES (\"002\", \"Lista de accesos de usuario\", 2);")
                         cursor.execute("INSERT INTO Usuarios_opcionform (idOpcion, descOpcion, numForm) VALUES (\"003\", \"Lista de giros\", 3);")
                         cursor.execute("INSERT INTO Usuarios_opcionform (idOpcion, descOpcion, numForm) VALUES (\"004\", \"Lista de empresas\", 4);")
+                        cursor.execute("INSERT INTO Usuarios_opcionform (idOpcion, descOpcion, numForm) VALUES (\"005\", \"Lista de estados financieros\", 5);")
             if(existeAccesoUsuarios!=None and existeUsuarios!=None and existeOpcionForm!=None):
                     cursor.execute("SELECT Count(*) FROM Usuarios_accesousuario;")
                     cantidad=cursor.fetchone()

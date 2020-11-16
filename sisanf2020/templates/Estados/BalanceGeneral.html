@@ -29,7 +29,7 @@ Balance General
                             {% for balance in balancesAnio %} 
                             {% for anios in aniosConEstados %} 
                             {% if anios != balance.yearEstado %}
-                            <div style="padding-bottom:20px"><a href="{% url 'Estados:BalanceGeneral' empresa.idEmpresa anios %}">Año {{anios}}</a></div>
+                            <div style="padding-bottom:20px"><a href="{% if esGerente %}{% url 'Estados:BalanceGeneral' anio=anios %}{% else %}{% url 'Estados:BalanceGeneral' idempresadmin=empresa.idEmpresa anio=anios %}{% endif %}">Año {{anios}}</a></div>
                             {% else %}
                             <div style="color: #e03a3c; text-decoration: none; font-size: 15px; font-weight: 600; font-family: 'Raleway', sans-serif;padding-bottom:20px">Año {{anios}}</div>
                             {% endif %}
@@ -82,8 +82,8 @@ Balance General
                         <ul>
                             {% for balance in balancesAnio %} 
                             <li class="active"><div style="color: #e03a3c; text-decoration: none; font-size: 15px; font-weight: 600; font-family: 'Raleway', sans-serif;">Balance General</div></li>
-                            <li><a href="{% url 'Estados:EstadoResultado' empresa=empresa.idEmpresa anio=balance.yearEstado %}">Estado de Resultados</a></li>
-                            {% endfor %} 
+                            <li><a href="{% if esGerente %}{% url 'Estados:EstadoResultado' anio=balance.yearEstado %}{% else %}{% url 'Estados:EstadoResultado' idempresadmin=empresa.idEmpresa anio=balance.yearEstado %}{% endif %}">Estado de Resultados</a></li>
+                            {% endfor %}
                         </ul>
                     </div>
                 </div>

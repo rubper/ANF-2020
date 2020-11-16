@@ -53,16 +53,19 @@ class mostrar_Empresa(ListView):
             if usac is None:
                 return render(request, 'Usuarios/Error401.html')
             else:
+                esGerente=False
                 if rolgerente == 3:
                     empresas = Empresa.objects.filter(gerente=usactivo)
-                    return render(request, self.template_name, {"empresas" : empresas})
+                    esGerente=True
+                    return render(request, self.template_name, {"empresas" : empresas,"esGerente":esGerente})
                 else:
                     empresas=Empresa.objects.all().only('idEmpresa')
-                    return render(request, self.template_name, {"empresas" : empresas})
+                    esGerente=False
+                    return render(request, self.template_name, {"empresas" : empresas,"esGerente":esGerente})
         else:
             return redirect('Login')
 
-def editar_Empresa(request, idEmpresa):
+def editar_Empresa(request, idEmpresa=None):
     if request.user.is_authenticated:
         usactivo = request.user #obtiene el id del usuario que se ha autenticado
         op = '006' #Código para editar
@@ -70,7 +73,11 @@ def editar_Empresa(request, idEmpresa):
         if usac is None:
             return render(request, 'Usuarios/Error401.html')
         else:
-            empr = Empresa.objects.get(idEmpresa = idEmpresa)
+            idrol = request.user.rol
+            if(idrol==3 and idEmpresa==None):
+                empr = Empresa.objects.filter(gerente=request.user.id).first()
+            else:
+                empr = Empresa.objects.get(idEmpresa = idEmpresa)
             if request.method == 'GET':
                 empresa_form = Empresa_Forms(instance = empr)
             else:
@@ -99,6 +106,22 @@ def eliminar_Empresa(request, idEmpresa):
 class detalle_Empresa(DetailView):
     model=Empresa
     template_name = 'Empresa/Detalle_Empresa.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        rolUsuarioActual = self.request.user.rol
+        esGerente=False
+        if(rolUsuarioActual==3):
+            esGerente=True
+        context['esGerente'] = esGerente
+        return context
+    def get_object(self, queryset=None):
+        if self.request.user.is_authenticated:
+            rolUsuario = self.request.user.rol
+            if(len(self.kwargs)==0 and self.request.user.rol == 3):
+                return Empresa.objects.filter(gerente=self.request.user.id).first()
+            elif(len(self.kwargs)!=0):
+                return Empresa.objects.filter(idEmpresa=self.kwargs['pk']).first()
+
 
 #CRUD de Cuetas "CATALOGO DE CUENTA"
 
@@ -160,7 +183,13 @@ def agregar_cuenta_Xls(request,empresa):
         return render(request,'cuenta/importar.html',{'empresa':empresa})
 
 
-def mostrar_Cuenta(request,empresa):
+def mostrar_Cuenta(request,empresaId=None):
+    empresa=0
+    if(request.user.rol==3):
+        empresaObj=Empresa.objects.filter(gerente=request.user.id).first()
+        empresa=empresaObj.idEmpresa
+    else:
+        empresa=empresaId
     c = Cuenta.objects.filter(idEmpresa=empresa).order_by('codigo_cuenta')
     cuenta ={'cuentas':c,
              'empresa':empresa}

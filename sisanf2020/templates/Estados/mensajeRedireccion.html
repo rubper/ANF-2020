@@ -8,5 +8,5 @@ Estados Financieros
         <h2 style="color:black;">{{mensaje}}</h2>
     </div>
 </div>
-<meta http-equiv="refresh" content="3;url={% url 'Estados:EstadosFinancieros' empresa=empresa %}"> 
+<meta http-equiv="refresh" content="3;url={% if esGerente %}{% url 'Estados:EstadosFinancieros' %}{% else %}{% url 'Estados:EstadosFinancieros' idempresadmin=empresa %}{% endif %}"> 
 {% endblock %}
