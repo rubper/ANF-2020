@@ -136,8 +136,8 @@ def indexEstados(request,idempresadmin=None):
                         cuentaRegistro = Cuenta.objects.filter(idEmpresa=empresa,codigo_cuenta=registro[0])
                     except Cuenta.DoesNotExist:
                         return mostrarMensajeSegunRol(request, "Error:No existe una de las cuentas ingresadas, verifique su archivo.", idempresadmin)
-                    anioIntentaIngresar = Balance.objects.filter(yearEstado=int(registro[2]))
-                    if(anioIntentaIngresar!=None):
+                    anioIntentaIngresar = SaldoDeCuentaBalace.objects.filter(year_saldo=datetime(registro[2],1,1))
+                    if(len(anioIntentaIngresar)!=0):
                         return mostrarMensajeSegunRol(request, "Error:Ya ha añadido saldos para este estado.", idempresadmin)
                 for registro in datosImportados:   
                     anioAnalisis=registro[2]
@@ -411,7 +411,6 @@ def indexEstados(request,idempresadmin=None):
                 if(anioAnalisis==None):
                         UltimoBalance = BalanceEmpresa.objects.filter(idEmpresa=empresa).latest('idbalance')
                         anioAnalisis=UltimoBalance.idbalance.yearEstado
-
                 #####OBTENER EL BALANCE ACTUAL Y EL ANTERIOR
                 balanceAnalisis = None
                 balanceAnterior = None
@@ -708,9 +707,9 @@ def indexEstados(request,idempresadmin=None):
                                 valorPromedio = promedio,
                             )
                             datosDeGiro.save()
-                        IdRatioUltimo = IdRatioUltimo + 1
-                    exito="Se agregaron los saldos correctamente"
-                    return mostrarMensajeSegunRol(request, exito, idempresadmin)
+                        IdRatioUltimo = IdRatioUltimo + 1                
+                exito="Se agregaron los saldos correctamente"
+                return mostrarMensajeSegunRol(request, exito, idempresadmin)
             ###############POST SIN ARCHIVOS################
             #para request post sin archivos, obtendrá el form
             else:
