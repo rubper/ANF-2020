@@ -11,6 +11,7 @@ from Analisis.models import Analisis, LineaDeInforme, RatiosAnalisis
 from Giro.models import Ratios, Giro, DatoGiro
 from Usuarios.models import AccesoUsuario, User
 from django.http import Http404
+from decimal import *
 
 #Metodos para el sort()
 def obtenerPorHorizontal(objeto):
@@ -133,7 +134,7 @@ def indexEstados(request,idempresadmin=None):
                 cuentas=[]
                 for registro in datosImportados:   
                     try:
-                        cuentaRegistro = Cuenta.objects.filter(idEmpresa=empresa,codigo_cuenta=registro[0])
+                        cuentaRegistro = Cuenta.objects.get(idEmpresa=empresa,codigo_cuenta=registro[0])
                     except Cuenta.DoesNotExist:
                         return mostrarMensajeSegunRol(request, "Error:No existe una de las cuentas ingresadas, verifique su archivo.", idempresadmin)
                     anioIntentaIngresar = SaldoDeCuentaBalace.objects.filter(year_saldo=datetime(registro[2],1,1))
@@ -489,9 +490,9 @@ def indexEstados(request,idempresadmin=None):
                                 linea=LineaDeInforme(
                                     idCuenta=cuentaActual.idCuenta,
                                     idAnalisis=anali,
-                                    variacion_horizontal = variacionHorizontal,
-                                    porcentaje_horizontal = porcentajeHorizontal,
-                                    porcentaje_vertical = porcentajeVertical,
+                                    variacion_horizontal = round(float(variacionHorizontal),2),
+                                    porcentaje_horizontal = round(float(porcentajeHorizontal),4),
+                                    porcentaje_vertical = round(float(porcentajeVertical),4),
                                 )
                                 LineasActivos.append(linea)
                                 linea.save()
@@ -507,9 +508,9 @@ def indexEstados(request,idempresadmin=None):
                                 linea=LineaDeInforme(
                                     idCuenta=cuentaActual.idCuenta,
                                     idAnalisis=anali,
-                                    variacion_horizontal = variacionHorizontal,
-                                    porcentaje_horizontal = porcentajeHorizontal,
-                                    porcentaje_vertical = porcentajeVertical,
+                                    variacion_horizontal = round(float(variacionHorizontal),2),
+                                    porcentaje_horizontal = round(float(porcentajeHorizontal),4),
+                                    porcentaje_vertical = round(float(porcentajeVertical),4),
                                 )
                                 if(cuentaActual.idCuenta.tipo_cuenta == "Capital"):
                                     LineasCapital.append(linea)
@@ -528,9 +529,9 @@ def indexEstados(request,idempresadmin=None):
                                 linea=LineaDeInforme(
                                     idCuenta=cuentaActual.idCuenta,
                                     idAnalisis=anali,
-                                    variacion_horizontal = variacionHorizontal,
-                                    porcentaje_horizontal = porcentajeHorizontal,
-                                    porcentaje_vertical = porcentajeVertical,
+                                    variacion_horizontal = round(float(variacionHorizontal),2),
+                                    porcentaje_horizontal = round(float(porcentajeHorizontal),4),
+                                    porcentaje_vertical = round(float(porcentajeVertical),4),
                                 )
                                 LineasEstados.append(linea)
                                 linea.save()

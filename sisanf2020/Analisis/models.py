@@ -23,9 +23,9 @@ class LineaDeInforme(models.Model):
     idLineaInfo = models.AutoField(primary_key=True)
     idCuenta = models.ForeignKey(Cuenta,on_delete=models.CASCADE)
     idAnalisis = models.ForeignKey(Analisis,on_delete=models.CASCADE)
-    variacion_horizontal = models.DecimalField(max_digits=11,decimal_places=2)
-    porcentaje_horizontal = models.DecimalField(max_digits=5,decimal_places=4)
-    porcentaje_vertical = models.DecimalField(max_digits=5,decimal_places=4,null=True)
+    variacion_horizontal = models.DecimalField(max_digits=12,decimal_places=2)
+    porcentaje_horizontal = models.DecimalField(max_digits=7,decimal_places=4)
+    porcentaje_vertical = models.DecimalField(max_digits=7,decimal_places=4,null=True)
 
 class RatiosAnalisis(models.Model):
     idRatioAnalisis = models.AutoField(primary_key=True)

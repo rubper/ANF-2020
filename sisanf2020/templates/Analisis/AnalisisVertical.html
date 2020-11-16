@@ -3,7 +3,7 @@
 Análisis Financiero
 {% endblock %}
 {% block content %}
-<div style="background:white;position:relative;">{{mensaje}}
+<div style="background:white;position:relative;">
 </div>
 <table style="border:none; width:100%;">
     <col style="width:66%"/>
@@ -23,9 +23,7 @@ Análisis Financiero
                 <thead class="table-light">
                     <tr align="center">
                         <th scope="col">Cuentas</th>
-                        <th scope="col">Valor {{Analisis.year_analisis}}</th>
-                        <th scope="col">Valor {{Analisis.year_previos}}</th>
-                        <th scope="col">Variación</th>
+                        <th scope="col">Año {{Analisis.year_analisis}}</th>
                         <th scope="col">Porcentaje</th>
                     </tr>
                 </thead>
@@ -34,18 +32,14 @@ Análisis Financiero
                     <tr>
                         <td align="center">{{linea.2.idCuenta.codigo_cuenta}}</td>
                         <td align="center">{{linea.1.monto_saldo}}</td>
-                        <td align="center">{{linea.0.monto_saldo}}</td>
-                        <td align="center">{{linea.2.variacion_horizontal}}</td>
-                        <td align="center">{{linea.2.porcentaje_horizontal}}</td>
+                        <td align="center">{{linea.2.porcentaje_vertical}}</td>
                     </tr>
                     {% endfor %}
                     {% for linea in detallesAnalisis2 %}
                     <tr>
                         <td align="center">{{linea.2.idCuenta.codigo_cuenta}}</td>
                         <td align="center">{{linea.1.monto_saldo_Resul}}</td>
-                        <td align="center">{{linea.0.monto_saldo_Resul}}</td>
-                        <td align="center">{{linea.2.variacion_horizontal}}</td>
-                        <td align="center">{{linea.2.porcentaje_horizontal}}</td>
+                        <td align="center">{{linea.2.porcentaje_vertical}}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -57,7 +51,7 @@ Análisis Financiero
             <form class="areaConclusion" id='uploadForm'  method='post' enctype="multipart/form-data">
             {% csrf_token %}
                 <input id="idanalisis" type="hidden" name="analisis" value="{{Analisis.idAnalisis}}">
-                <textarea id="conclusionH" name="conclusion" rows="15" cols="35" style="position:relative;">{{Analisis.conclusion_horizontal}}</textarea><br><br>
+                <textarea id="conclusionV" name="conclusion" rows="15" cols="35" style="position:relative;">{{Analisis.conclusion_vertical}}</textarea><br><br>
                 <input type="submit" name="botonConclusion" value="Guardar" style="position:relative;"/>
             </form>
         </td>
@@ -77,8 +71,8 @@ Análisis Financiero
                                     <button class="pseudolinkbutton" type="submit">OverView</button>
                                 </form>
                             </li>
-                            <li class="active"><a href="#header">Análisis Horizontal</a></li>
-                            <li><a href="{% if esGerente %}{% url 'Analisis:AnalisisVertical' anio=year %}{% else %}{% url 'Analisis:AnalisisVertical' idempresadmin=empresaActual anio=year %}{% endif %}">Análisis Vertical</a></li>
+                            <li><a href="{% if esGerente %}{% url 'Analisis:AnalisisHorizontal' anio=year %}{% else %}{% url 'Analisis:AnalisisHorizontal' idempresadmin=empresaActual anio=year %}{% endif %}">Análisis Horizontal</a></li>
+                            <li class="active"><a href="#header">Análisis Vertical</a></li>
                             <li><a href="{% if esGerente %}{% url 'Analisis:AnalisisHorizontal' anio=year %}{% else %}{% url 'Analisis:AnalisisHorizontal' idempresadmin=empresaActual anio=year %}{% endif %}">Razones financieras</a></li>
                         </ul>
                     </div>

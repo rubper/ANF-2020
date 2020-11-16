@@ -62,7 +62,7 @@ class EstadosConfig(AppConfig):
                     cursor.execute("SELECT Count(*) FROM Usuarios_user;")
                     cantidad=cursor.fetchone()
                     if(cantidad[0]==0):
-                        cursor.execute("INSERT INTO Usuarios_user (password, last_login, id, nomUsuario, activo, rol, is_administrador, is_analista, is_gerente) VALUES(\"pbkdf2_sha256$216000$QHPDlSYDbxRY$6JU7Jfs9HdP5PAMHCsQhJxy+9OifUMzwju5C6HHd5c0=\", NULL, \"01\", \"rubper\", 1,1,1,0,0);")
+                        cursor.execute("INSERT INTO Usuarios_user (password, last_login, id, nomUsuario, activo, rol, is_administrador, is_analista, is_gerente) VALUES(\"pbkdf2_sha256$216000$RxNTqefvJAcG$39AXVUJqBgPOyKHvAj46QoB2lOfHdFlQCh/aXGtci9U=\",NULL,\"01\",\"admin\",1,1,1,0,0);")
             if(existeOpcionForm!=None):
                     cursor.execute("SELECT Count(*) FROM Usuarios_opcionform;")
                     cantidad=cursor.fetchone()
@@ -73,6 +73,10 @@ class EstadosConfig(AppConfig):
                         cursor.execute("INSERT INTO Usuarios_opcionform (idOpcion, descOpcion, numForm) VALUES (\"003\", \"Lista de giros\", 3);")
                         cursor.execute("INSERT INTO Usuarios_opcionform (idOpcion, descOpcion, numForm) VALUES (\"004\", \"Lista de empresas\", 4);")
                         cursor.execute("INSERT INTO Usuarios_opcionform (idOpcion, descOpcion, numForm) VALUES (\"005\", \"Lista de estados financieros\", 5);")
+                        cursor.execute("INSERT INTO Usuarios_opcionform (idOpcion, descOpcion, numForm) VALUES (\"006\", \"Editar\", 6);")
+                        cursor.execute("INSERT INTO Usuarios_opcionform (idOpcion, descOpcion, numForm) VALUES (\"007\", \"Agregar\", 7);")
+                        cursor.execute("INSERT INTO Usuarios_opcionform (idOpcion, descOpcion, numForm) VALUES (\"008\", \"Eliminar\", 8);")
+                        cursor.execute("INSERT INTO Usuarios_opcionform (idOpcion, descOpcion, numForm) VALUES (\"009\", \"Análisis\", 9);")
             if(existeAccesoUsuarios!=None and existeUsuarios!=None and existeOpcionForm!=None):
                     cursor.execute("SELECT Count(*) FROM Usuarios_accesousuario;")
                     cantidad=cursor.fetchone()
@@ -80,6 +84,13 @@ class EstadosConfig(AppConfig):
                         cursor.execute("INSERT INTO Usuarios_accesousuario (id, idOpcion_id, idUsuario_id) VALUES (1, \"000\", \"01\");")     
                         cursor.execute("INSERT INTO Usuarios_accesousuario (id, idOpcion_id, idUsuario_id) VALUES (2, \"001\", \"01\");")  
                         cursor.execute("INSERT INTO Usuarios_accesousuario (id, idOpcion_id, idUsuario_id) VALUES (3, \"002\", \"01\");")
+                        cursor.execute("INSERT INTO Usuarios_accesousuario (id, idOpcion_id, idUsuario_id) VALUES (4, \"003\", \"01\");")
+                        cursor.execute("INSERT INTO Usuarios_accesousuario (id, idOpcion_id, idUsuario_id) VALUES (5, \"004\", \"01\");")
+                        cursor.execute("INSERT INTO Usuarios_accesousuario (id, idOpcion_id, idUsuario_id) VALUES (6, \"005\", \"01\");")
+                        cursor.execute("INSERT INTO Usuarios_accesousuario (id, idOpcion_id, idUsuario_id) VALUES (7, \"006\", \"01\");")
+                        cursor.execute("INSERT INTO Usuarios_accesousuario (id, idOpcion_id, idUsuario_id) VALUES (8, \"007\", \"01\");")
+                        cursor.execute("INSERT INTO Usuarios_accesousuario (id, idOpcion_id, idUsuario_id) VALUES (9, \"008\", \"01\");")
+                        cursor.execute("INSERT INTO Usuarios_accesousuario (id, idOpcion_id, idUsuario_id) VALUES (10, \"009\", \"01\");")
             if(existeRatios!=None):
                     cursor.execute("SELECT Count(*) FROM Giro_ratios;")
                     cantidad=cursor.fetchone()
