@@ -14,7 +14,7 @@ Estados Financieros
         <tbody>
             {% for balance in ListaBalances%}
             <tr>
-                <td><a href="{% url 'Estados:BalanceGeneral' empresa=idEmpresaActual anio=balance.yearEstado %}">{{balance.idBalance}} {{balance.yearEstado}}{{balance.fechaInicioBalance}}{{balance.fechaFinBalance}}({{balance.moneda_codigo_balance}}) {{balance.moneda_balance}}</a></td>
+                <td><a href="{% if esGerente %}{% url 'Estados:BalanceGeneral' anio=balance.yearEstado %}{% else %}{% url 'Estados:BalanceGeneral' idempresadmin=idEmpresaActual anio=balance.yearEstado %}{% endif %}">{{balance.idBalance}} {{balance.yearEstado}}{{balance.fechaInicioBalance}}{{balance.fechaFinBalance}}({{balance.moneda_codigo_balance}}) {{balance.moneda_balance}}</a></td>
             </tr>
             {% endfor %}
         </tbody>

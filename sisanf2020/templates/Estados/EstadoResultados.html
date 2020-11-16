@@ -29,7 +29,7 @@ Estado de Resultados
                             {% for resultado in resultadosAnio %}
                             {% for anios in aniosConEstados %} 
                             {% if anios != resultado.yearEstado %}
-                            <div style="padding-bottom:20px"><a href="{% url 'Estados:EstadoResultado' empresa.idEmpresa anios %}">Año {{anios}}</a></div>
+                            <div style="padding-bottom:20px"><a href="{% if esGerente %}{% url 'Estados:EstadoResultado' anio=anios %}{% else %}{% url 'Estados:EstadoResultado' idempresadmin=empresa.idEmpresa anio=anios %}{% endif %}">Año {{anios}}</a></div>
                             {% else %}
                             <div style="color: #e03a3c; text-decoration: none; font-size: 15px; font-weight: 600; font-family: 'Raleway', sans-serif;padding-bottom:20px">Año {{anios}}</div>
                             {% endif %}
@@ -84,7 +84,7 @@ Estado de Resultados
                     <div class="nav-menu d-none d-lg-block">
                         <ul>
                             {% for resultado in resultadosAnio %} 
-                            <li><a href="{% url 'Estados:BalanceGeneral' empresa=empresa.idEmpresa anio=resultado.yearEstado %}">Balance General</a></li>
+                            <li><a href="{% if esGerente %}{% url 'Estados:BalanceGeneral' anio=resultado.yearEstado %}{% else %}{% url 'Estados:BalanceGeneral' idempresadmin=empresa.idEmpresa anio=resultado.yearEstado %}{% endif %}">Balance General</a></li>
                             {% endfor %} 
                             <li class="active"><div style="color: #e03a3c; text-decoration: none; font-size: 15px; font-weight: 600; font-family: 'Raleway', sans-serif;">Estado de Resultados</div></li>
                         </ul>

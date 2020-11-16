@@ -35,12 +35,15 @@ def indexEstados(request,idempresadmin=None):
     idRolUsuarioActual = request.user.rol
     #obtiene la tupla de acceso del usuario actual al form actual
     usac=AccesoUsuario.objects.filter(idUsuario=idUsuarioActual,idOpcion=op).first()
+    esGerente=False
     #Si el acceso existe
     if(usac!=None):
         if(idRolUsuarioActual==3):
             empresaActual=get_object_or_404(Empresa,gerente=idUsuarioActual)
+            esGerente= True
         else:
             empresaActual=Empresa.objects.filter(idEmpresa=idempresadmin).first()
+            esGerente = False
             if(empresaActual==None):
                  raise Http404("Oops, esta página no existe.")
         empresa = empresaActual.idEmpresa
@@ -821,153 +824,197 @@ def indexEstados(request,idempresadmin=None):
         #############REQUEST GET#################33
         #Para request get
         else:
-            empresaActual = Empresa.objects.get(idEmpresa=empresa)
             argumentos = {
                 "idEmpresaActual":empresa,
                 "ListaBalances":empresaActual.BalancesDeEmpresa.all(),
-                "formIngresarEstado":EstadoForm()
+                "formIngresarEstado":EstadoForm(),
+                'esGerente':esGerente
             }
             return render(request, 'Estados/EstadosIndex.html',argumentos)
     else:
         return render(request, 'Usuarios/Error401.html')
 
 # Create your views here.
-def indexEstadoResultado(request, empresa, anio):
-    ##################OBTENER TODAS LAS CUENTAS DE LA EMPRESA##########################
-    #Obtengo todas las cuentas de la empresa
-    Cuentas = Cuenta.objects.filter(idEmpresa=empresa).order_by('idCuenta')
-    
-    ##################OBTENER LA EMPRESA#############################
-    EmpresaActual = Empresa.objects.get(idEmpresa=empresa)
+def indexEstadoResultado(request, anio, idempresadmin = None):
+    #define el codigo del form para los accesos
+    op = '005'
+    #obtiene el usuario de la sesión actual
+    idUsuarioActual = request.user.id
+    idRolUsuarioActual = request.user.rol
+    #obtiene la tupla de acceso del usuario actual al form actual
+    usac=AccesoUsuario.objects.filter(idUsuario=idUsuarioActual,idOpcion=op).first()
+    esGerente=False
+    #Si el acceso existe
+    if(usac!=None):
+        if(idRolUsuarioActual==3):
+            empresaActual=get_object_or_404(Empresa,gerente=idUsuarioActual)
+            esGerente = True
+        else:
+            empresaActual=Empresa.objects.filter(idEmpresa=idempresadmin).first()
+            esGerente = False
+            if(empresaActual==None):
+                 raise Http404("Oops, esta página no existe.")
+        empresa = empresaActual.idEmpresa
+        ##################OBTENER TODAS LAS CUENTAS DE LA EMPRESA##########################
+        #Obtengo todas las cuentas de la empresa
+        Cuentas = Cuenta.objects.filter(idEmpresa=empresa).order_by('idCuenta')
+        
+        ##################OBTENER LA EMPRESA#############################
+        EmpresaActual = Empresa.objects.get(idEmpresa=empresa)
 
-    ##################OBTENER TODOS LOS ESTADOS DE LA EMPRESA##########################
-    #Obtengo todos los estados de resultado de la empresa (tengo los idResultado)
-    EstadosEmpresa = EstadoEmpresa.objects.filter(idEmpresa=empresa).order_by('idResultado')
-    #Obtengo el estado del anio dado    
-    Resultados = []
-    Anios = []
-    #Para cada estado de la empresa
-    for estado in EstadosEmpresa:
-        #Si el estado es del año dado
-        if(estado.idResultado.yearEstado==anio):
-            #Añadir a Estados de Resultados del año
-            Resultados.append(estado.idResultado)
-        #Para cada estado de la empresa, añadirlos a una lista
-        Anios.append(estado.idResultado.yearEstado)
-    #Luego de obtener los años de los estados de la empresa, meterlos a un set para eliminar duplicados
-    #y luego de eso devolverlos a una lista
-    Anios = list(set(Anios))
-    Anios.sort()
+        ##################OBTENER TODOS LOS ESTADOS DE LA EMPRESA##########################
+        #Obtengo todos los estados de resultado de la empresa (tengo los idResultado)
+        EstadosEmpresa = EstadoEmpresa.objects.filter(idEmpresa=empresa).order_by('idResultado')
+        #Obtengo el estado del anio dado    
+        Resultados = []
+        Anios = []
+        #Para cada estado de la empresa
+        for estado in EstadosEmpresa:
+            #Si el estado es del año dado
+            if(estado.idResultado.yearEstado==anio):
+                #Añadir a Estados de Resultados del año
+                Resultados.append(estado.idResultado)
+            #Para cada estado de la empresa, añadirlos a una lista
+            Anios.append(estado.idResultado.yearEstado)
+        #Luego de obtener los años de los estados de la empresa, meterlos a un set para eliminar duplicados
+        #y luego de eso devolverlos a una lista
+        Anios = list(set(Anios))
+        Anios.sort()
 
-    ##################OBTENER TODOS SALDOS DE LA EMPRESA##########################
-    #Obtengo todos los saldos con los estados
-    SaldosCuentasEmpresa = []
-    #Para cada cuenta de la empresa
-    for cuenta in Cuentas:
-        if(cuenta.tipo_cuenta=="Estado de Resultado" or cuenta.tipo_cuenta=='6'):
-            saldoCuentaAux = SaldoDeCuentaResultado.objects.filter(idCuenta=cuenta.idCuenta)
-            if(saldoCuentaAux != None):
-                for saldoAuxiliar in saldoCuentaAux:
-                    #Añadir a Listado de saldo de cuentas, los saldos de cuentas correspondientes al listado de cuentas
-                    SaldosCuentasEmpresa.append(saldoAuxiliar)
-        #Se tienen todos los saldos de cuentas de estados de resultado relacionados a las cuentas de la empresa
+        ##################OBTENER TODOS SALDOS DE LA EMPRESA##########################
+        #Obtengo todos los saldos con los estados
+        SaldosCuentasEmpresa = []
+        #Para cada cuenta de la empresa
+        for cuenta in Cuentas:
+            if(cuenta.tipo_cuenta=="Estado de Resultado" or cuenta.tipo_cuenta=='6'):
+                saldoCuentaAux = SaldoDeCuentaResultado.objects.filter(idCuenta=cuenta.idCuenta)
+                if(saldoCuentaAux != None):
+                    for saldoAuxiliar in saldoCuentaAux:
+                        #Añadir a Listado de saldo de cuentas, los saldos de cuentas correspondientes al listado de cuentas
+                        SaldosCuentasEmpresa.append(saldoAuxiliar)
+            #Se tienen todos los saldos de cuentas de estados de resultado relacionados a las cuentas de la empresa
 
-    #Obtengo los saldos del estado de resultado
-    SaldoEstado = []
-    if(len(Resultados)>0):
-        ResultadoActual = Resultados[0]
-        #Para cada saldo de las cuentas de la empresa
-        for saldoEmpresa in SaldosCuentasEmpresa:
-            if(saldoEmpresa.year_saldo_Resul.year == ResultadoActual.yearEstado):
-                #Añadir a los Saldos del estado de resultado del mismo anio
-                SaldoEstado.append(saldoEmpresa)
+        #Obtengo los saldos del estado de resultado
+        SaldoEstado = []
+        if(len(Resultados)>0):
+            ResultadoActual = Resultados[0]
+            #Para cada saldo de las cuentas de la empresa
+            for saldoEmpresa in SaldosCuentasEmpresa:
+                if(saldoEmpresa.year_saldo_Resul.year == ResultadoActual.yearEstado):
+                    #Añadir a los Saldos del estado de resultado del mismo anio
+                    SaldoEstado.append(saldoEmpresa)
 
-    argumentos = {
-        #Contiene todas las cuentas de la empresa
-        'salidaDebug1':Cuentas,
-        #Contiene TODA la informacion de las cuentas de la empresa (saldos, anios, etc)
-        'salidaDebug2':SaldosCuentasEmpresa,
-        #Contiene la informacion general del estado especificado
-        'resultadosAnio':Resultados,
-        #Años que poseen estados de resultados
-        'aniosConEstados':Anios,
-        #Contiene la informacion ANUAL de las cuentas de la empresa (1 solo estado, el especificado)
-        'saldosEstados':SaldoEstado,
-        #Manda el id de la empresa a la template
-        'empresa':EmpresaActual,
-    }
-    return render(request,'Estados/EstadoResultados.html', argumentos)
+        argumentos = {
+            #Contiene todas las cuentas de la empresa
+            'salidaDebug1':Cuentas,
+            #Contiene TODA la informacion de las cuentas de la empresa (saldos, anios, etc)
+            'salidaDebug2':SaldosCuentasEmpresa,
+            #Contiene la informacion general del estado especificado
+            'resultadosAnio':Resultados,
+            #Años que poseen estados de resultados
+            'aniosConEstados':Anios,
+            #Contiene la informacion ANUAL de las cuentas de la empresa (1 solo estado, el especificado)
+            'saldosEstados':SaldoEstado,
+            #Manda el id de la empresa a la template
+            'empresa':EmpresaActual,
+            'esGerente':esGerente
+        }
+        return render(request,'Estados/EstadoResultados.html', argumentos)
+    else:
+        return render(request, 'Usuarios/Error401.html')
 
 # Index de balance general
-def indexBalanceGeneral(request, empresa, anio):
-    ##################OBTENER TODAS LAS CUENTAS DE LA EMPRESA##########################
-    #Obtengo todas las cuentas de la empresa
-    Cuentas = Cuenta.objects.filter(idEmpresa=empresa).order_by('idCuenta')
-    
-    ##################OBTENER LA EMPRESA#############################
-    EmpresaActual = Empresa.objects.get(idEmpresa=empresa)
+def indexBalanceGeneral(request, anio, idempresadmin = None):
+    #define el codigo del form para los accesos
+    op = '005'
+    #obtiene el usuario de la sesión actual
+    idUsuarioActual = request.user.id
+    idRolUsuarioActual = request.user.rol
+    #obtiene la tupla de acceso del usuario actual al form actual
+    usac=AccesoUsuario.objects.filter(idUsuario=idUsuarioActual,idOpcion=op).first()
+    esGerente=False
+    #Si el acceso existe
+    if(usac!=None):
+        if(idRolUsuarioActual==3):
+            empresaActual=get_object_or_404(Empresa,gerente=idUsuarioActual)
+            esGerente = True
+        else:
+            empresaActual=Empresa.objects.filter(idEmpresa=idempresadmin).first()
+            esGerente=False
+            if(empresaActual==None):
+                 raise Http404("Oops, esta página no existe.")
+        empresa = empresaActual.idEmpresa
+        ##################OBTENER TODAS LAS CUENTAS DE LA EMPRESA##########################
+        #Obtengo todas las cuentas de la empresa
+        Cuentas = Cuenta.objects.filter(idEmpresa=empresa).order_by('idCuenta')
+        
+        ##################OBTENER LA EMPRESA#############################
+        EmpresaActual = Empresa.objects.get(idEmpresa=empresa)
 
-    ##################OBTENER TODOS LOS ESTADOS DE LA EMPRESA##########################
-    #Obtengo todos los estados de resultado de la empresa (tengo los idResultado)
-    BalancesEmpresa = BalanceEmpresa.objects.filter(idEmpresa=empresa).order_by('idbalance')
+        ##################OBTENER TODOS LOS ESTADOS DE LA EMPRESA##########################
+        #Obtengo todos los estados de resultado de la empresa (tengo los idResultado)
+        BalancesEmpresa = BalanceEmpresa.objects.filter(idEmpresa=empresa).order_by('idbalance')
 
-    #Obtengo el estado del anio dado    
-    Balances = []
-    Anios = []
-    #Para cada estado de la empresa
-    for balance in BalancesEmpresa:
-        #Si el estado es del año dado
-        if(balance.idbalance.yearEstado==anio):
-            #Añadir a Estados de Resultados del año
-            Balances.append(balance.idbalance)
-        #Para cada estado de la empresa, añadirlos a una lista
-        Anios.append(balance.idbalance.yearEstado)
-    #Luego de obtener los años de los estados de la empresa, meterlos a un set para eliminar duplicados
-    #y luego de eso devolverlos a una lista
-    Anios = list(set(Anios))
-    Anios.sort()
+        #Obtengo el estado del anio dado    
+        Balances = []
+        Anios = []
+        #Para cada estado de la empresa
+        for balance in BalancesEmpresa:
+            #Si el estado es del año dado
+            if(balance.idbalance.yearEstado==anio):
+                #Añadir a Estados de Resultados del año
+                Balances.append(balance.idbalance)
+            #Para cada estado de la empresa, añadirlos a una lista
+            Anios.append(balance.idbalance.yearEstado)
+        #Luego de obtener los años de los estados de la empresa, meterlos a un set para eliminar duplicados
+        #y luego de eso devolverlos a una lista
+        Anios = list(set(Anios))
+        Anios.sort()
 
-    ##################OBTENER TODOS SALDOS DE LA EMPRESA##########################
-    #Obtengo todos los saldos con los estados
-    SaldosCuentasEmpresa = []
-    #Para cada cuenta de la empresa
-    for cuenta in Cuentas:
-        #Si la cuenta NO es de Estado de resultado
-        if(cuenta.tipo_cuenta!="Estado de Resultado" or cuenta.tipo_cuenta!='6'):
-            #El saldo de cuenta que se almacenará sera
-            #el primer saldo de cuenta que coincide con el id de la cuenta actual
-            saldoCuentaAux = SaldoDeCuentaBalace.objects.filter(idCuenta=cuenta.idCuenta)
-            if(saldoCuentaAux != None):
-                for saldoAuxiliar in saldoCuentaAux:
-                    #Añadir a Listado de saldo de cuentas, los saldos de cuentas correspondientes al listado de cuentas
-                    SaldosCuentasEmpresa.append(saldoAuxiliar)
-        #Se tienen todos los saldos de cuentas de estados de resultado relacionados a las cuentas de la empresa
+        ##################OBTENER TODOS SALDOS DE LA EMPRESA##########################
+        #Obtengo todos los saldos con los estados
+        SaldosCuentasEmpresa = []
+        #Para cada cuenta de la empresa
+        for cuenta in Cuentas:
+            #Si la cuenta NO es de Estado de resultado
+            if(cuenta.tipo_cuenta!="Estado de Resultado" or cuenta.tipo_cuenta!='6'):
+                #El saldo de cuenta que se almacenará sera
+                #el primer saldo de cuenta que coincide con el id de la cuenta actual
+                saldoCuentaAux = SaldoDeCuentaBalace.objects.filter(idCuenta=cuenta.idCuenta)
+                if(saldoCuentaAux != None):
+                    for saldoAuxiliar in saldoCuentaAux:
+                        #Añadir a Listado de saldo de cuentas, los saldos de cuentas correspondientes al listado de cuentas
+                        SaldosCuentasEmpresa.append(saldoAuxiliar)
+            #Se tienen todos los saldos de cuentas de estados de resultado relacionados a las cuentas de la empresa
 
-    #Obtengo los saldos del estado de resultado
-    SaldosDelBalance = []
-    if(len(Balances)>0):
-        BalanceActual = Balances[0]
-        #Para cada saldo de las cuentas de la empresa
-        for saldoEmpresa in SaldosCuentasEmpresa:
-            if(saldoEmpresa.year_saldo.year == BalanceActual.yearEstado):
-                #Añadir a los Saldos del estado de resultado del mismo anio
-                SaldosDelBalance.append(saldoEmpresa)
+        #Obtengo los saldos del estado de resultado
+        SaldosDelBalance = []
+        if(len(Balances)>0):
+            BalanceActual = Balances[0]
+            #Para cada saldo de las cuentas de la empresa
+            for saldoEmpresa in SaldosCuentasEmpresa:
+                if(saldoEmpresa.year_saldo.year == BalanceActual.yearEstado):
+                    #Añadir a los Saldos del estado de resultado del mismo anio
+                    SaldosDelBalance.append(saldoEmpresa)
 
-    argumentos = {
-        #Contiene todas las cuentas de la empresa
-        'salidaDebug1':Cuentas,
-        #Contiene TODA la informacion de las cuentas de la empresa (saldos, anios, etc)
-        'salidaDebug2':SaldosCuentasEmpresa,
-        #Contiene la informacion general del estado especificado
-        'balancesAnio':Balances,
-        #Años que poseen estados de resultados
-        'aniosConEstados':Anios,
-        #Contiene la informacion ANUAL de las cuentas de la empresa (1 solo estado, el especificado)
-        'saldosBalance':SaldosDelBalance,
-        #Manda el id de la empresa a la template
-        'empresa':EmpresaActual,
-    }
-    return render(request,'Estados/BalanceGeneral.html', argumentos)
+        argumentos = {
+            #Contiene todas las cuentas de la empresa
+            'salidaDebug1':Cuentas,
+            #Contiene TODA la informacion de las cuentas de la empresa (saldos, anios, etc)
+            'salidaDebug2':SaldosCuentasEmpresa,
+            #Contiene la informacion general del estado especificado
+            'balancesAnio':Balances,
+            #Años que poseen estados de resultados
+            'aniosConEstados':Anios,
+            #Contiene la informacion ANUAL de las cuentas de la empresa (1 solo estado, el especificado)
+            'saldosBalance':SaldosDelBalance,
+            #Manda el id de la empresa a la template
+            'empresa':EmpresaActual,
+            'esGerente':esGerente
+        }
+        return render(request,'Estados/BalanceGeneral.html', argumentos)
+    else:
+        return render(request, 'Usuarios/Error401.html')
 
 def mensajeRedireccion(request,mensaje,empresaidmen=None):
     if(request.user.rol==3):
