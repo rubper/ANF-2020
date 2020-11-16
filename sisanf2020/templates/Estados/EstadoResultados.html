@@ -3,19 +3,19 @@
 Estado de Resultados
 {% endblock %}
 {% block content %}
-<div style="width:100vw">
-    <div style="background:white;position:relative;text-align:center; padding-bottom:20px;">
+<div style="width:100vw;padding-bottom:50px;padding-top:20px;color:white;">
+    <div style="position:relative;text-align:center; padding-bottom:20px;">
 <!--Para cada una de las relaciones estado-empresa-->
 
         <h3>{{empresa}}</h3>
     <!--Año del estado de resultado-->
-    <div style="background:white;position:relative;text-align:center"><h5>Periodo del estado de resultado<br>
+    <div style="position:relative;text-align:center"><h5>Periodo del estado de resultado<br>
         {% for resultado in resultadosAnio %} 
         del {{resultado.fechaInicioEstado}} al {{resultado.fechaFinEstado}}</h5>
         {% endfor %}   
     </div>
 </div>
-    <div style="background:white;position:relative;">
+    <div style="position:relative;">
         <table style="border:none; width:100%;">
             <col style="width:34%"/>
             <col style="width:66%"/>
@@ -23,13 +23,13 @@ Estado de Resultados
                 <!--======Lado izquierdo======-->
                 <td style="vertical-align:top;">
                 <!--Años que tienen estados de resultado-->
-                    <div class="table" style="background:white;position:relative;padding-top:-30px;padding-bottom:25px;padding-left:20%;padding-right:20%;">
-                        <div class="nav-menu" style="text-align:center;border:solid 1px;padding-top:25px;padding-bottom:25px;">
+                    <div class="table" style="position:relative;padding-top:-30px;padding-bottom:25px;padding-left:20%;padding-right:20%;">
+                        <div class="nav-menu" style="color:white;text-align:center;border:solid 1px white;padding-top:25px;padding-bottom:25px;">
                             <h6><b>Estados de resultado</b></h6><br>
                             {% for resultado in resultadosAnio %}
                             {% for anios in aniosConEstados %} 
                             {% if anios != resultado.yearEstado %}
-                            <div style="padding-bottom:20px"><a href="{% if esGerente %}{% url 'Estados:EstadoResultado' anio=anios %}{% else %}{% url 'Estados:EstadoResultado' idempresadmin=empresa.idEmpresa anio=anios %}{% endif %}">Año {{anios}}</a></div>
+                            <a href="{% if esGerente %}{% url 'Estados:EstadoResultado' anio=anios %}{% else %}{% url 'Estados:EstadoResultado' idempresadmin=empresa.idEmpresa anio=anios %}{% endif %}"><div style="color:white;padding-bottom:20px">Año {{anios}}</div></a>
                             {% else %}
                             <div style="color: #e03a3c; text-decoration: none; font-size: 15px; font-weight: 600; font-family: 'Raleway', sans-serif;padding-bottom:20px">Año {{anios}}</div>
                             {% endif %}
