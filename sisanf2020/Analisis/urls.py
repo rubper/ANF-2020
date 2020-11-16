@@ -11,6 +11,6 @@ urlpatterns = [
     path('Importar', views.uploadRatios, name='ImportarRatios'),
     #URL analisis horizontal
     path('AnalisisHorizontal/<int:empresa>', views.indexAnalisisHorizontal, name='AnalisisHorizontal'),
-    path('VerOverView/', views.VerOverView, name='VerOverView'),
+    path('Analisis/', views.VerOverView, name='VerAnalisis'),
     path('OverView/', views.OverView, name='OverView'),
 ]

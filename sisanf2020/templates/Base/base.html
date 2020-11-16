@@ -59,22 +59,21 @@
               {% if request.user.is_authenticated %}
               <li class="active"><a href="{% url 'index' %}">Inicio</a></li>
               {% if request.user.rol == 3 %}
-                {% for i in emp %}
-                  {% if i.gerente == request.user.id %}
-                  <li><a href="{% url 'Empresa:mostrar' %}">{{ i.rasonsocial }}</a></li>
-                  {% endif %}
-                {% endfor %}
+                {% if emp.count != 0 %}
+                  {% for i in emp %}
+                    {% if i.gerente == request.user.id %}
+                      <li><a href="{% url 'Empresa:mostrar' %}">{{ i.rasonsocial }}</a></li>
+                    {% else %}
+                      <li><a href="{% url 'Empresa:mostrar' %}">Mi Empresa</a></li>
+                    {% endif %}
+                  {% endfor %}
+                {% else %}
+                  <li><a href="{% url 'Empresa:mostrar' %}">Mi Empresa</a></li>
+                {% endif %}
               {% else %}
-              <li><a href="{% url 'Empresa:mostrar' %}">Empresas</a></li>
+                <li><a href="{% url 'Empresa:mostrar' %}">Empresas</a></li>
               {% endif %}
-              <li class="drop-down"><a href="">Analisis</a>
-                <ul>
-                  <li><a href="{% url 'Analisis:VerOverView' %}">OverView</a></li>
-                  <li><a href="#">Analisis Horizontal</a></li>
-                  <li><a href="#">Análisis Vertical</a></li>
-                  <li><a href="#">Ratios</a></li>
-                </ul>
-              </li>
+              <li><a href="{% url 'Analisis:VerAnalisis' %}">Análisis</a></li>
               {% if request.user.rol == 1 or request.user.rol == 2 %}
               <li class="drop-down"><a href="">Giros</a>
                 <ul>

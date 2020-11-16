@@ -20,7 +20,7 @@ Análisis
                   <option value="{{ i.idEmpresa }}">{{ i.rasonsocial }}</option>
                   {% endfor %}
                 </select>
-                <input class="form-control" type="number" name="year" value="" placeholder="Escriba un año">
+                <input id="anioA" class="form-control" type="number" name="year" value="" placeholder="Escriba un año">
                 <button style="background:#000000" class="form-control mt-3" type="submit">OverView</button>
                 </div>
               </form>
@@ -36,7 +36,7 @@ Análisis
                     <input class="form-control" type="hidden" name="empresa" value="{{ i.idEmpresa }}">
                     {% endif %}
                   {% endfor %}
-                <input class="form-control" type="number" name="year" value="" placeholder="Escriba un año">
+                <input id="anioA" class="form-control" type="number" name="year" value="" placeholder="Escriba un año">
                 <button style="background:#000000" class="form-control mt-3" type="submit">OverView</button>
                 </div>
               </form>
@@ -49,3 +49,9 @@ Análisis
     </div>
 </div>
 {% endblock %}
+{% block extrajs %}
+<script>
+  var anioActual = (new Date()).getFullYear();
+  document.getElementById("anioA").value = anioActual;
+</script>
+{% endblock extrajs %}
