@@ -36,13 +36,12 @@ class mostrar_Empresa(ListView):
 
     def get(self, request, *args, **kwards):
         if request.user.is_authenticated:
-            usactivo = request.user.id #obtiene el id del usuario que se ha autenticado
+            usactivo = request.user.id #obtiene el id del usuario que se ha autenticado            
             op = '004' #Código de lista de usuarios
             usac=AccesoUsuario.objects.filter(idUsuario=usactivo).filter(idOpcion=op).values('idUsuario').first()
             g = User.objects.filter(id=usactivo).values('rol')
             rolg=g.get()
             rolgerente = rolg.get('rol')
-            print(rolgerente)
             if usac is None:
                 return render(request, 'Usuarios/Error401.html')
             else:

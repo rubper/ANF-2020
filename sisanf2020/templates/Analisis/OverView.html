@@ -48,9 +48,7 @@ Análisis Financiero
                 <thead class="table-dark">
                   <tr>
                     <th scope="col" align="center">Razón financiera</th>
-                    <th scope="col" align="center">Resultado</th>
-                    <th scope="col" align="center">Valor parametro</th>
-                    <th scope="col" align="center">Situación de la empresa</th>
+                    <th scope="col" align="center">Resultado de la empresa</th>
                     <th scope="col" align="center">Valor promedio del giro</th>
                     <th scope="col" align="center">Situación de la empresa</th>
                   </tr>
@@ -63,33 +61,21 @@ Análisis Financiero
                         {% if resultado.idAnalisis.idAnalisis == analisis.idAnalisis %}
                           {% if resultado.idRatios == valor.idRatio %}
                             {% if resultado.idRatios.categoria == "Liquidez"  %}
-                              {% if resultado.valorRatiosAnalisis < valor.valorParametro %}
+                              {% if resultado.valorRatiosAnalisis < valor.valorPromedio %}
                                 <td>{{ resultado.idRatios }}</td>
                                 <td>{{ resultado.valorRatiosAnalisis }}</td>
                                 <td>{{ valor.valorParametro }}</td>
-                                <td>Su resultado es menor que el valor parametro</td>
-                              {% else %}
-                                {% if resultado.valorRatiosAnalisis == valor.valorParametro %}
-                                  <td>{{ resultado.idRatios }}</td>
-                                  <td>{{ resultado.valorRatiosAnalisis }}</td>
-                                  <td>{{ valor.valorParametro }}</td>
-                                  <td>Su resultado es igual que el valor parametro</td>
-                                {% else %}
-                                  <td>{{ resultado.idRatios }}</td>
-                                  <td>{{ resultado.valorRatiosAnalisis }}</td>
-                                  <td>{{ valor.valorParametro }}</td>
-                                  <td>Su resultado es mayor que el valor parametro</td>
-                                {% endif %}
-                              {% endif %}
-                              {% if resultado.valorRatiosAnalisis < valor.valorPromedio %}
-                                <td>{{ valor.valorPromedio }}</td>
                                 <td>Su resultado es menor que el valor promedio</td>
                               {% else %}
                                 {% if resultado.valorRatiosAnalisis == valor.valorPromedio %}
-                                  <td>{{ valor.valorPromedio }}</td>
+                                  <td>{{ resultado.idRatios }}</td>
+                                  <td>{{ resultado.valorRatiosAnalisis }}</td>
+                                  <td>{{ valor.valorParametro }}</td>
                                   <td>Su resultado es igual que el valor promedio</td>
                                 {% else %}
-                                  <td>{{ valor.valorPromedio }}</td>
+                                  <td>{{ resultado.idRatios }}</td>
+                                  <td>{{ resultado.valorRatiosAnalisis }}</td>
+                                  <td>{{ valor.valorParametro }}</td>
                                   <td>Su resultado es mayor que el valor promedio</td>
                                 {% endif %}
                               {% endif %}
@@ -114,9 +100,7 @@ Análisis Financiero
                 <thead class="table-dark">
                   <tr>
                     <th scope="col" align="center">Razón financiera</th>
-                    <th scope="col" align="center">Resultado</th>
-                    <th scope="col" align="center">Valor parametro</th>
-                    <th scope="col" align="center">Situación de la empresa</th>
+                    <th scope="col" align="center">Resultado de la empresa</th>
                     <th scope="col" align="center">Valor promedio del giro</th>
                     <th scope="col" align="center">Situación de la empresa</th>
                   </tr>
@@ -129,24 +113,24 @@ Análisis Financiero
                         {% if resultado.idAnalisis.idAnalisis == analisis.idAnalisis %}
                           {% if resultado.idRatios == valor.idRatio %}
                             {% if resultado.idRatios.categoria == "Actividad"  %}
-                              {% if resultado.valorRatiosAnalisis < valor.valorParametro %}
+                            {% if resultado.valorRatiosAnalisis < valor.valorPromedio %}
+                              <td>{{ resultado.idRatios }}</td>
+                              <td>{{ resultado.valorRatiosAnalisis }}</td>
+                              <td>{{ valor.valorParametro }}</td>
+                              <td>Su resultado es menor que el valor promedio</td>
+                            {% else %}
+                              {% if resultado.valorRatiosAnalisis == valor.valorPromedio %}
                                 <td>{{ resultado.idRatios }}</td>
                                 <td>{{ resultado.valorRatiosAnalisis }}</td>
                                 <td>{{ valor.valorParametro }}</td>
-                                <td>Su resultado es menor que el valor parametro</td>
+                                <td>Su resultado es igual que el valor promedio</td>
                               {% else %}
                                 <td>{{ resultado.idRatios }}</td>
                                 <td>{{ resultado.valorRatiosAnalisis }}</td>
                                 <td>{{ valor.valorParametro }}</td>
-                                <td>Su resultado es mayor que el valor parametro</td>
-                              {% endif %}
-                              {% if resultado.valorRatiosAnalisis < valor.valorPromedio %}
-                                <td>{{ valor.valorPromedio }}</td>
-                                <td>Su resultado es menor que el valor promedio</td>
-                              {% else %}
-                                <td>{{ valor.valorPromedio }}</td>
                                 <td>Su resultado es mayor que el valor promedio</td>
                               {% endif %}
+                            {% endif %}
                             {% endif %}
                           {% endif %}
                         {% endif %}
@@ -168,9 +152,7 @@ Análisis Financiero
                 <thead class="table-dark">
                   <tr>
                     <th scope="col" align="center">Razón financiera</th>
-                    <th scope="col" align="center">Resultado</th>
-                    <th scope="col" align="center">Valor parametro</th>
-                    <th scope="col" align="center">Situación de la empresa</th>
+                    <th scope="col" align="center">Resultado de la empresa</th>
                     <th scope="col" align="center">Valor promedio del giro</th>
                     <th scope="col" align="center">Situación de la empresa</th>
                   </tr>
@@ -183,23 +165,23 @@ Análisis Financiero
                         {% if resultado.idAnalisis.idAnalisis == analisis.idAnalisis %}
                           {% if resultado.idRatios == valor.idRatio %}
                             {% if resultado.idRatios.categoria == "Apalancamiento"  %}
-                              {% if resultado.valorRatiosAnalisis < valor.valorParametro %}
-                                <td>{{ resultado.idRatios }}</td>
-                                <td>{{ resultado.valorRatiosAnalisis }}</td>
-                                <td>{{ valor.valorParametro }}</td>
-                                <td>Su resultado es menor que el valor parametro</td>
-                              {% else %}
-                                <td>{{ resultado.idRatios }}</td>
-                                <td>{{ resultado.valorRatiosAnalisis }}</td>
-                                <td>{{ valor.valorParametro }}</td>
-                                <td>Su resultado es mayor que el valor parametro</td>
-                              {% endif %}
                               {% if resultado.valorRatiosAnalisis < valor.valorPromedio %}
-                                <td>{{ valor.valorPromedio }}</td>
+                                <td>{{ resultado.idRatios }}</td>
+                                <td>{{ resultado.valorRatiosAnalisis }}</td>
+                                <td>{{ valor.valorParametro }}</td>
                                 <td>Su resultado es menor que el valor promedio</td>
                               {% else %}
-                                <td>{{ valor.valorPromedio }}</td>
-                                <td>Su resultado es mayor que el valor promedio</td>
+                                {% if resultado.valorRatiosAnalisis == valor.valorPromedio %}
+                                  <td>{{ resultado.idRatios }}</td>
+                                  <td>{{ resultado.valorRatiosAnalisis }}</td>
+                                  <td>{{ valor.valorParametro }}</td>
+                                  <td>Su resultado es igual que el valor promedio</td>
+                                {% else %}
+                                  <td>{{ resultado.idRatios }}</td>
+                                  <td>{{ resultado.valorRatiosAnalisis }}</td>
+                                  <td>{{ valor.valorParametro }}</td>
+                                  <td>Su resultado es mayor que el valor promedio</td>
+                                {% endif %}
                               {% endif %}
                             {% endif %}
                           {% endif %}
@@ -222,9 +204,7 @@ Análisis Financiero
                 <thead class="table-dark">
                   <tr>
                     <th scope="col" align="center">Razón financiera</th>
-                    <th scope="col" align="center">Resultado</th>
-                    <th scope="col" align="center">Valor parametro</th>
-                    <th scope="col" align="center">Situación de la empresa</th>
+                    <th scope="col" align="center">Resultado de la empresa</th>
                     <th scope="col" align="center">Valor promedio del giro</th>
                     <th scope="col" align="center">Situación de la empresa</th>
                   </tr>
@@ -237,23 +217,23 @@ Análisis Financiero
                         {% if resultado.idAnalisis.idAnalisis == analisis.idAnalisis %}
                           {% if resultado.idRatios == valor.idRatio %}
                             {% if resultado.idRatios.categoria == "Rentabilidad"  %}
-                              {% if resultado.valorRatiosAnalisis < valor.valorParametro %}
-                                <td>{{ resultado.idRatios }}</td>
-                                <td>{{ resultado.valorRatiosAnalisis }}</td>
-                                <td>{{ valor.valorParametro }}</td>
-                                <td>Su resultado es menor que el valor parametro</td>
-                              {% else %}
-                                <td>{{ resultado.idRatios }}</td>
-                                <td>{{ resultado.valorRatiosAnalisis }}</td>
-                                <td>{{ valor.valorParametro }}</td>
-                                <td>Su resultado es mayor que el valor parametro</td>
-                              {% endif %}
                               {% if resultado.valorRatiosAnalisis < valor.valorPromedio %}
-                                <td>{{ valor.valorPromedio }}</td>
+                                <td>{{ resultado.idRatios }}</td>
+                                <td>{{ resultado.valorRatiosAnalisis }}</td>
+                                <td>{{ valor.valorParametro }}</td>
                                 <td>Su resultado es menor que el valor promedio</td>
                               {% else %}
-                                <td>{{ valor.valorPromedio }}</td>
-                                <td>Su resultado es mayor que el valor promedio</td>
+                                {% if resultado.valorRatiosAnalisis == valor.valorPromedio %}
+                                  <td>{{ resultado.idRatios }}</td>
+                                  <td>{{ resultado.valorRatiosAnalisis }}</td>
+                                  <td>{{ valor.valorParametro }}</td>
+                                  <td>Su resultado es igual que el valor promedio</td>
+                                {% else %}
+                                  <td>{{ resultado.idRatios }}</td>
+                                  <td>{{ resultado.valorRatiosAnalisis }}</td>
+                                  <td>{{ valor.valorParametro }}</td>
+                                  <td>Su resultado es mayor que el valor promedio</td>
+                                {% endif %}
                               {% endif %}
                             {% endif %}
                           {% endif %}

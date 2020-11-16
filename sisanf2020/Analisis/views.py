@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.http.response import HttpResponseRedirect
+from django.urls import reverse_lazy, reverse
 from tablib import Dataset
 from Giro.models import Ratios
 from .resources import RatiosResource
@@ -9,10 +11,33 @@ from datetime import datetime
 from Analisis.models import Analisis, LineaDeInforme, RatiosAnalisis
 from Giro.models import Ratios, DatoGiro, Giro
 from Empresa.models import Empresa
+from Usuarios.models import AccesoUsuario, User
 
 #Analisis
 def VerOverView(request):
-    return render(request, 'Analisis/VerOverView.html', {})
+    if request.user.is_authenticated:
+        usactivo = request.user.id #obtiene el id del usuario que se ha autenticado
+        op = '005' #Código de lista de usuarios
+        usac=AccesoUsuario.objects.filter(idUsuario=usactivo).filter(idOpcion=op).values('idUsuario').first()
+        g = User.objects.filter(id=usactivo).values('rol')
+        rolg=g.get()
+        rolgerente = rolg.get('rol')
+        if usac is None:
+            return render(request, 'Usuarios/Error401.html')
+        else:
+            if rolgerente == 3:
+                empGerente = Empresa.objects.filter(gerente=usactivo)                
+                if empGerente.count() != 0:
+                    return render(request, 'Analisis/VerOverView.html', {})
+                else:
+                    return render(request, 'Analisis/SinEmpresas.html', {})
+            else:
+                return render(request, 'Analisis/VerOverView.html', {})
+    else:
+        return redirect('Login')
+
+
+
 #Horizontal
 def indexAnalisisHorizontal(request, empresa):
     #Obtiene listado de análisis
@@ -54,6 +79,8 @@ def OverView(request):
     if request.method == "POST":
         empresa = request.POST['empresa']
         year = request.POST['year']
+    else:
+        return HttpResponseRedirect(reverse_lazy('Analisis:VerAnalisis'))
 
     #Listado de análisis
     AnEmp = Analisis.objects.filter(idEmpresa=empresa).filter(year_analisis=year)
@@ -77,6 +104,7 @@ def OverView(request):
         'year': year,
     }
     return render(request, 'Analisis/OverView.html', Contexto)
+
 
 def uploadRatios(request):
     if request.method == 'POST':
