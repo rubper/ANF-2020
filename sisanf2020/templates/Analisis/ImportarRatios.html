@@ -3,42 +3,40 @@
 Ratios
 {% endblock %}
 {% block content %}
-<div class="scrolling-box">
 <div class="container mt-5" align="center">
   {% for message in messages %}
-        <div class="alert alert-success mt-5 col-sm-3 text-center">
-          <a class="close" href="#" data-dismiss="alert">×</a>
-            {{ message }}
-        </div>
-      {% endfor %}
+  <div class="alert alert-success mt-5 col-sm-3 text-center">
+    <a class="close" href="#" data-dismiss="alert">×</a>
+    {{ message }}
+  </div>
+  {% endfor %}
   <section id="pricing" class="pricing section-bg col-lg-3 col-md-5 col-sm-12 col-xs">
-  <div class="container" align="center" data-aos="fade-up">
-    <div class="section-title">
-      <h2>Importar ratios</h2>
-      <p>Subir archivo de excel.</p>
-    </div>
-    <div class="container-fluid align-items">
-      <div class="row">
-        <div class="col-sm col-md-12" >
-          <div class="box border" data-aos="fade-up" data-aos-delay="100" align="center">
-            <div class="row align-items-start" >
-              <div class="col-sm" align="center">
-              <form id='uploadForm'  method='post' enctype="multipart/form-data" align="center">
-                {% csrf_token %}
-                  <div class="col-md-12  p-0">
-                    <input type="file" name="myfile" class='form-control'>
-                    <button class="btn btn-primary btn-lg mt-3" style="background:#2d4f6c" type="submit">Enviar</button>
-                    <a class="btn btn-primary btn-lg mt-3" style="background:#2d4f6c" href="{% url 'Analisis:ListaRatios' %}"><i class="fa fa-eye"></i> Ratios</a>
-                  </div>
-                </form>
+    <div class="container" align="center" data-aos="fade-up">
+      <div class="section-title">
+        <h2>Importar ratios</h2>
+        <p>Subir archivo de excel.</p>
+      </div>
+      <div class="container-fluid align-items">
+        <div class="row">
+          <div class="col-sm col-md-12" >
+            <div class="box border" data-aos="fade-up" data-aos-delay="100" align="center">
+              <div class="row align-items-start" >
+                <div class="col-sm" align="center">
+                  <form id='uploadForm'  method='post' enctype="multipart/form-data" align="center">
+                    {% csrf_token %}
+                    <div class="col-md-12  p-0">
+                      <input type="file" name="myfile" class='form-control'>
+                      <button class="btn btn-primary btn-lg mt-3" style="background:#2d4f6c" type="submit">Enviar</button>
+                      <a class="btn btn-primary btn-lg mt-3" style="background:#2d4f6c" href="{% url 'Analisis:ListaRatios' %}"><i class="fa fa-eye"></i> Ratios</a>
+                    </div>
+                  </form>
                 </div>
               </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
   </section>
-</div>
 </div>
 {% endblock %}
