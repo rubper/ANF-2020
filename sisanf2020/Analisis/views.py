@@ -220,24 +220,27 @@ def OverView(request):
 
 def uploadRatios(request):
     if request.method == 'POST':
-        ratios_resource = RatiosResource()
-        dataset = Dataset()
-        new_ratios = request.FILES['myfile']
+        if len(request.FILES)!=0:
+            ratios_resource = RatiosResource()
+            dataset = Dataset()
+            new_ratios = request.FILES['myfile']
 
-        if not new_ratios.name.endswith('xlsx'):
-            messages.error(request,'Error: Formato incorrecto')
-            return render(request, 'Analisis/importar.html')
+            if not new_ratios.name.endswith('xlsx'):
+                messages.error(request,'Error: Formato incorrecto')
+                return render(request, 'Analisis/importarRatios.html')
 
-        imported_data = dataset.load(new_ratios.read(), format='xlsx')
-        for data in imported_data:
-            value = Ratios(
-                data[0],
-                data[1],
-                data[2],
-                )
-            value.save()
-        messages.info(request, 'Ha importado los ratios, exitosamente')
-
+            imported_data = dataset.load(new_ratios.read(), format='xlsx')
+            for data in imported_data:
+                value = Ratios(
+                    data[0],
+                    data[1],
+                    data[2],
+                    )
+                value.save()
+            messages.info(request, 'Ha importado los ratios, exitosamente')
+        else:
+            messages.error(request,'Error: Aún no ha elegido un archivo')
+            return render(request, 'Analisis/importarRatios.html')
     return render(request, 'Analisis/ImportarRatios.html')
 
 class MostrarRatios(ListView):

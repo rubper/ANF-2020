@@ -31,14 +31,7 @@ class DatoGiro(models.Model):
     valorPromedio = models.FloatField(default=0)
 
     class Meta:
-        unique_together = ("idGiro", "idRatio")
-
-    def save(self, *args, **kwargs):
-        self.valorParametro = round(self.valorParametro, 4)
-        self.valorPromedio = round(self.valorPromedio, 4)
-        super(DatoGiro, self).save(*args, **kwargs)
+        unique_together = ("idGiro", "idRatio")    
 
     def __str__(self):
         return '{}'.format(self.idDato)  + " " + '{}'.format(self.idGiro)   + " " + '{}'.format(self.idRatio)
-
- 
