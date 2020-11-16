@@ -77,6 +77,15 @@ class eliminar_Empresa(DeleteView):
 class detalle_Empresa(DetailView):
     model=Empresa
     template_name = 'Empresa/Detalle_Empresa.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        rolUsuarioActual = self.request.user.rol
+        esGerente=False
+        if(rolUsuarioActual==3):
+            esGerente=True
+        context['rolEsGerente'] = esGerente
+        return context
+
 
 #CRUD de Cuetas "CATALOGO DE CUENTA"
 
