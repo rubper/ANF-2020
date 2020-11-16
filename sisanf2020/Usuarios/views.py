@@ -55,7 +55,7 @@ class AdministrarUsuarios(ListView):
     model = User
     template_name = 'Usuarios/AdministrarUsuarios.html'
 
-    def get(self, request, *args, **kwards):
+    def get(self, request):
         if request.user.is_authenticated:
             usactivo = request.user #obtiene el id del usuario que se ha autenticado
             op = '000' #Código de lista de usuarios
@@ -107,7 +107,7 @@ class AdministrarOpciones(ListView):
     model = OpcionForm
     template_name = 'Usuarios/AdministrarOpcion.html'
 
-    def get(self, request, *args, **kwards):
+    def get(self, request):
         if request.user.is_authenticated:
             usactivo = request.user #obtiene el id del usuario que se ha autenticado
             op = '001' #Código de lista de usuarios
@@ -126,6 +126,7 @@ class ModificarOpcion(SuccessMessageMixin, UpdateView):
     template_name = 'Usuarios/CrearOpcionForm.html'
     success_url = reverse_lazy('Usuarios:AdministrarOpcion')
     success_message = 'Opción de form modificado con éxito'
+
 
 class CrearAcceso(SuccessMessageMixin, CreateView):
     model = AccesoUsuario
@@ -151,7 +152,7 @@ class AdministrarAccesos(ListView):
     model = AccesoUsuario
     template_name = 'Usuarios/AdministrarAcceso.html'
 
-    def get(self, request, *args, **kwards):
+    def get(self, request):
         if request.user.is_authenticated:
             usactivo = request.user #obtiene el id del usuario que se ha autenticado
             op = '002' #Código de lista de usuarios

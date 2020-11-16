@@ -17,27 +17,35 @@ from .resources import CuentaResouce
 
 # Create your views here.
 
-
 def crear_Empresa(request):
-    if request.method == 'POST':
-        ger = request.POST['gerente']
-        gere = User.objects.get(id=ger)
-        empresa_form = Empresa_Forms(request.POST)
-        if empresa_form.is_valid():
-            empresa_form.save()
-            return redirect('Empresa:mostrar')
+    if request.user.is_authenticated:
+        usactivo = request.user #obtiene el id del usuario que se ha autenticado
+        op = '007' #Código para agregar
+        usac=AccesoUsuario.objects.filter(idUsuario=usactivo).filter(idOpcion=op).values('idUsuario').first()
+        if usac is None:
+            return render(request, 'Usuarios/Error401.html')
+        else:
+            if request.method == 'POST':
+                ger = request.POST['gerente']
+                gere = User.objects.get(id=ger)
+                empresa_form = Empresa_Forms(request.POST)
+                if empresa_form.is_valid():
+                    empresa_form.save()
+                    return redirect('Empresa:mostrar')
+            else:
+                empresa_form = Empresa_Forms()
+            return render(request, 'Empresa/crear_Empresa.html', {'empresa_form':empresa_form, 'gere':gere})
     else:
-        empresa_form = Empresa_Forms()
-    return render(request, 'Empresa/crear_Empresa.html', {'empresa_form':empresa_form, 'gere':gere})
+        return redirect('Login')
 
 class mostrar_Empresa(ListView):
     model=Empresa
     template_name = 'Empresa/Administrador_Empresas.html'
 
-    def get(self, request, *args, **kwards):
+    def get(self, request):
         if request.user.is_authenticated:
-            usactivo = request.user.id #obtiene el id del usuario que se ha autenticado            
-            op = '004' #Código de lista de usuarios
+            usactivo = request.user.id #obtiene el id del usuario que se ha autenticado
+            op = '004' #Código de lista de empresas
             usac=AccesoUsuario.objects.filter(idUsuario=usactivo).filter(idOpcion=op).values('idUsuario').first()
             g = User.objects.filter(id=usactivo).values('rol')
             rolg=g.get()
@@ -55,23 +63,38 @@ class mostrar_Empresa(ListView):
             return redirect('Login')
 
 def editar_Empresa(request, idEmpresa):
-    empr = Empresa.objects.get(idEmpresa = idEmpresa)
-    if request.method == 'GET':
-        empresa_form = Empresa_Forms(instance = empr)
+    if request.user.is_authenticated:
+        usactivo = request.user #obtiene el id del usuario que se ha autenticado
+        op = '006' #Código para editar
+        usac=AccesoUsuario.objects.filter(idUsuario=usactivo).filter(idOpcion=op).values('idUsuario').first()
+        if usac is None:
+            return render(request, 'Usuarios/Error401.html')
+        else:
+            empr = Empresa.objects.get(idEmpresa = idEmpresa)
+            if request.method == 'GET':
+                empresa_form = Empresa_Forms(instance = empr)
+            else:
+                empresa_form = Empresa_Forms(request.POST, instance = empr)
+                if empresa_form.is_valid():
+                    empresa_form.save()
+                return redirect('Empresa:mostrar')
+            return render(request, 'Empresa/crear_Empresa.html', {'empresa_form':empresa_form})
     else:
-        empresa_form = Empresa_Forms(request.POST, instance = empr)
-        if empresa_form.is_valid():
-            empresa_form.save()
-        return redirect('Empresa:mostrar')
-    return render(request, 'Empresa/crear_Empresa.html', {'empresa_form':empresa_form})
+        return redirect('Login')
 
-
-class eliminar_Empresa(DeleteView):
-    model= Empresa
-    form_class = Empresa_Forms
-    success_url = reverse_lazy('Empresa:mostrar')
-    def get_success_url(self):
-        return reverse_lazy('Empresa:mostrar')
+def eliminar_Empresa(request, idEmpresa):
+    if request.user.is_authenticated:
+        usactivo = request.user #obtiene el id del usuario que se ha autenticado
+        op = '008' #Código para eliminar
+        usac=AccesoUsuario.objects.filter(idUsuario=usactivo).filter(idOpcion=op).values('idUsuario').first()
+        if usac is None:
+            return render(request, 'Usuarios/Error401.html')
+        else:
+            empEliminar = Empresa.objects.get(idEmpresa=idEmpresa)
+            empEliminar.delete()
+            return redirect('Empresa:mostrar')
+    else:
+        return redirect('Login')
 
 class detalle_Empresa(DetailView):
     model=Empresa

@@ -33,10 +33,9 @@ class MostrarGiros(ListView):
     model = Giro
     template_name = 'Giro/AdministrarGiros.html'
 
-    def get(self, request, *args, **kwards):
+    def get(self, request):
         if request.user.is_authenticated:
-            usactivo = request.user #obtiene el id del usuario que se ha autenticado
-            print("Prueba Acceso ******", usactivo)
+            usactivo = request.user #obtiene el id del usuario que se ha autenticado            
             op = '003' #Código de lista de usuarios
             usac=AccesoUsuario.objects.filter(idUsuario=usactivo).filter(idOpcion=op).values('idUsuario').first()
             if usac is None:
