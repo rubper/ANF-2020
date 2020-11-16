@@ -13,14 +13,19 @@ class EstadosConfig(AppConfig):
             ###Usar
             #SELECT * FROM information_schema.tables WHERE table_schema = 'nombreesquema' AND table_name = 'nombretabla' LIMIT 1;
             ###Para MySQL
+            #table_name = 'Empresa_sobrenombre'
             cursorVerificacion.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='Empresa_sobrenombre';")
             existeSobrenombre=cursorVerificacion.fetchone()
+            #table_name = 'Usuarios_user'
             cursorVerificacion.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='Usuarios_user';")
             existeUsuarios=cursorVerificacion.fetchone()
+            #table_name = 'Usuarios_opcionform'
             cursorVerificacion.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='Usuarios_opcionform';")
             existeOpcionForm=cursorVerificacion.fetchone()
+            #table_name = 'Usuarios_accesousuario'
             cursorVerificacion.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='Usuarios_accesousuario';")
             existeAccesoUsuarios=cursorVerificacion.fetchone()
+            #table_name = 'Giro_ratios'
             cursorVerificacion.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='Giro_ratios';")
             existeRatios=cursorVerificacion.fetchone()
         with connection.cursor() as cursor:
@@ -58,7 +63,7 @@ class EstadosConfig(AppConfig):
                     cantidad=cursor.fetchone()
                     if(cantidad[0]==0):
                         cursor.execute("INSERT INTO Usuarios_user (password, last_login, id, nomUsuario, activo, rol, is_administrador, is_analista, is_gerente) VALUES(\"pbkdf2_sha256$216000$QHPDlSYDbxRY$6JU7Jfs9HdP5PAMHCsQhJxy+9OifUMzwju5C6HHd5c0=\", NULL, \"01\", \"rubper\", 1,1,1,0,0);")
-            if(existeUsuarios!=None):
+            if(existeOpcionForm!=None):
                     cursor.execute("SELECT Count(*) FROM Usuarios_opcionform;")
                     cantidad=cursor.fetchone()
                     if(cantidad[0]==0):
