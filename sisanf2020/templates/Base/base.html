@@ -13,7 +13,7 @@
   {% block extrastatic %}
   {% endblock %}
   <link rel="stylesheet" href="{% static 'datatables/bootstrap.css' %}">
-  <link rel="stylesheet" href="{% static 'datatables/dataTables.bootstrap4.min.css' %}">  
+  <link rel="stylesheet" href="{% static 'datatables/dataTables.bootstrap4.min.css' %}">
   <!-- Favicons -->
   <link href="{% static 'assets/img/favicon.png' %}" rel="icon">
   <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
@@ -73,12 +73,13 @@
               {% else %}
                 <li><a href="{% url 'Empresa:mostrar' %}">Empresas</a></li>
               {% endif %}
-              <li><a href="{% url 'Analisis:VerAnalisis' %}">Análisis</a></li>
+              <li><a href="{% url 'Analisis:VerAnalisis' %}">Overview</a></li>
               {% if request.user.rol == 1 or request.user.rol == 2 %}
               <li class="drop-down"><a href="">Giros</a>
                 <ul>
                     <li><a href="{% url 'Giro:AdministrarGiros' %}">Giros</a></li>
                     <li><a href="{% url 'Giro:AdministrarDatos' %}">Datos de giros</a></li>
+                    <li><a href="{% url 'Giro:AdministrarDatos' %}">Razones financieras</a></li>
                 </ul>
               </li>
               {% endif %}

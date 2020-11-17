@@ -191,6 +191,9 @@ def OverView(request):
 
     #Listado de análisis
     AnEmp = Analisis.objects.filter(idEmpresa=empresa).filter(year_analisis=year)
+    for con in AnEmp:
+        cAV = con.conclusion_vertical
+        cAH = con.conclusion_horizontal
     #Recupero la empresa con el id que se está recibiendo
     ep = Empresa.objects.filter(idEmpresa=empresa).values('idGiro', 'rasonsocial')
     giro = ep.get()
@@ -213,7 +216,9 @@ def OverView(request):
         'rasonsocial': rasonsocial,
         'year': year,
         'empresa':empresa,
-        'esGerente':esGerente
+        'esGerente':esGerente,
+        'cAH':cAH,
+        'cAV':cAV
     }
     return render(request, 'Analisis/OverView.html', Contexto)
 
