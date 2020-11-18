@@ -191,36 +191,42 @@ def OverView(request):
 
     #Listado de análisis
     AnEmp = Analisis.objects.filter(idEmpresa=empresa).filter(year_analisis=year)
-    for con in AnEmp:
-        cAV = con.conclusion_vertical
-        cAH = con.conclusion_horizontal
-    #Recupero la empresa con el id que se está recibiendo
-    ep = Empresa.objects.filter(idEmpresa=empresa).values('idGiro', 'rasonsocial')
-    giro = ep.get()
-    #Recupero el idGiro de la empresa
-    giroid = giro.get('idGiro')
-    rasonsocial = giro.get('rasonsocial')
-    #Recupero los datos de giro que corresponden al idGiro asociado a la empresa del análisis
-    dato = DatoGiro.objects.filter(idGiro=giroid).only('idGiro', 'idRatio', 'valorParametro', 'valorPromedio')
-    esGerente=False
-    if(request.user.rol==3):
-        esGerente=True
-    #Obtiene razones de análisis
-    Razones = []
-    for ratio in AnEmp:
-        Razones += RatiosAnalisis.objects.filter(idAnalisis=ratio.idAnalisis).only('idRatios', 'valorRatiosAnalisis', 'idAnalisis')
-    Contexto = {
-        'AnEmp': AnEmp.order_by('idAnalisis'),
-        'dato': dato,
-        'Razones': Razones,
-        'rasonsocial': rasonsocial,
-        'year': year,
-        'empresa':empresa,
-        'esGerente':esGerente,
-        'cAH':cAH,
-        'cAV':cAV
-    }
-    return render(request, 'Analisis/OverView.html', Contexto)
+    if AnEmp.count() !=0:
+        for con in AnEmp:
+            cAV = con.conclusion_vertical
+            cAH = con.conclusion_horizontal
+        #Recupero la empresa con el id que se está recibiendo
+        ep = Empresa.objects.filter(idEmpresa=empresa).values('idGiro', 'rasonsocial')
+        giro = ep.get()
+        #Recupero el idGiro de la empresa
+        giroid = giro.get('idGiro')
+        rasonsocial = giro.get('rasonsocial')
+        #Recupero los datos de giro que corresponden al idGiro asociado a la empresa del análisis
+        dato = DatoGiro.objects.filter(idGiro=giroid).only('idGiro', 'idRatio', 'valorParametro', 'valorPromedio')
+        esGerente=False
+        if(request.user.rol==3):
+            esGerente=True
+        #Obtiene razones de análisis
+        Razones = []
+        for ratio in AnEmp:
+            Razones += RatiosAnalisis.objects.filter(idAnalisis=ratio.idAnalisis).only('idRatios', 'valorRatiosAnalisis', 'idAnalisis')
+        Contexto = {
+            'AnEmp': AnEmp.order_by('idAnalisis'),
+            'dato': dato,
+            'Razones': Razones,
+            'rasonsocial': rasonsocial,
+            'year': year,
+            'empresa':empresa,
+            'esGerente':esGerente,
+            'cAH':cAH,
+            'cAV':cAV
+        }
+        return render(request, 'Analisis/OverView.html', Contexto)
+    else:
+        Contexto = {
+            'AnEmp': AnEmp.order_by('idAnalisis'),
+        }
+        return render(request, 'Analisis/SinEmpresas.html', Contexto)
 
 
 def uploadRatios(request):

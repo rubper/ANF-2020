@@ -35,13 +35,13 @@ class MostrarGiros(ListView):
 
     def get(self, request):
         if request.user.is_authenticated:
-            usactivo = request.user #obtiene el id del usuario que se ha autenticado            
+            usactivo = request.user #obtiene el id del usuario que se ha autenticado
             op = '003' #Código de lista de usuarios
             usac=AccesoUsuario.objects.filter(idUsuario=usactivo).filter(idOpcion=op).values('idUsuario').first()
             if usac is None:
                 return render(request, 'Usuarios/Error401.html')
             else:
-                giros=Giro.objects.all().only('idGiro')
+                giros=Giro.objects.all().only('idGiro')                
                 return render(request, self.template_name, {"giros" : giros})
         else:
             return redirect('Login')

@@ -3,13 +3,17 @@
 Análisis
 {% endblock %}
 {% block content %}
-<div class="container p-0" align="center">
-  <div class="section-title">
+<div class="container p-0 mt-5" style="background: rgb(255, 255, 255); opacity: 40%; padding: 8px;" align="center">
+  <div class="section-title mb-1">
     <strong><h2 style="color:#000000; margin:0px; font-size:200px; font-family: Helvetica" class="border mt-1 p-0">404</h2></strong>
     <strong><p style="color:#606060; margin:0px; font-size:40px; font-family: Helvetica" class="border p-0">Página no encontrada</p></strong>
   </div>
   <div class="card" align="center" class="mt-0">
-    <strong><p style="color:#606060; margin:0px; font-size:25px; font-family: Helvetica" class="border p-0">Aún no se ha registrado su empresa para visualizar el análisis</p></strong>
+    {%if AnEmp.count == 0%}
+      <strong><h1 class="mt-0" style="color:#000000">Aún no existe análisis para visualizar.</h1></strong>
+    {% else %}
+        <strong><p style="color:#000000; margin:0px; font-size:25px; font-family: Helvetica" class="border p-0">Aún no se ha registrado su empresa para visualizar el análisis</p></strong>
+    {% endif %}
   </div>
 </div>
 {% endblock %}
