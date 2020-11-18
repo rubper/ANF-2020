@@ -1,0 +1,80 @@
+{% extends 'Base/base.html' %}
+{% block title %}
+Análisis Financiero
+{% endblock %}
+{% block content %}
+<div style="position:relative;margin:auto" align="center">
+    <div style="margin:auto;padding-bottom:30px;padding-top:30px;">
+        <h2>
+            {% if tipoEstado == 'Balance' %}
+                {% if accion == 'Nuevo' %}
+                Ingresar un nuevo saldo del Balance General
+                {% else %}
+                Edita el saldo del Balance General            
+                {% endif%}
+            {% else %}
+                {% if accion == 'Nuevo' %}
+                Ingresar un nuevo saldo del Estado de Resultado        
+                {% else %}
+                Edita el saldo del Estado de Resultado            
+                {% endif%}
+            {% endif%}
+        </h2>
+    </div>
+<form method="post" action="
+{% if esGerente %}
+    {% if tipoEstado == 'Balance' %}
+        {% url 'Estados:nuevoEditarSaldo' tipoCuenta='Balance' %}
+    {% else %}
+        {% url 'Estados:nuevoEditarSaldo' tipoCuenta='Estado' %}
+    {% endif%}
+{% else %}
+    {% if tipoEstado == 'Balance' %}
+        {% url 'Estados:nuevoEditarSaldo' tipoCuenta='Balance' idempresadmin=empresa %}
+    {% else %}
+        {% url 'Estados:nuevoEditarSaldo' tipoCuenta='Estado' idempresadmin=empresa %}
+    {% endif %}
+{% endif %}">
+    {% csrf_token %}
+    <input type="hidden" name="tipoForm" value="{{accion}}">
+    <input type="hidden" name="idsal" value="{{idsal}}">
+    <table style="color:white;">
+    <tr>
+        <td style="margin:auto;padding-bottom:15px;padding-top:15px;padding-right:15px;">
+            <label for="Cuenta">Cuenta: </label>
+        </td>
+        <td style="margin:auto;padding-bottom:15px;padding-top:15px;">
+            <select name="Cuenta" id="id_cuenta">
+            {% for cuenta in listaCuentas %}
+                <option value="{{cuenta.0}}">{{cuenta.1}} - {{cuenta.2}}</option>
+            {% endfor %}
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td style="margin:auto;padding-bottom:15px;padding-top:15px;padding-right:15px;">
+            <label for="Estado">{% if tipoEstado == 1 %}Balance general: {% else %}Estado de resultado: {% endif %}</label>
+        </td>
+        <td style="margin:auto;padding-bottom:15px;padding-top:15px;">
+            <select name="Estado" id="id_estado">
+            {% for estado in listaEstados %}
+                <option value="{{estado.0}}">{{estado.1}}</option>
+            {% endfor %}
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td style="margin:auto;padding-bottom:15px;padding-top:15px;padding-right:15px;">
+            <label for="Monto">Monto: </label>
+        </td>
+        <td>
+            <input type="number" name="Monto" step="0.01" min="0" required="" id="id_Monto" value="{{monto}}">
+        </td>
+    </tr>
+    <tr align="center"><td style="margin:auto;padding-bottom:30px;padding-top:30px;">
+    <input class="btn btn-primary" type="submit" value="Guardar"></td>
+    </tr>
+    </table>
+</form>
+</div>
+{% endblock %}

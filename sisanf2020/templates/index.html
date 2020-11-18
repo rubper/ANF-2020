@@ -2,3 +2,9 @@
 {% block title %}
 Inicio
 {% endblock %}
+{% load static %}
+{% block content %}
+<div style="position:relative;">
+<img src="{% static 'index.png' %}" style="height:500px;display: block;margin: auto;">
+</div>
+{% endblock %}

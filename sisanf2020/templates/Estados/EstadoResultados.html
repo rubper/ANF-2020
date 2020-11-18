@@ -37,31 +37,57 @@ Estado de Resultados
                             {% endfor %}  
                         </div>
                     </div>
+                <div align="center">
+                <a href="{% if esGerente %}
+                {% url 'Estados:nuevoEditarSaldo' tipoCuenta='Estado' accion='Nuevo' %}
+                {% else %}
+                {% url 'Estados:nuevoEditarSaldo' tipoCuenta='Estado' accion='Nuevo' idempresadmin=empresaid %}
+                {% endif %}"><b>Anadir saldo</b></a>
+                </div>
                 </td>
                 <!--======Lado derecho======-->
                 <td>
                     <div style="position:relative;height:68vh;overflow:auto;">
                         <table style="width:100%;position:relative;">
                             <colgroup>
-                                <col style="width:34%"/>
-                                <col style="width:66%"/>
+                                <col style="width:17%"/>
+                                <col style="width:38%"/>
+                                <col style="width:25%"/>
+                                <col style="width:20%"/>
                             </colgroup>
                             <tr>
-                                <th style="text-align:right; padding-right:30px">
+                                <th style="text-align:center;padding-right:30px">
+                                    <h6><b>Codigo</b></h6>
+                                </th>
+                                <th style="text-align:center;padding-right:30px">
                                     <h6><b>Cuenta</b></h6>
                                 </th>
                                 <th>
                                     <h6><b>Saldo</b></h6>
                                 </th>
+                                <th style="padding-right:30px">
+                                    <h6><b></b></h6>
+                                </th>
                             </tr>
                             <!--Saldos de las cuentas del estado año actual-->
                             {% for saldo in saldosEstados %} 
                             <tr>
-                                <td style="text-align:right; padding-right:30px">
+                                <td style="text-align:center;padding-right:30px">
+                                    {{saldo.idCuenta.codigo_cuenta}}
+                                </td>
+                                <td style="text-align:center">
                                     {{saldo.idCuenta.nombre_cuenta}}:  
                                 </td>
-                                <td style="text-align:left">
+                                 <td style="text-align:left;">
                                     {{saldo.monto_saldo_Resul}}
+                                </td>
+                                 <td style="text-align:left;">
+                                    <form action="{% if esGerente %}{% url 'Estados:nuevoEditarSaldo' tipoCuenta='Estado' accion='Editar' %}{% else %}{% url 'Estados:nuevoEditarSaldo' tipoCuenta='Estado' accion='Editar' idempresadmin=empresa.idEmpresa %}{% endif %}" method="post">
+                                    {% csrf_token %}
+                                        <input type="hidden" name="saldoid" value="{{saldo.idSaldoResul}}">
+                                        <input type="hidden" name="resultadoid" value="{{resultadosAnio.0.idResultado}}">
+                                        <input class="btn btn-primary" type="submit" value="Editar">
+                                    </form>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -72,10 +98,6 @@ Estado de Resultados
         </table>
     </div>
 </div>
-<form method='post' style="margin:auto;position:relative;">
-    {% csrf_token %}
-        <input id="submit" type="submit" value="redirigir"></button>
-</form>
     <!--Barra de navegacion inferior-->
     <div class="fixed-bottom header-scrolled" style="background: #fff">
         <div class ="container-fluid">
