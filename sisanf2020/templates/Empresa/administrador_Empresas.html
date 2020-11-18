@@ -5,10 +5,11 @@ Empresas
 {% endblock %}
 {% block content %}
   <div class="container-fluid">
-   <div class="container" style="background: rgb(43, 44, 43); opacity: 80%; padding: 1px;">
-     <h2 style="text-align: center;">Empresas</h2>
-    <div class="col-sm">
+   <div class="row align-items-start">
+    <div class="col-sm" align="center">
+      <div class="mt-5 col-lg-11" align="center">
       {% if request.user.rol == 2 or request.user.rol == 1 %}
+      <strong><h1>Empresas</h1></strong>
       <div class="row container">
         <a class="btn btn-primary btn-lg" href="{% url 'Usuarios:CrearUsuario' %}"><i class="fas fa-plus"></i> Agregar</a>
         </div>
@@ -24,7 +25,7 @@ Empresas
                 <th scope="col">NIT</th>
                 <th scope="col">Direccion</th>
                 <th scope="col">Telefono</th>
-                <th scope="col" >Acciones</th>
+                <th scope="col"width="30%">Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -53,6 +54,7 @@ Empresas
           </table>
         </div>
       </div>
+    </div>
     </div>
   </div>
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">

@@ -29,7 +29,7 @@ def mostrarMensajeSegunRol(request,mensajeR,idemp=None):
 #usage: return mostrarMensajeSegunRol(request, reemplazarmensajeaqui, idempresadmin)
 
 def indexEstados(request,idempresadmin=None):
-    #define el codigo del form para los accesos
+    #de codigo del form para los accesos
     op = '005'
     #obtiene el usuario de la sesión actual
     idUsuarioActual = request.user.id

@@ -3,10 +3,11 @@
 Cuenta
 {% endblock %}
 {% block content %}
-<div class="container-fluid scrolling-box ">
-  <div class="container" style="background: rgb(43, 44, 43); opacity: 80%; padding: 1px;">
-    <h2 style="text-align: center;">Catalogo</h2>
-   <div class="col-sm">
+<div class="container-fluid ">
+  <div class="row align-items-start">
+   <div class="col-sm" align="center">
+     <div class="mt-5 col-lg-11" align="center">
+        <strong><h1>Catalogo</h1></strong>
      <div class="row container">
      <button onclick="abrir_modal_add('{%url 'Empresa:nueva_cuenta' empresa %} ')" class="btn btn-primary btn-lg " style="margin: 2%;" ><i class="fas fa-plus"></i> Agregar cuenta</button>
      <button onclick="abrir_modal_add('{%url 'Empresa:importar_cuenta' empresa %} ')" class="btn btn-success btn-lg "style="margin: 2%;" ><i class="fas fa-file-upload"></i> Archivo</button>
@@ -49,6 +50,7 @@ Cuenta
            </tbody>
          </table>
        </div>
+     </div>
      </div>
    </div>
  </div>
