@@ -1,0 +1,8 @@
+1. Abrir cmd de OpenSSL
+
+2. Ingresar instrucción para crear certificado web (en cmd de openssl)
+openssl req -newkey rsa:2048 -nodes -keyout key.pem -x509 -days 365 -out cert.pem
+
+En cmd normal
+3. Para correr daphne en HTTP2 con el certificado web
+daphne -e ssl:443:privateKey=key.pem:certKey=cert.pem sisanf2020.asgi:application
