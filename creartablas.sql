@@ -1,3 +1,4 @@
+CREATE DATABASE sisanf202014;
 CREATE TABLE `empresa_sobrenombre` (
   `idSobreNombre` int NOT NULL AUTO_INCREMENT,
   `sobreNombre` varchar(100) NOT NULL,
