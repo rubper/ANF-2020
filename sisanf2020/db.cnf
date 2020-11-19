@@ -1,0 +1,5 @@
+[client]
+database = sisanf202014
+user = sisanf202014
+password = sisanf202014
+default-character-set = utf8
