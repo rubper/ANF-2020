@@ -285,7 +285,7 @@ Análisis Financiero
                     <ul>
                       <li class="active"><a href="#header">Overview</a></li>
                       <li><a href="{% if esGerente %}{% url 'Analisis:AnalisisHorizontal' anio=year %}{% else %}{% url 'Analisis:AnalisisHorizontal' idempresadmin=empresa anio=year %}{% endif %}">Análisis Horizontal</a></li>
-                      <li><a href="{% if esGerente %}{% url 'Analisis:AnalisisHorizontal' anio=year %}{% else %}{% url 'Analisis:AnalisisHorizontal' idempresadmin=empresa anio=year %}{% endif %}">Análisis Vertical</a></li>
+                      <li><a href="{% if esGerente %}{% url 'Analisis:AnalisisVertical' anio=year %}{% else %}{% url 'Analisis:AnalisisVertical' idempresadmin=empresa anio=year %}{% endif %}">Análisis Vertical</a></li>
                       <li><a href="{% if esGerente %}{% url 'Analisis:AnalisisHorizontal' anio=year %}{% else %}{% url 'Analisis:AnalisisHorizontal' idempresadmin=empresa anio=year %}{% endif %}">Razones financieras</a></li>
                     </ul>
                   </div>
