@@ -73,9 +73,9 @@
               {% else %}
                 <li><a href="{% url 'Empresa:mostrar' %}">Empresas</a></li>
               {% endif %}
-              <li><a href="{% url 'Analisis:VerAnalisis' %}">Overview</a></li>
+              <li><a href="{% url 'Analisis:VerAnalisis' %}">Análisis</a></li>
               {% if request.user.rol == 1 or request.user.rol == 2 %}
-              <li class="drop-down"><a href="">Giros</a>
+              <li class="drop-down"><a href="{% url 'Giro:AdministrarGiros' %}">Giros</a>
                 <ul>
                     <li><a href="{% url 'Giro:AdministrarGiros' %}">Giros</a></li>
                     <li><a href="{% url 'Giro:AdministrarDatos' %}">Datos de giros</a></li>
@@ -87,7 +87,7 @@
               <li><a href="{% url 'Estados:EstadosFinancieros' %}">Estados Financieros</a></li>
               {% endif %}
               {% if request.user.rol == 1 %}
-              <li class="drop-down"><a href="">Usuarios</a>
+              <li class="drop-down"><a href="{% url 'Usuarios:AdministrarUsuarios' %}">Usuarios</a>
                 <ul>
                   <li><a href="{% url 'Usuarios:AdministrarUsuarios' %}">Usuarios</a></li>
                   <li><a href="{% url 'Usuarios:AdministrarOpcion' %}">Opciones</a></li>

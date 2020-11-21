@@ -1,0 +1,17 @@
+{% extends 'Base/base.html' %}
+{% block title %}
+Esta página no existe
+{% endblock %}
+{% block content %}
+  <div class="contenedorError" align="center" style="margin-top:-15px; background-color: rgb(0, 0, 0); opacity: 50%;height:100%">
+    <div class="fondoError" style="">
+        <strong><h2 style="color:#FFFFFF; margin:0px; font-size:200px; font-family: Helvetica" >404</h2></strong>
+        <strong><p style="color:#606060; margin:0px; font-size:40px; font-family: Helvetica; margin-top:20px;" >No encontrado</p></strong>
+    </div>
+      <div class="section-title" >
+        <div style="margin:auto">
+          <strong><h2 style="color:#FFFFFF; font-size:25px; font-family: Helvetica">Parece que esta página no existe.</h2></strong>
+          <p><strong><div style="font-size:18px; font-family: Helvetica"><a href="javascript:window.history.back()">Retornar</a></li></strong></p>
+      </div>
+</div>
+{% endblock %}

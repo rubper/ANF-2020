@@ -1,0 +1,80 @@
+Para instalar MySQL Server 8.0
+
+### Notas iniciales:
+### "mysql>" se refiere a la entrada de consola de mysql
+### ">" se refiere a la entrada de consola de windows (cmd)
+
+* Descargar MySQL Server Community 8.0 de Oracle
+	https://dev.mysql.com/downloads/mysql/
+* Colocar contenido en  C:\Program Files\MySQL\MySQL Server 8.0\
+		Se crea la carpeta MySQL en Program files
+		Descomprimir la carpeta mysql-8.0.22-winx64 (o x86 segun sea el caso) en la carpeta creada
+		Renombrar a MySQL Server 8.0 la carpeta descomprimida
+* Ir a variables de entorno en las propiedades de la compu
+* En system variables añadir una nueva dirección en la variable Path
+* Añadir:  C:\Program Files\MySQL\MySQL Server 8.0\bin\
+
+### Para instalar el servicio de mysql para windows, usar:
+> mysqld --install-manual
+### Esto instala el servicio pero de forma manual (sin que arranque con el sistema)
+
+### Preparacion del servidor:
+> mysqld --initialize
+
+___________________________________________
+Para preparar el servidor sin crear una contraseña temporal:
+> mysqld --initialize-insecure 
+___________________________________________
+
+### Para iniciar el servidor con salida en consola de windows:
+> mysqld --console
+
+### IMPORTANTE: Anotar contraseña temporal para entrar con el usuario root.
+
+### Para ingresar a la consola mysql con usuario root:
+### esto se realiza en otra consola
+> mysql -uroot -p
+### Solicitará la contraseña temporal
+
+### IMPORTANTE: Despues de inicializar, es necesario entrar a la consola y cambiar
+### la contraseña por defecto del usuario root.
+mysql> ALTER USER 'root'@'localhost' IDENTIFIED BY 'la_contraseña';
+
+### Se refrescan privilegios
+mysql> flush privileges;
+
+### Para crear nuevo usuario:
+mysql> CREATE USER 'nombre_usuario'@'localhost' IDENTIFIED BY 'la_contraseña';
+___________________________________________
+Para crear la base:
+mysql> CREATE DATABASE (Nombre de base);
+___________________________________________
+
+### Para hacer admin al nuevo usuario
+mysql> GRANT ALL ON *.* TO nombre_usuario
+### En este caso se otorgan todos los privilegios al nuevo usuario.
+### Para la lista de privilegios consultar:
+### https://dev.mysql.com/doc/refman/8.0/en/grant.html#grant-privileges
+### Esta misma sintaxis se puede utilizar para otorgar permisos específicos
+### en bases de datos especificas, en vez de utilizar *.* se especifica la base.
+### Se otorgan permisos en bases de datos pues en MySQL no existen owners.
+
+___________________________________________
+Para otorgar permisos a la base recién creada:
+mysql> GRANT ALL PRIVILEGES ON (Nombre de base).* TO 'nombre_usuario'@'localhost';
+___________________________________________
+
+### Se refrescan privilegios
+mysql> flush privileges;
+
+### Para ver más operaciones de administración de las bases:
+### https://dev.mysql.com/doc/refman/8.0/en/sql-server-administration-statements.html
+
+### Para salir de la consola
+mysql> quit
+
+### Para ingresar con el nuevo usuario creado
+> mysql -u nombre_usuario -p
+
+>>>>>>>>>>>>>Manual de referencia<<<<<<<<<<<<<<
+https://dev.mysql.com/doc/refman/8.0/en/

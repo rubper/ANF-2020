@@ -14,4 +14,8 @@ urlpatterns = [
     path('EstadoFinancicero/eanfadmin/<int:idempresadmin>',views.indexEstados, name='EstadosFinancieros'),
     path('confirmacion/<str:mensaje>',views.mensajeRedireccion, name='redireccionConfirmacion'),
     path('confirmacion/<int:empresaidmen>/<str:mensaje>',views.mensajeRedireccion, name='redireccionConfirmacion'),
+    path('Saldo/<str:tipoCuenta>/',views.nuevoEditarSaldo, name='nuevoEditarSaldo'),
+    path('Saldo/<int:idempresadmin>/<str:tipoCuenta>/',views.nuevoEditarSaldo, name='nuevoEditarSaldo'),
+    path('Saldo/<str:tipoCuenta>/<str:accion>',views.nuevoEditarSaldo, name='nuevoEditarSaldo'),
+    path('Saldo/<int:idempresadmin>/<str:tipoCuenta>/<str:accion>/',views.nuevoEditarSaldo, name='nuevoEditarSaldo'),
 ]

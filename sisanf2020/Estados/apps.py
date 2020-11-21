@@ -11,23 +11,38 @@ class EstadosConfig(AppConfig):
         with connection.cursor() as cursorVerificacion:
             #Verificar si la tabla existe
             ###Usar
-            #SELECT * FROM information_schema.tables WHERE table_schema = 'nombreesquema' AND table_name = 'nombretabla' LIMIT 1;
+            #SELECT * FROM information_schema.tables WHERE table_schema = 'sisanf202014' AND table_name = 'Giro_ratios' LIMIT 1;
             ###Para MySQL
             #table_name = 'Empresa_sobrenombre'
-            cursorVerificacion.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='Empresa_sobrenombre';")
-            existeSobrenombre=cursorVerificacion.fetchone()
+            try:
+                cursorVerificacion.execute("SELECT * FROM information_schema.tables WHERE table_schema = 'sisanf202014' AND table_name = 'Empresa_sobrenombre' LIMIT 1;")
+                existeSobrenombre=cursorVerificacion.fetchone()
+            except:
+                pass
             #table_name = 'Usuarios_user'
-            cursorVerificacion.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='Usuarios_user';")
-            existeUsuarios=cursorVerificacion.fetchone()
+            try:
+                cursorVerificacion.execute("SELECT * FROM information_schema.tables WHERE table_schema = 'sisanf202014' AND table_name = 'Usuarios_user' LIMIT 1;")
+                existeUsuarios=cursorVerificacion.fetchone()
+            except:
+                pass
             #table_name = 'Usuarios_opcionform'
-            cursorVerificacion.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='Usuarios_opcionform';")
-            existeOpcionForm=cursorVerificacion.fetchone()
+            try:
+                cursorVerificacion.execute("SELECT * FROM information_schema.tables WHERE table_schema = 'sisanf202014' AND table_name = 'Usuarios_opcionform' LIMIT 1;")
+                existeOpcionForm=cursorVerificacion.fetchone()
+            except:
+                pass
             #table_name = 'Usuarios_accesousuario'
-            cursorVerificacion.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='Usuarios_accesousuario';")
-            existeAccesoUsuarios=cursorVerificacion.fetchone()
+            try:
+                cursorVerificacion.execute("SELECT * FROM information_schema.tables WHERE table_schema = 'sisanf202014' AND table_name = 'Usuarios_accesousuario' LIMIT 1;")
+                existeAccesoUsuarios=cursorVerificacion.fetchone()
+            except:
+                pass
             #table_name = 'Giro_ratios'
-            cursorVerificacion.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='Giro_ratios';")
-            existeRatios=cursorVerificacion.fetchone()
+            try:
+                cursorVerificacion.execute("SELECT * FROM information_schema.tables WHERE table_schema = 'sisanf202014' AND table_name = 'Giro_ratios' LIMIT 1;")
+                existeRatios=cursorVerificacion.fetchone()
+            except:
+                pass
         with connection.cursor() as cursor:
             if(existeSobrenombre!=None):
                 cursor.execute("SELECT Count(*) FROM Empresa_sobrenombre;")

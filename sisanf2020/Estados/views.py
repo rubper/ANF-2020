@@ -10,8 +10,10 @@ from Estados.forms import EstadoForm
 from Analisis.models import Analisis, LineaDeInforme, RatiosAnalisis
 from Giro.models import Ratios, Giro, DatoGiro
 from Usuarios.models import AccesoUsuario, User
-from django.http import Http404
+from django.http import Http404, HttpResponse
+from django.core import exceptions
 from decimal import *
+from Estados.forms import SaldoCuentaForm
 
 #Metodos para el sort()
 def obtenerPorHorizontal(objeto):
@@ -824,6 +826,7 @@ def indexEstados(request,idempresadmin=None):
         #############REQUEST GET#################33
         #Para request get
         else:
+            formulario=EstadoForm()
             argumentos = {
                 "idEmpresaActual":empresa,
                 "ListaBalances":empresaActual.BalancesDeEmpresa.all(),
@@ -917,6 +920,7 @@ def indexEstadoResultado(request, anio, idempresadmin = None):
             'saldosEstados':SaldoEstado,
             #Manda el id de la empresa a la template
             'empresa':EmpresaActual,
+            'empresaid':empresa,
             'esGerente':esGerente
         }
         return render(request,'Estados/EstadoResultados.html', argumentos)
@@ -1010,6 +1014,7 @@ def indexBalanceGeneral(request, anio, idempresadmin = None):
             'saldosBalance':SaldosDelBalance,
             #Manda el id de la empresa a la template
             'empresa':EmpresaActual,
+            'empresaid':idempresadmin,
             'esGerente':esGerente
         }
         return render(request,'Estados/BalanceGeneral.html', argumentos)
@@ -1021,3 +1026,200 @@ def mensajeRedireccion(request,mensaje,empresaidmen=None):
         return render(request,'Estados/mensajeRedireccion.html', {'mensaje':mensaje,'esGerente':True})
     else:
         return render(request,'Estados/mensajeRedireccion.html', {'mensaje':mensaje,'empresa':empresaidmen, 'esGerente':False})
+
+def nuevoEditarSaldo(request,tipoCuenta,accion=None, idempresadmin = None):
+    if request.user.is_authenticated:
+        #define el codigo del form para los accesos
+        op = '005'
+        #obtiene el usuario de la sesión actual
+        idUsuarioActual = request.user.id
+        idRolUsuarioActual = request.user.rol
+        #obtiene la tupla de acceso del usuario actual al form actual
+        usac=AccesoUsuario.objects.filter(idUsuario=idUsuarioActual,idOpcion=op).first()
+        esGerente=False
+        #Si el acceso existe
+        if(usac!=None):
+            if(idRolUsuarioActual==3):
+                empresaActual=get_object_or_404(Empresa,gerente=idUsuarioActual)
+                esGerente = True
+            else:
+                empresaActual=Empresa.objects.filter(idEmpresa=idempresadmin).first()
+                esGerente=False
+                if(empresaActual==None):
+                    #La empresa no se encontró: Not Found 404
+                    raise Http404("La empresa actual no existe, este mensaje fue levantado al acceder como administrador.")
+            empresa = empresaActual.idEmpresa
+            #Si recibe request GET
+            if request.method == 'GET':
+                if accion == "Nuevo":
+                    if(tipoCuenta=="Balance" or tipoCuenta=="Estado"):
+                        #ingresar nuevo
+                        argumentos = {
+                            'tipoEstado':tipoCuenta,
+                            'listaCuentas':obtenerCuentas(tipoCuenta,empresa),
+                            'listaEstados':obtenerEstados(tipoCuenta,empresa),
+                            'formulario':SaldoCuentaForm(empresa),
+                            'accion':accion,
+                            'esGerente':esGerente,
+                            'empresa':idempresadmin
+                        }
+                        return render(request,'Estados/nuevoeditarsaldo.html',argumentos)
+                    else:
+                        raise Http404("No se ha provisto un tipo de cuenta correcto")
+                else:
+                    raise Http404
+            #Si recibe request POST
+            else:
+                #Si se va a mostrar el formulario para editar
+                if accion == "Editar":
+                    idsal = request.POST.get('saldoid')
+                    saldoAux = None
+                    estadoAux=None
+                    montoAux = None
+                    if tipoCuenta == "Balance":
+                        saldoAux = SaldoDeCuentaBalace.objects.get(idSaldo=idsal)
+                        idbal = request.POST.get('balanceid')
+                        estadoAux = Balance.objects.get(idBalance=idbal)
+                        listadoEstadoSalida = [(estadoAux.idBalance,'Balance general del ' + str(estadoAux.yearEstado))]
+                        montoAux = saldoAux.monto_saldo
+                    elif tipoCuenta=="Estado":
+                        saldoAux = SaldoDeCuentaResultado.objects.get(idSaldoResul=idsal)
+                        idres = request.POST.get('resultadoid')
+                        estadoAux=EstadoDeResultado.objects.get(idResultado=idres)
+                        listadoEstadoSalida = [(estadoAux.idResultado,'Estado de Resultados del ' + str(estadoAux.yearEstado))]
+                        montoAux = saldoAux.monto_saldo_Resul
+                    else:
+                        raise Http404
+                    listadoCuentasSalida = obtenerCuentas(tipoCuenta,empresa)
+                    cuentaFinal = []
+                    for cuenta in listadoCuentasSalida:
+                        if cuenta[0] == saldoAux.idCuenta.idCuenta:
+                            cuentaFinal.append(cuenta)
+                    argumentos = {
+                        'tipoEstado':tipoCuenta,
+                        'listaCuentas':cuentaFinal,
+                        'listaEstados':listadoEstadoSalida,
+                        'formulario':SaldoCuentaForm(empresa),
+                        'accion':accion,
+                        'empresa':empresa,
+                        'esGerente':esGerente,
+                        'idsal':idsal,
+                        'monto':montoAux
+                    }
+                    return render(request,'Estados/nuevoeditarsaldo.html',argumentos)
+                #Si se esta posteando el form
+                elif accion == None:
+                    if request.POST.get('tipoForm')=='Nuevo':
+                        ultimoSaldo = None
+                        idUltimoSaldo=0
+                        anioSaldo = 0
+                        cuentaRecibida = request.POST.get('Cuenta')
+                        cuentaSalida=Cuenta.objects.get(idCuenta=cuentaRecibida)
+                        estadoRecibido = request.POST.get('Estado')
+                        estado = None
+                        if tipoCuenta=="Balance":
+                            estado=Balance.objects.get(idBalance=estadoRecibido)
+                            ultimoSaldo = SaldoDeCuentaBalace.objects.latest('idSaldo')
+                            if ultimoSaldo==None:
+                                idUltimoSaldo=0
+                            else:
+                                idUltimoSaldo=ultimoSaldo.idSaldo
+                            anioSaldo = estado.yearEstado
+                            montoRecibido = request.POST.get('Monto')
+                            saldoSalida = SaldoDeCuentaBalace(
+                                idSaldo = int(idUltimoSaldo) + 1,
+                                idCuenta = cuentaSalida,
+                                idbalance = estado,
+                                year_saldo = datetime(int(anioSaldo),1,1),
+                                monto_saldo = round(float(montoRecibido),2)
+                            )
+                        else:
+                            estado=EstadoDeResultado.objects.get(idResultado=estadoRecibido)
+                            ultimoSaldo = SaldoDeCuentaResultado.objects.latest('idSaldoResul')
+                            if ultimoSaldo==None:
+                                idUltimoSaldo=0
+                            else:
+                                idUltimoSaldo=ultimoSaldo.idSaldoResul
+                            anioSaldo = estado.yearEstado
+                            montoRecibido = request.POST.get('Monto')
+                            saldoSalida = SaldoDeCuentaResultado(
+                                idSaldoResul = int(idUltimoSaldo) + 1,
+                                idCuenta = cuentaSalida,
+                                idResultado = estado,
+                                year_saldo_Resul = datetime(int(anioSaldo),1,1),
+                                monto_saldo_Resul = round(float(montoRecibido),2)
+                            )
+                        saldoSalida.save()
+                        return mostrarMensajeSegunRol(request,"El saldo se añadió correctamente.",idempresadmin)
+                    else:
+                        idSaldo = request.POST.get('idsal')
+                        cuentaRecibida = request.POST.get('Cuenta')
+                        cuentaSalida=Cuenta.objects.get(idCuenta=cuentaRecibida)
+                        estadoRecibido = request.POST.get('Estado')
+                        montoRecibido = request.POST.get('Monto') 
+                        if tipoCuenta=="Balance":
+                            estado=Balance.objects.get(idBalance=estadoRecibido)
+                            anioSaldo = estado.yearEstado
+                            saldoSalida = SaldoDeCuentaBalace(
+                                idSaldo = idSaldo,
+                                idCuenta = cuentaSalida,
+                                idbalance = estado,
+                                year_saldo = datetime(int(anioSaldo),1,1),
+                                monto_saldo = round(float(montoRecibido),2)
+                            )  
+                        else:
+                            estado=EstadoDeResultado.objects.get(idResultado=estadoRecibido)
+                            anioSaldo = estado.yearEstado
+                            saldoSalida = SaldoDeCuentaResultado(
+                                idSaldoResul = idSaldo,
+                                idCuenta = cuentaSalida,
+                                idResultado = estado,
+                                year_saldo_Resul = datetime(int(anioSaldo),1,1),
+                                monto_saldo_Resul = round(float(montoRecibido),2)
+                            )
+                        saldoSalida.save()          
+                        return mostrarMensajeSegunRol(request,"El saldo se edito correctamente.",idempresadmin)   
+                else:
+                    raise Http404
+        else:
+            #El usuario no tiene permiso: Forbidden 403
+            raise exceptions.PermissionDenied()
+    else:
+        #El usuario no se ha identificado o el sistema ha rechazado las credenciales: Unauthorized 401
+        return render(request,'401.html',status=401)
+    
+def obtenerCuentas(tipoEstado,empresaid):
+    cuentas = Cuenta.objects.filter(idEmpresa=empresaid)
+    listadoCuentasSalida = []
+    for cuenta in cuentas:
+        if tipoEstado=="Balance":
+            if cuenta.tipo_cuenta != 'Estado de Resultado' and cuenta.tipo_cuenta != 6:
+                listadoCuentasSalida.append((cuenta.idCuenta,cuenta.codigo_cuenta,cuenta.nombre_cuenta))
+        else:
+            if cuenta.tipo_cuenta == 'Estado de Resultado' or cuenta.tipo_cuenta == 6:
+                listadoCuentasSalida.append((cuenta.idCuenta,cuenta.codigo_cuenta,cuenta.nombre_cuenta))
+    return listadoCuentasSalida
+        
+
+def obtenerEstados(tipoEstado,empresaid):
+    listadoEstadoSalida=[]
+    if(tipoEstado=="Balance"):
+        #Todos los balance-empresa de la empresa
+        relaciones=BalanceEmpresa.objects.filter(idEmpresa=empresaid)
+        #Para cada uno de los objetos balance-empresa recuperados
+        for relacion in relaciones:
+            #obtener el balance que se trabajará de la relación
+            balanceAux=relacion.idbalance
+            #
+            listadoEstadoSalida.append((balanceAux.idBalance,'Balance general del ' + str(balanceAux.yearEstado)))
+            balanceAux=None
+    else:
+        relaciones=EstadoEmpresa.objects.filter(idEmpresa=empresaid)
+        for relacion in relaciones:
+            estadoAux=relacion.idResultado
+            listadoEstadoSalida.append((estadoAux.idResultado,'Estado de Resultados del '+str(estadoAux.yearEstado)))
+            estadoAux=None
+    return listadoEstadoSalida
+  #<!-- Template Main JS File -->
+  #<script src="{% static 'assets/js/main.js' %}"></script>
+

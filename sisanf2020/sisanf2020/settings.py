@@ -26,6 +26,8 @@ SECRET_KEY = '#ant5#4w39-0j_dt@n-7+8ebki_b#3y!jvdhib7)h#h4_zx8p6'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
+
 ALLOWED_HOSTS = ['*']
 
 
@@ -88,8 +90,10 @@ WSGI_APPLICATION = 'sisanf2020.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'OPTIONS': {
+            'read_default_file':os.path.join(BASE_DIR, 'db.cnf'),
+        },
     }
 }
 

@@ -1,0 +1,19 @@
+{% extends 'Base/base.html' %}
+{% block title %}
+500 - Error interno de servidor
+{% endblock %}
+{% block content %}
+<div class="contenedorError" align="center" style="margin-top:-15px; background-color: rgb(0, 0, 0); opacity: 50%;height:100%">
+    <div class="fondoError" style="">
+      <strong><hr/><hr/></strong>
+        <strong><h2 style="color:#FFFFFF; margin:0px; font-size:200px; font-family: Helvetica" >500</h2></strong>
+        <strong><p style="color:#606060; margin:0px; font-size:40px; font-family: Helvetica; margin-top:20px;" >Error interno de servidor</p></strong>
+    </div>
+    <div class="section-title" >
+      <div style="margin:auto;">
+        <strong><h2 style="color:#FFFFFF; font-size:25px; font-family: Helvetica">Esta página no funciona, contacta a tu administrador e intenta más tarde.</h2></strong>
+        <p><strong><div style="font-size:18px; font-family: Helvetica"><a href="javascript:window.history.back()">Retornar</a></li></strong></p>
+      </div>
+    </div>
+</div>
+{% endblock %}
