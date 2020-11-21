@@ -1,0 +1,20 @@
+<div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel" style="text-align:center;">Conclusion</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form  id='uploadForm' enctype="multipart/form-data" action="{% url 'Analisis:Editar_Conclusion' anali=Analisis.idRatioAnalisis anio=year idempresadmin=empresaActual %}"  method="POST">
+                {% csrf_token %}
+                        <input id="idanalisis" type="hidden" name="analisis" value="{{Analisis.idRatioAnalisis}}">
+                        <textarea id="conclusion" name="conclusion" rows="10" cols="55" ">{{Analisis.conclusion}}</textarea><br><br>
+                        <input type="submit" name="botonConclusion" value="Guardar"  class="btn btn-primary btn-lg" style="position:relative;"/>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

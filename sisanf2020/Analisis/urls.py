@@ -16,5 +16,7 @@ urlpatterns = [
     path('AnalisisVertical/<int:anio>', views.indexAnalisisVertical, name='AnalisisVertical'),
     path('Analisis/', views.VerOverView, name='VerAnalisis'),
     path('OverView/', views.OverView, name='OverView'),
-    path('Razones/<int:idempresadmin>/<int:anio>',views.Analisis_razones,name='Razones')
+    path('Razones/<int:idempresadmin>/<int:anio>',views.Analisis_razones,name='Razones'),
+    path('Razones/<int:anio>',views.Analisis_razones,name='Razones'),
+    path('Editar/<int:anali>/<int:anio>/<int:idempresadmin>',views.editar_conclusion,name='Editar_Conclusion')
 ]
