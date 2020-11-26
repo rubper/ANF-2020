@@ -257,7 +257,7 @@ CREATE TABLE `empresa_estadoempresa` (
 CREATE TABLE `empresa_saldodecuentabalace` (
   `idSaldo` int NOT NULL AUTO_INCREMENT,
   `year_saldo` date NOT NULL,
-  `monto_saldo` decimal(11,2) NOT NULL,
+  `monto_saldo` decimal(15,2),
   `idCuenta_id` int NOT NULL,
   `idbalance_id` int NOT NULL,
   PRIMARY KEY (`idSaldo`),
@@ -270,7 +270,7 @@ CREATE TABLE `empresa_saldodecuentabalace` (
 CREATE TABLE `empresa_saldodecuentaresultado` (
   `idSaldoResul` int NOT NULL AUTO_INCREMENT,
   `year_saldo_Resul` date NOT NULL,
-  `monto_saldo_Resul` decimal(11,2) NOT NULL,
+  `monto_saldo_Resul` decimal(15,2),
   `idCuenta_id` int NOT NULL,
   `idResultado_id` int NOT NULL,
   PRIMARY KEY (`idSaldoResul`),

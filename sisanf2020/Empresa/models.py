@@ -60,14 +60,14 @@ class SaldoDeCuentaBalace(models.Model):
     idCuenta = models.ForeignKey(Cuenta,on_delete=models.CASCADE)
     idbalance = models.ForeignKey(Balance,on_delete=models.CASCADE)
     year_saldo = models.DateField()
-    monto_saldo = models.DecimalField(max_digits=11, decimal_places=2)
+    monto_saldo = models.DecimalField(max_digits=15, decimal_places=2,null=True)
 
 class SaldoDeCuentaResultado(models.Model):
     idSaldoResul = models.AutoField(primary_key=True)
     idCuenta = models.ForeignKey(Cuenta,on_delete=models.CASCADE)
     idResultado = models.ForeignKey(EstadoDeResultado,on_delete=models.CASCADE)
     year_saldo_Resul = models.DateField()
-    monto_saldo_Resul = models.DecimalField(max_digits=11, decimal_places=2)
+    monto_saldo_Resul = models.DecimalField(max_digits=15, decimal_places=2,null=True)
 
 
 

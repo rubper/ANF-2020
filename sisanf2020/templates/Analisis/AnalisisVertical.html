@@ -73,7 +73,7 @@ Análisis Financiero
                             </li>
                             <li><a href="{% if esGerente %}{% url 'Analisis:AnalisisHorizontal' anio=year %}{% else %}{% url 'Analisis:AnalisisHorizontal' idempresadmin=empresaActual anio=year %}{% endif %}">Análisis Horizontal</a></li>
                             <li class="active"><a href="#header">Análisis Vertical</a></li>
-                            <li><a href="{% if esGerente %}{% url 'Analisis:AnalisisHorizontal' anio=year %}{% else %}{% url 'Analisis:AnalisisHorizontal' idempresadmin=empresaActual anio=year %}{% endif %}">Razones financieras</a></li>
+                            <li><a href="{% if esGerente %}{% url 'Analisis:Razones' anio=year %}{% else %}{% url 'Analisis:Razones' idempresadmin=empresaActual anio=year %}{% endif %}">Razones financieras</a></li>
                         </ul>
                     </div>
                 </div>

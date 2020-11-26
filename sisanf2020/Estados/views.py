@@ -139,9 +139,18 @@ def indexEstados(request,idempresadmin=None):
                         cuentaRegistro = Cuenta.objects.get(idEmpresa=empresa,codigo_cuenta=registro[0])
                     except Cuenta.DoesNotExist:
                         return mostrarMensajeSegunRol(request, "Error:No existe una de las cuentas ingresadas, verifique su archivo.", idempresadmin)
+                    except Cuenta.MultipleObjectsReturned:
+                        return mostrarMensajeSegunRol(request, "Error:Código de cuentas repetido, revise su catálogo e intente nuevamente.", idempresadmin)
                     anioIntentaIngresar = SaldoDeCuentaBalace.objects.filter(year_saldo=datetime(registro[2],1,1))
-                    if(len(anioIntentaIngresar)!=0):
-                        return mostrarMensajeSegunRol(request, "Error:Ya ha añadido saldos para este estado.", idempresadmin)
+                    for saldo in anioIntentaIngresar:
+                        if saldo.idCuenta.idEmpresa.idEmpresa==empresa:
+                            saldo.delete()
+                    anioIntentaIngresarResul = SaldoDeCuentaResultado.objects.filter(year_saldo_Resul=datetime(registro[2],1,1))
+                    for saldoRes in anioIntentaIngresarResul:
+                        if saldoRes.idCuenta.idEmpresa.idEmpresa==empresa:
+                            saldoRes.delete()
+                            #if(len(listaAux)!=0):
+                        #return mostrarMensajeSegunRol(request, "Error:Ya ha añadido saldos para este estado.", idempresadmin)
                 for registro in datosImportados:   
                     anioAnalisis=registro[2]
                     #Se obtiene la cuenta con el id de la empresa y el codigo
@@ -149,6 +158,18 @@ def indexEstados(request,idempresadmin=None):
                     cuentaObtenida = Cuenta.objects.get(idEmpresa=empresa,codigo_cuenta=registro[0])
                     ################VERIFICAR TIPO DE CUENTA#####################
                     #Reclasificar las cuentas por su tipo
+                    cuentasPorPagaranterior = 0
+                    activoFijoAnterior=0
+                    razonRotacionInventario=0
+                    diasInventario=0
+                    razonRotacionCobros=0
+                    periodoMedioCobranza=0
+                    razonRotacionPagos=0
+                    periodoMedioPagos=0
+                    razonRotacionActivosFijos=0
+                    indiceMargenBruto=0
+                    indiceMargenOperativo=0
+                    coberturaGastosFinancieros=0
                     if(cuentaObtenida.idSobreNombre!=None):
                         if(cuentaObtenida.idSobreNombre.sobreNombre=="Inventario"):
                             inventario = float(registro[3])
@@ -195,7 +216,7 @@ def indexEstados(request,idempresadmin=None):
                         elif(cuentaObtenida.idSobreNombre.sobreNombre=="Impuestos"):
                             impuesto+=float(registro[3])
                     
-                    if(cuentaObtenida.tipo_cuenta=="Estado de Resultado" or cuentaObtenida.tipo_cuenta=="6"):
+                    if(cuentaObtenida.tipo_cuenta=="Estado de Resultado" or cuentaObtenida.tipo_cuenta=="Estado\xa0de\xa0Resultado"):
                         #aumentar 1 al id
                         idSaldoUltimoResul += 1
                         #para cada estado de la empresa
@@ -226,11 +247,12 @@ def indexEstados(request,idempresadmin=None):
                             monto_saldo_Resul=registro[3]
                         )
                         EstadosDeResultadosMonto.append(valor)
-                        if(cuentaObtenida.idSobreNombre.sobreNombre=="Ventas netas"):
-                            ventasNetas=valor.monto_saldo_Resul
+                        if(cuentaObtenida.idSobreNombre!=None):
+                            if(cuentaObtenida.idSobreNombre.sobreNombre=="Ventas netas"):
+                                ventasNetas=valor.monto_saldo_Resul
                         #ejecutar insert
                         valor.save()
-                    elif(cuentaObtenida.tipo_cuenta=="Activo Corriente" or cuentaObtenida.tipo_cuenta=="1"):
+                    elif(cuentaObtenida.tipo_cuenta=="Activo Corriente" or cuentaObtenida.tipo_cuenta=="Activo\xa0Corriente"):
                         #aumentar 1 al id
                         idSaldoUltimoBalance += 1
                         #para cada estado de la empresa
@@ -269,7 +291,7 @@ def indexEstados(request,idempresadmin=None):
                         ActivoCorrienteMonto.append(valor)
                         #sumar el saldo
                         totalActivosCorriente += valor.monto_saldo
-                    elif(cuentaObtenida.tipo_cuenta=="Activo no Corriente" or cuentaObtenida.tipo_cuenta=="2"):
+                    elif(cuentaObtenida.tipo_cuenta=="Activo no Corriente" or cuentaObtenida.tipo_cuenta=="Activo\xa0no\xa0Corriente"):
                         #aumentar 1 al id
                         idSaldoUltimoBalance += 1
                         #para cada estado de la empresa
@@ -306,7 +328,7 @@ def indexEstados(request,idempresadmin=None):
                             activoTotalAnterior += float(saldoAnterior.monto_saldo)
                         ActivoNoCorrienteMonto.append(valor)
                         totalActivosNoCorriente+=valor.monto_saldo
-                    elif(cuentaObtenida.tipo_cuenta=="Pasivo Corriente" or cuentaObtenida.tipo_cuenta=="3"):
+                    elif(cuentaObtenida.tipo_cuenta=="Pasivo Corriente" or cuentaObtenida.tipo_cuenta=="Pasivo\xa0Corriente"):
                         #aumentar 1 al id
                         idSaldoUltimoBalance += 1
                         #para cada estado de la empresa
@@ -340,7 +362,7 @@ def indexEstados(request,idempresadmin=None):
                         valor.save()
                         PasivoCorrienteMonto.append(valor)
                         totalPasivosCorriente+=valor.monto_saldo
-                    elif(cuentaObtenida.tipo_cuenta=="Pasivo no Corriente" or cuentaObtenida.tipo_cuenta=="4"):
+                    elif(cuentaObtenida.tipo_cuenta=="Pasivo no Corriente" or cuentaObtenida.tipo_cuenta=="Pasivo\xa0no\xa0Corriente"):
                         #aumentar 1 al id
                         idSaldoUltimoBalance += 1
                         #para cada estado de la empresa
@@ -486,8 +508,12 @@ def indexEstados(request,idempresadmin=None):
                             variacionHorizontal = 0.0
                             porcentajeHorizontal = 0.0
                             if(cuentaActual.idCuenta == cuentaAnterior.idCuenta):
-                                porcentajeHorizontal = cuentaActual.monto_saldo/float(cuentaAnterior.monto_saldo) - 1
-                                variacionHorizontal = cuentaActual.monto_saldo - float(cuentaAnterior.monto_saldo)
+                                montoAnteriorCuenta=cuentaAnterior.monto_saldo
+                                if(montoAnteriorCuenta==0):
+                                    porcentajeHorizontal = 0
+                                else:
+                                    porcentajeHorizontal = cuentaActual.monto_saldo/float(montoAnteriorCuenta) - 1
+                                variacionHorizontal = cuentaActual.monto_saldo - float(montoAnteriorCuenta)
                                 porcentajeVertical = cuentaActual.monto_saldo / totalActivos
                                 linea=LineaDeInforme(
                                     idCuenta=cuentaActual.idCuenta,
@@ -504,8 +530,12 @@ def indexEstados(request,idempresadmin=None):
                             porcentajeHorizontal = 0.0
                             porcentajeVertical = 0.0
                             if(cuentaActual.idCuenta == cuentaAnterior.idCuenta):
-                                porcentajeHorizontal = cuentaActual.monto_saldo/float(cuentaAnterior.monto_saldo) - 1
-                                variacionHorizontal = cuentaActual.monto_saldo - float(cuentaAnterior.monto_saldo)
+                                montoAnteriorCuenta=cuentaAnterior.monto_saldo
+                                if(montoAnteriorCuenta==0):
+                                    porcentajeHorizontal = 0
+                                else:
+                                    porcentajeHorizontal = cuentaActual.monto_saldo/float(montoAnteriorCuenta) - 1
+                                variacionHorizontal = cuentaActual.monto_saldo - float(montoAnteriorCuenta)
                                 porcentajeVertical = cuentaActual.monto_saldo / (totalPasivos + totalCapital)
                                 linea=LineaDeInforme(
                                     idCuenta=cuentaActual.idCuenta,
@@ -525,7 +555,10 @@ def indexEstados(request,idempresadmin=None):
                             porcentajeHorizontal = 0.0
                             porcentajeVertical = 0.0
                             if(cuentaActual.idCuenta == cuentaAnterior.idCuenta and ventasNetas!=0.0):
-                                porcentajeHorizontal = cuentaActual.monto_saldo_Resul/float(cuentaAnterior.monto_saldo_Resul) - 1
+                                if(cuentaAnterior.monto_saldo_Resul==0):
+                                    porcentajeHorizontal = 0
+                                else:
+                                    porcentajeHorizontal = cuentaActual.monto_saldo_Resul/float(cuentaAnterior.monto_saldo_Resul) - 1
                                 variacionHorizontal = cuentaActual.monto_saldo_Resul - float(cuentaAnterior.monto_saldo_Resul)
                                 porcentajeVertical = cuentaActual.monto_saldo_Resul / ventasNetas
                                 linea=LineaDeInforme(
@@ -554,7 +587,8 @@ def indexEstados(request,idempresadmin=None):
                     mayorVariacionPasivoVertical = pasivosOrdenadosVertical[0].idCuenta.nombre_cuenta
                     cadenaVertical += "La inversión de la empresa se financia con un " + str(pasivosOrdenadosVertical[0].porcentaje_vertical*100) + str(chr(37)) +" de inversiones de terceros, representado en " + mayorVariacionPasivoVertical + " de la empresa, "
                     cadenaVertical += "y con un " + str(capitalOrdenadosVertical[0].porcentaje_vertical*100) + str(chr(37)) +" de inversiones propias, representado en " + mayorVariacionPasivoVertical + ". "
-                    cadenaVertical += "La mayor reducción de utilidad proviene del " + estadoOrdenadosVertical[0].idCuenta.nombre_cuenta + " de la empresa, representando un " + str(estadoOrdenadosVertical[0].porcentaje_vertical*100) + str(chr(37)) + "del ingreso por ventas."
+                    if len(estadoOrdenadosVertical) != 0:
+                        cadenaVertical += "La mayor reducción de utilidad proviene del " + estadoOrdenadosVertical[0].idCuenta.nombre_cuenta + " de la empresa, representando un " + str(estadoOrdenadosVertical[0].porcentaje_vertical*100) + str(chr(37)) + "del ingreso por ventas."
                     anali.conclusion_vertical = cadenaVertical
                     activosOrdenadosHorizontal = sorted(LineasActivos,key=obtenerPorHorizontal)
                     pasivosOrdenadosHorizontal = sorted(LineasPasivos,key=obtenerPorHorizontal)
@@ -566,15 +600,17 @@ def indexEstados(request,idempresadmin=None):
                     mayorPorcentajePasivoHorizontal = pasivosOrdenadosHorizontal[0].porcentaje_vertical*100
                     mayorVariacionCapitalHorizontal = captialOrdenadosHorizontal[0].idCuenta.nombre_cuenta
                     mayorPorcentajeCapitalHorizontal = captialOrdenadosHorizontal[0].porcentaje_vertical*100
-                    mayorVariacionEstadoHorizontal= estadoOrdenadosHorizontal[0].idCuenta.nombre_cuenta
-                    mayorPorcentajeEstadoHorizontal = estadoOrdenadosHorizontal[0].porcentaje_vertical*100
+                    if len(estadoOrdenadosVertical) != 0:
+                        mayorVariacionEstadoHorizontal= estadoOrdenadosHorizontal[0].idCuenta.nombre_cuenta
+                        mayorPorcentajeEstadoHorizontal = estadoOrdenadosHorizontal[0].porcentaje_vertical*100
                     cadenaHorizontal = "La mayor variación con respecto al año pasado, se presenta en los " + activosOrdenadosHorizontal[0].idCuenta.tipo_cuenta + " siendo la cuenta " + mayorVariacionActivoHorizontal + " la que presenta la mayor variación con un " + str(mayorPorcentajeActivoHorizontal) + str(chr(37)) + ". "
                     cadenaHorizontal += "Por otro lado la mayor variación de la empresa se presentó en " + mayorVariacionCapitalHorizontal + " con una variación del " + str(mayorPorcentajeCapitalHorizontal) + str(chr(37)) + ". "
                     cadenaHorizontal += "Mientras que, las inversiones de terceros tuvieron su mayor variación en " + mayorVariacionPasivoHorizontal + " con un " + str(mayorPorcentajePasivoHorizontal) + str(chr(37)) + " con respecto al año pasado. "
-                    if(estadoOrdenadosHorizontal[0].idCuenta.naturaleza_cuenta=="Acreedor"):
-                        cadenaHorizontal += "En el estado de resultados, se destaca el aumento en los ingresos de la empresa."
-                    else:
-                        cadenaHorizontal+="Es importante prestar especial atención a los gastos de la empresa, puesto que han presentado una variación importante con respecto al año pasado."
+                    if len(estadoOrdenadosVertical) != 0:
+                        if(estadoOrdenadosHorizontal[0].idCuenta.naturaleza_cuenta=="Acreedor"):
+                            cadenaHorizontal += "En el estado de resultados, se destaca el aumento en los ingresos de la empresa."
+                        else:
+                            cadenaHorizontal+="Es importante prestar especial atención a los gastos de la empresa, puesto que han presentado una variación importante con respecto al año pasado."
                     anali.conclusion_horizontal = cadenaHorizontal
                     anali.save()
                     razonLiquidezCorriente = totalActivosCorriente / totalPasivosCorriente
@@ -582,28 +618,40 @@ def indexEstados(request,idempresadmin=None):
                     razonCapitalTrabajo = (totalActivosCorriente - totalPasivosCorriente) / totalActivos
                     razonEfectivo = (activosCortoPlazo + cuentasPorCobrar) / totalPasivosCorriente
                     promedioInventario = (inventario+inventarioAnterior)/2
-                    razonRotacionInventario = costoVentas / promedioInventario
-                    diasInventario = promedioInventario / (costoVentas/365)
+                    if promedioInventario != 0:
+                        razonRotacionInventario = costoVentas / promedioInventario
+                    if costoVentas != 0:
+                        diasInventario = promedioInventario / (costoVentas/365)
                     promedioCuentasPorCobrar = (cuentasPorCobrar + cuentasPorCobraranterior) / 2
-                    razonRotacionCobros = ventasNetas / promedioCuentasPorCobrar
-                    periodoMedioCobranza =promedioCuentasPorCobrar * 365 / ventasNetas
+                    if promedioCuentasPorCobrar != 0:
+                        razonRotacionCobros = ventasNetas / promedioCuentasPorCobrar
+                    if ventasNetas != 0:
+                        periodoMedioCobranza =promedioCuentasPorCobrar * 365 / ventasNetas
                     promedioCuentasPorPagar = (cuentasPorPagar + cuentasPorPagaranterior) / 2
-                    razonRotacionPagos = (costoVentas - inventario) / promedioCuentasPorPagar
-                    periodoMedioPagos = promedioCuentasPorPagar * 365 / (costoVentas - inventario)
+                    if promedioCuentasPorPagar !=0:
+                        razonRotacionPagos = (costoVentas - inventario) / promedioCuentasPorPagar
+                    if costoVentas !=0 and inventario !=0:
+                        periodoMedioPagos = promedioCuentasPorPagar * 365 / (costoVentas - inventario)
                     promedioActivoTotal = (activoTotalAnterior + totalActivos) / 2
-                    razonRotacionActivosTotales = ventasNetas / promedioActivoTotal
+                    if promedioActivoTotal !=0:
+                        razonRotacionActivosTotales = ventasNetas / promedioActivoTotal
                     promedioActivoFijo = (activoFijo + activoFijoAnterior) / 2
-                    razonRotacionActivosFijos = ventasNetas/promedioActivoFijo
+                    if promedioActivoFijo !=0:
+                        razonRotacionActivosFijos = ventasNetas/promedioActivoFijo
                     utilidadBruta = ventasNetas - costoVentas
                     utilidadOperativa = utilidadBruta - costoOperacion - gastoFinanciero
                     utilidadAntesImpuesto = utilidadOperativa + otrosIngresos - otrosGastos
                     utilidadNeta = utilidadAntesImpuesto - impuesto
-                    indiceMargenBruto = utilidadBruta / ventasNetas
-                    indiceMargenOperativo = utilidadOperativa /ventasNetas
-                    gradoEndeudamiento = totalPasivos / totalActivos
-                    gradoPropiedad = totalCapital / totalActivos
-                    endeudamientoPatrimonial = totalPasivos / totalCapital
-                    coberturaGastosFinancieros = utilidadAntesImpuesto / gastoFinanciero
+                    if ventasNetas != 0:
+                        indiceMargenBruto = utilidadBruta / ventasNetas
+                        indiceMargenOperativo = utilidadOperativa /ventasNetas
+                    if totalActivos !=0:
+                        gradoEndeudamiento = totalPasivos / totalActivos
+                        gradoPropiedad = totalCapital / totalActivos
+                    if totalCapital !=0:
+                        endeudamientoPatrimonial = totalPasivos / totalCapital
+                    if gastoFinanciero != 0:
+                        coberturaGastosFinancieros = utilidadAntesImpuesto / gastoFinanciero
                     ratios=[]
                     ratios.append(razonLiquidezCorriente)
                     ratios.append(razonLiquidezRapida)
@@ -722,12 +770,31 @@ def indexEstados(request,idempresadmin=None):
                 if(formulario.is_valid()):
                     #Obtiene todos los balances de la empresa
                     BalancesEmpresa = BalanceEmpresa.objects.filter(idEmpresa=empresa).order_by('idbalance')
+                    anioForm = formulario.data.get("yearEstado")
+                    fechaInicioForm = formulario.data.get("fechaInicioBalance")
+                    fechaInicioList = fechaInicioForm.split("-")
+                    fechaFinForm = formulario.data.get("fechaFinBalance")
+                    fechaFinList= fechaFinForm.split("-")
+                    #Si el mes de fin de periodo es mayor al ombligo del año
+                    if int(fechaFinList[1]) >= 6:
+                        #y el año que se provee es mayor que el año de fin de periodo
+                        if int(fechaFinList[0]) < int(anioForm):
+                            #Error
+                            return mostrarMensajeSegunRol(request, "El año provisto no puede ser mayor al fin del año", idempresadmin)
+                    #Caso contrario si el mes es menor al ombligo de año pero el anio provisto + 2 es mayor al fin
+                    elif int(fechaFinList[1]) < 6 and int(fechaFinList[0])<=int(anioForm) + 2:
+                            return mostrarMensajeSegunRol(request, "El año provisto no puede ser mayor al fin del año", idempresadmin)
+                    if int(fechaInicioList[0])<int(anioForm):
+                        return mostrarMensajeSegunRol(request, "El año provisto no puede ser mayor al inicio del año", idempresadmin)
+                    if int(fechaInicioList[0])>int(anioForm)+2:
+                        return mostrarMensajeSegunRol(request, "El año provisto no puede ser mayor al inicio del año", idempresadmin)
+
                     #Luz verde para empezar a insertar
                     LuzVerde = True
                     #Para cada estado de la empresa
                     for balance in BalancesEmpresa:
                         #Si el estado es del año dado
-                        if(str(balance.idbalance.yearEstado)==str(formulario.data.get("yearEstado"))):
+                        if(str(balance.idbalance.yearEstado)==str(anioForm)):
                             #Negar el continuar con el proceso
                             LuzVerde = False
                     if(LuzVerde==True):
@@ -889,7 +956,7 @@ def indexEstadoResultado(request, anio, idempresadmin = None):
         SaldosCuentasEmpresa = []
         #Para cada cuenta de la empresa
         for cuenta in Cuentas:
-            if(cuenta.tipo_cuenta=="Estado de Resultado" or cuenta.tipo_cuenta=='6'):
+            if(cuenta.tipo_cuenta=="Estado de Resultado" or cuenta.tipo_cuenta=='Estado\xa0de\xa0Resultado'):
                 saldoCuentaAux = SaldoDeCuentaResultado.objects.filter(idCuenta=cuenta.idCuenta)
                 if(saldoCuentaAux != None):
                     for saldoAuxiliar in saldoCuentaAux:
@@ -981,7 +1048,7 @@ def indexBalanceGeneral(request, anio, idempresadmin = None):
         #Para cada cuenta de la empresa
         for cuenta in Cuentas:
             #Si la cuenta NO es de Estado de resultado
-            if(cuenta.tipo_cuenta!="Estado de Resultado" or cuenta.tipo_cuenta!='6'):
+            if(cuenta.tipo_cuenta!="Estado de Resultado" or cuenta.tipo_cuenta!='Estado\xa0de\xa0Resultado'):
                 #El saldo de cuenta que se almacenará sera
                 #el primer saldo de cuenta que coincide con el id de la cuenta actual
                 saldoCuentaAux = SaldoDeCuentaBalace.objects.filter(idCuenta=cuenta.idCuenta)
@@ -1109,6 +1176,8 @@ def nuevoEditarSaldo(request,tipoCuenta,accion=None, idempresadmin = None):
                     return render(request,'Estados/nuevoeditarsaldo.html',argumentos)
                 #Si se esta posteando el form
                 elif accion == None:
+                    anioAnalisis = None
+                    mensajeSalida=""
                     if request.POST.get('tipoForm')=='Nuevo':
                         ultimoSaldo = None
                         idUltimoSaldo=0
@@ -1119,38 +1188,64 @@ def nuevoEditarSaldo(request,tipoCuenta,accion=None, idempresadmin = None):
                         estado = None
                         if tipoCuenta=="Balance":
                             estado=Balance.objects.get(idBalance=estadoRecibido)
-                            ultimoSaldo = SaldoDeCuentaBalace.objects.latest('idSaldo')
-                            if ultimoSaldo==None:
-                                idUltimoSaldo=0
+                            saldosDelBalance = SaldoDeCuentaBalace.objects.filter(idCuenta=cuentaSalida.idCuenta,idbalance=estadoRecibido)
+                            if(saldosDelBalance.count()==0):
+                                try:
+                                    ultimoSaldo = SaldoDeCuentaBalace.objects.latest('idSaldo')
+                                    idUltimoSaldo=ultimoSaldo.idSaldo
+                                except:
+                                    idUltimoSaldo=0
+                                anioSaldo = estado.yearEstado
+                                montoRecibido = request.POST.get('Monto')
+                                saldoSalida = SaldoDeCuentaBalace(
+                                    idSaldo = int(idUltimoSaldo) + 1,
+                                    idCuenta = cuentaSalida,
+                                    idbalance = estado,
+                                    year_saldo = datetime(int(anioSaldo),1,1),
+                                    monto_saldo = round(float(montoRecibido),2)
+                                )
                             else:
-                                idUltimoSaldo=ultimoSaldo.idSaldo
-                            anioSaldo = estado.yearEstado
-                            montoRecibido = request.POST.get('Monto')
-                            saldoSalida = SaldoDeCuentaBalace(
-                                idSaldo = int(idUltimoSaldo) + 1,
-                                idCuenta = cuentaSalida,
-                                idbalance = estado,
-                                year_saldo = datetime(int(anioSaldo),1,1),
-                                monto_saldo = round(float(montoRecibido),2)
-                            )
+                                saldoSalida = SaldoDeCuentaBalace.objects.filter(idCuenta=saldosDelBalance.first().idCuenta.idCuenta,idbalance=estadoRecibido).first()
+                                anioSaldo = estado.yearEstado
+                                montoRecibido = request.POST.get('Monto')
+                                saldoSalida = SaldoDeCuentaBalace(
+                                    idSaldo = saldoSalida.idSaldo,
+                                    idCuenta = saldoSalida.idCuenta,
+                                    idbalance = saldoSalida.idbalance,
+                                    year_saldo = saldoSalida.year_saldo,
+                                    monto_saldo = round(float(montoRecibido),2)
+                                )
                         else:
                             estado=EstadoDeResultado.objects.get(idResultado=estadoRecibido)
-                            ultimoSaldo = SaldoDeCuentaResultado.objects.latest('idSaldoResul')
-                            if ultimoSaldo==None:
-                                idUltimoSaldo=0
+                            saldosDelResultado = SaldoDeCuentaResultado.objects.filter(idCuenta=cuentaSalida.idCuenta,idResultado=estadoRecibido)
+                            if(saldosDelResultado.count()==0):
+                                try:
+                                    ultimoSaldo = SaldoDeCuentaResultado.objects.latest('idSaldoResul')
+                                    idUltimoSaldo=ultimoSaldo.idSaldoResul
+                                except:
+                                    idUltimoSaldo=0
+                                anioSaldo = estado.yearEstado
+                                montoRecibido = request.POST.get('Monto')
+                                saldoSalida = SaldoDeCuentaResultado(
+                                    idSaldoResul = int(idUltimoSaldo) + 1,
+                                    idCuenta = cuentaSalida,
+                                    idResultado = estado,
+                                    year_saldo_Resul = datetime(int(anioSaldo),1,1),
+                                    monto_saldo_Resul = round(float(montoRecibido),2)
+                                )
                             else:
-                                idUltimoSaldo=ultimoSaldo.idSaldoResul
-                            anioSaldo = estado.yearEstado
-                            montoRecibido = request.POST.get('Monto')
-                            saldoSalida = SaldoDeCuentaResultado(
-                                idSaldoResul = int(idUltimoSaldo) + 1,
-                                idCuenta = cuentaSalida,
-                                idResultado = estado,
-                                year_saldo_Resul = datetime(int(anioSaldo),1,1),
-                                monto_saldo_Resul = round(float(montoRecibido),2)
-                            )
+                                saldoSalida = SaldoDeCuentaResultado.objects.filter(idCuenta=saldosDelResultado.first().idCuenta.idCuenta,idResultado=estadoRecibido).first()
+                                anioSaldo = estado.yearEstado
+                                montoRecibido = request.POST.get('Monto')
+                                saldoSalida = SaldoDeCuentaResultado(
+                                    idSaldoResul = saldoSalida.idSaldoResul,
+                                    idCuenta = saldoSalida.idCuenta,
+                                    idResultado = saldoSalida.idResultado,
+                                    year_saldo_Resul = saldoSalida.year_saldo_Resul,
+                                    monto_saldo_Resul = round(float(montoRecibido),2)
+                                )
                         saldoSalida.save()
-                        return mostrarMensajeSegunRol(request,"El saldo se añadió correctamente.",idempresadmin)
+                        mensajeSalida="El saldo se añadió correctamente."
                     else:
                         idSaldo = request.POST.get('idsal')
                         cuentaRecibida = request.POST.get('Cuenta')
@@ -1178,7 +1273,554 @@ def nuevoEditarSaldo(request,tipoCuenta,accion=None, idempresadmin = None):
                                 monto_saldo_Resul = round(float(montoRecibido),2)
                             )
                         saldoSalida.save()          
-                        return mostrarMensajeSegunRol(request,"El saldo se edito correctamente.",idempresadmin)   
+                        mensajeSalida="El saldo se edito correctamente."   
+                    ###########PROCESO ANALISIS###############
+                    anioAnalisis = anioSaldo
+                    if(anioAnalisis==0):
+                        UltimoBalance = BalanceEmpresa.objects.filter(idEmpresa=empresa).latest('idbalance')
+                        anioAnalisis=UltimoBalance.idbalance.yearEstado
+                    analisisActual = Analisis.objects.filter(year_analisis=anioAnalisis, idEmpresa=empresa)
+                    if(analisisActual.first() == None):
+                        #####OBTENER EL BALANCE ACTUAL Y EL ANTERIOR
+                        balanceAnalisis = None
+                        balanceAnterior = None         
+                        #Obtiene todas las relaciones balance/empresa
+                        BalancesEmpresa = BalanceEmpresa.objects.filter(idEmpresa=empresa).order_by('idbalance')
+                        #Para cada relacion balance-empresa
+                        for balance in BalancesEmpresa:
+                            #Si el año del balance de la relación es igual al 
+                            if(balance.idbalance.yearEstado == anioAnalisis):
+                                balanceAnalisis = balance.idbalance
+                            if(balance.idbalance.yearEstado == (anioAnalisis-1)):
+                                balanceAnterior = balance.idbalance
+                        #####OBTENER EL ESTADO ACTUAL Y EL ANTERIOR
+                        estadoAnalisis = None
+                        estadoAnterior = None
+                        #Obtiene todas las relaciones estado resultado/empresa
+                        ResultadosEmpresa = EstadoEmpresa.objects.filter(idEmpresa=empresa).order_by('idResultado')
+                        for resultadoEmpresa in ResultadosEmpresa:
+                            if(resultadoEmpresa.idResultado.yearEstado == anioAnalisis):
+                                estadoAnalisis = resultadoEmpresa.idResultado
+                            if(resultadoEmpresa.idResultado.yearEstado == (anioAnalisis -1 )):
+                                estadoAnterior = resultadoEmpresa.idResultado
+                        #####SI AMBOS EXISTEN
+                        if(balanceAnterior != None and estadoAnterior != None):
+                            #####CREAR OBJETO NUEVO ANALISIS
+                            UltimoAnalisis = None
+                            #Inicializa variables de id a cero
+                            IdUltimoAnalisis = 0
+                            try:
+                                #Obtener el último Balance ingresado
+                                UltimoAnalisis = Analisis.objects.latest('idAnalisis')
+                            #Si no existe
+                            except Analisis.DoesNotExist:
+                                #Asegurarse que sea None
+                                UltimoAnalisis = None
+                            ####ID ANALISIS
+                            #si es None
+                            if(UltimoAnalisis==None):
+                                #El id será 1
+                                IdUltimoAnalisis = 1
+                            else:
+                                #Caso contrario, tomar el último id y sumar 1
+                                IdUltimoAnalisis = UltimoAnalisis.idAnalisis + 1
+                            #Crea objeto análisis
+                            anali = Analisis(
+                                idAnalisis = IdUltimoAnalisis,
+                                idEmpresa= Empresa.objects.get(idEmpresa=empresa),
+                                year_analisis = anioAnalisis,
+                                year_previos = anioAnalisis - 1,
+                                conclusion_horizontal = "",
+                                conclusion_vertical = "",
+                            )
+                            anali.save()
+                            anali.estadosParaAnalisis.add(estadoAnalisis)
+                            anali.estadosParaAnalisis.add(estadoAnterior)
+                            anali.balancesParaAnalisis.add(balanceAnalisis)
+                            anali.balancesParaAnalisis.add(balanceAnterior)
+                            ActivoCorrienteMonto = []
+                            ActivoNoCorrienteMonto = []
+                            PasivoCorrienteMonto = []
+                            PasivoNoCorrienteMonto = []
+                            CapitalMonto = []
+                            EstadosDeResultadosMonto = []
+                            ventasNetas=0.0
+                            totalActivosCorriente = 0.0
+                            totalActivosNoCorriente = 0.0
+                            totalPasivosCorriente = 0.0
+                            totalPasivosNoCorriente = 0.0
+                            totalCapital=0.0
+                            activosCortoPlazo=0.0
+                            costoVentas=0.0
+                            cuentasPorCobrar=0.0
+                            cuentasPorPagar=0.0
+                            activoFijo = 0.0
+                            costoOperacion = 0.0
+                            gastoFinanciero = 0.0
+                            otrosGastos=0.0
+                            otrosIngresos=0.0
+                            impuesto=0.0
+                            activoTotalAnterior=0.0
+                            cuentasEmpresa = Cuenta.objects.filter(idEmpresa=empresa)
+                            esEstado = True
+                            for cuenta in cuentasEmpresa:     
+                                if cuenta.tipo_cuenta== "Estado de Resultado" or cuenta.tipo_cuenta == "Estado\xa0de\xa0Resultado":
+                                    valor=SaldoDeCuentaResultado.objects.filter(idCuenta=cuenta.idCuenta,idResultado=estadoAnalisis.idResultado).first()  
+                                    valorAnterior=SaldoDeCuentaResultado.objects.filter(idCuenta=cuenta.idCuenta,idResultado=estadoAnterior.idResultado).first()  
+                                else:
+                                    valor=SaldoDeCuentaBalace.objects.filter(idCuenta=cuenta.idCuenta,idbalance=balanceAnalisis.idBalance).first()
+                                    valorAnterior=SaldoDeCuentaBalace.objects.filter(idCuenta=cuenta.idCuenta,idbalance=balanceAnterior.idBalance).first()
+                                    esEstado = False    
+                                if(cuenta.idSobreNombre != None):            
+                                    if(cuenta.idSobreNombre.sobreNombre=="Inventario"):
+                                        if(esEstado == True):
+                                            inventario = float(valor.monto_saldo_Resul)
+                                        else:
+                                            inventario = float(valor.monto_saldo)
+                                        try:
+                                            inventarioAnteriorObj = SaldoDeCuentaBalace.objects.get(idCuenta=cuenta.idCuenta,year_saldo_Resul=datetime(anioAnalisis-1,1,1))
+                                            inventarioAnterior=float(inventarioAnteriorObj.monto_saldo)
+                                        except:
+                                            inventarioAnterior = 0
+                                    elif(cuenta.idSobreNombre.sobreNombre=="Activo de corto plazo"):
+                                        if esEstado == True:
+                                            activosCortoPlazo+=float(valor.monto_saldo_Resul)
+                                        else:
+                                            activosCortoPlazo+=float(valor.monto_saldo)
+                                    elif(cuenta.idSobreNombre.sobreNombre=="Costo de servicio o ventas"):
+                                        if esEstado==True:
+                                            costoVentas+=float(valor.monto_saldo_Resul)
+                                        else:
+                                            costoVentas+=float(valor.monto_saldo)
+                                    elif(cuenta.idSobreNombre.sobreNombre=="Cuenta por cobrar"):
+                                        if esEstado==True:
+                                            cuentasPorCobrar+=float(valor.monto_saldo_Resul)
+                                        else:
+                                            cuentasPorCobrar+=float(valor.monto_saldo)
+                                        try:
+                                            cuentasPorCobraranteriorObj=SaldoDeCuentaBalace.objects.get(idCuenta=cuenta.idCuenta,year_saldo_Resul=datetime(anioAnalisis-1,1,1))
+                                            cuentasPorCobraranterior=float(cuentasPorCobraranteriorObj.monto_saldo)
+                                        except:
+                                            cuentasPorCobraranterior=0      
+                                    elif(cuenta.idSobreNombre.sobreNombre=="Cuenta por pagar"):
+                                        if esEstado==True:
+                                            cuentasPorPagar+=float(valor.monto_saldo_Resul)
+                                        else:
+                                            cuentasPorPagar+=float(valor.monto_saldo)
+                                        try:
+                                            cuentasPorPagaranteriorObj = SaldoDeCuentaBalace.objects.get(idCuenta=cuenta.idCuenta,year_saldo_Resul=datetime(anioAnalisis-1,1,1))
+                                            cuentasPorPagaranterior = float(cuentasPorPagaranteriorObj.monto_saldo)
+                                        except:
+                                            cuentasPorPagaranterior = 0                  
+                                    elif(cuenta.idSobreNombre.sobreNombre=="Ventas netas"):
+                                        if esEstado==True:
+                                            ventasNetas+=float(valor.monto_saldo_Resul)
+                                        else:
+                                            ventasNetas+=float(valor.monto_saldo)
+                                    elif(cuenta.idSobreNombre.sobreNombre=="Activo Fijo"):
+                                        if esEstado==True:
+                                            activoFijo+=float(valor.monto_saldo_Resul)
+                                        else:
+                                            activoFijo+=float(valor.monto_saldo)
+                                        try:
+                                            activoFijoAnteriorObj = SaldoDeCuentaBalace.objects.get(idCuenta=cuenta.idCuenta,year_saldo_Resul=datetime(anioAnalisis-1,1,1))
+                                            activoFijoAnterior = float(activoFijoAnteriorObj.monto_saldo)
+                                        except:
+                                            activoFijoAnterior=0
+                                    elif(cuenta.idSobreNombre.sobreNombre=="Costo de operación o administración"):
+                                        if esEstado==True:
+                                            costoOperacion+=float(valor.monto_saldo_Resul)
+                                        else:
+                                            costoOperacion+=float(valor.monto_saldo)
+                                    elif(cuenta.idSobreNombre.sobreNombre=="Gastos financieros"):
+                                        if esEstado==True:
+                                            gastoFinanciero+=float(valor.monto_saldo_Resul)
+                                        else:
+                                            gastoFinanciero+=float(valor.monto_saldo)
+                                    elif(cuenta.idSobreNombre.sobreNombre=="Otros gastos"):
+                                        if esEstado==True:
+                                            otrosGastos+=float(valor.monto_saldo_Resul)
+                                        else:
+                                            otrosGastos+=float(valor.monto_saldo)
+                                    elif(cuenta.idSobreNombre.sobreNombre=="Otros ingresos"):
+                                        if esEstado==True:
+                                            otrosIngresos+=float(valor.monto_saldo_Resul)
+                                        else:
+                                            otrosIngresos+=float(valor.monto_saldo)
+                                    elif(cuenta.idSobreNombre.sobreNombre=="Impuestos"):
+                                        if esEstado==True:
+                                            impuesto+=float(valor.monto_saldo_Resul)
+                                        else:
+                                            impuesto+=float(valor.monto_saldo)
+                                if(cuenta.tipo_cuenta=="Activo Corriente" or cuenta.tipo_cuenta=="Activo\xa0Corriente"):
+                                    ActivoCorrienteMonto.append(valor)
+                                    totalActivosCorriente = totalActivosCorriente + valor.monto_saldo
+                                    activoTotalAnterior= activoTotalAnterior + valor.monto_saldo
+                                elif(cuenta.tipo_cuenta=="Activo no Corriente" or cuenta.tipo_cuenta=="Activo\xa0no\xa0Corriente"):
+                                    ActivoNoCorrienteMonto.append(valor)
+                                    totalActivosNoCorriente = totalActivosNoCorriente + valor.monto_saldo
+                                    activoTotalAnterior = activoTotalAnterior + valor.monto_saldo
+                                if(cuenta.tipo_cuenta=="Pasivo Corriente" or cuenta.tipo_cuenta=="Pasivo\xa0Corriente"):
+                                    PasivoCorrienteMonto.append(valor)
+                                    totalPasivosCorriente = totalPasivosCorriente + valor.monto_saldo
+                                elif(cuenta.tipo_cuenta=="Pasivo no Corriente" or cuenta.tipo_cuenta=="Pasivo\xa0no\xa0Corriente"):
+                                    PasivoNoCorrienteMonto.append(valor)
+                                    totalPasivosNoCorriente = totalPasivosNoCorriente + valor.monto_saldo
+                                elif(cuenta.tipo_cuenta=="Capital"):
+                                    CapitalMonto.append(valor)
+                                    totalCapital = totalCapital + valor.monto_saldo
+                                elif(cuenta.tipo_cuenta=="Estado de Resultado" or cuenta.tipo_cuenta=="Estado\xa0de\xa0Resultado"):
+                                    EstadosDeResultadosMonto.append(valor)
+                                    if(cuenta.idSobreNombre.sobreNombre=="Ventas netas"):
+                                        ventasNetas=valor.monto_saldo_Resul
+                            ###########Obtener cuentas para el proceso#########
+                            montosActivo = ActivoCorrienteMonto + ActivoNoCorrienteMonto
+                            montosPasivoCapital = PasivoCorrienteMonto + PasivoNoCorrienteMonto + CapitalMonto
+                            cuentasBalanceAnalisisAnt = SaldoDeCuentaBalace.objects.filter(idbalance=balanceAnterior)
+                            cuentasEstadoAnalisisAnt = SaldoDeCuentaResultado.objects.filter(idResultado=estadoAnterior)
+                            ###########Realizar analisis horizontal y vertical
+                            LineasActivos = []
+                            LineasPasivos = []
+                            LineasCapital = []
+                            LineasEstados = []
+                            totalActivos = totalActivosCorriente + totalActivosNoCorriente
+                            totalPasivos = totalPasivosCorriente + totalPasivosNoCorriente
+                            for cuentaActual in montosActivo:
+                                for cuentaAnterior in cuentasBalanceAnalisisAnt:
+                                    variacionHorizontal = 0.0
+                                    porcentajeHorizontal = 0.0
+                                    if(cuentaActual.idCuenta == cuentaAnterior.idCuenta):
+                                        porcentajeHorizontal = cuentaActual.monto_saldo/float(cuentaAnterior.monto_saldo) - 1
+                                        variacionHorizontal = cuentaActual.monto_saldo - float(cuentaAnterior.monto_saldo)
+                                        porcentajeVertical = cuentaActual.monto_saldo / totalActivos
+                                        linea=LineaDeInforme(
+                                            idCuenta=cuentaActual.idCuenta,
+                                            idAnalisis=anali,
+                                            variacion_horizontal = round(float(variacionHorizontal),2),
+                                            porcentaje_horizontal = round(float(porcentajeHorizontal),4),
+                                            porcentaje_vertical = round(float(porcentajeVertical),4),
+                                        )
+                                        LineasActivos.append(linea)
+                                        linea.save()
+                            for cuentaActual in montosPasivoCapital:
+                                for cuentaAnterior in cuentasBalanceAnalisisAnt:
+                                    variacionHorizontal = 0.0
+                                    porcentajeHorizontal = 0.0
+                                    porcentajeVertical = 0.0
+                                    if(cuentaActual.idCuenta == cuentaAnterior.idCuenta):
+                                        porcentajeHorizontal = cuentaActual.monto_saldo/float(cuentaAnterior.monto_saldo) - 1
+                                        variacionHorizontal = cuentaActual.monto_saldo - float(cuentaAnterior.monto_saldo)
+                                        porcentajeVertical = cuentaActual.monto_saldo / (totalPasivos + totalCapital)
+                                        linea=LineaDeInforme(
+                                            idCuenta=cuentaActual.idCuenta,
+                                            idAnalisis=anali,
+                                            variacion_horizontal = round(float(variacionHorizontal),2),
+                                            porcentaje_horizontal = round(float(porcentajeHorizontal),4),
+                                            porcentaje_vertical = round(float(porcentajeVertical),4),
+                                        )
+                                        if(cuentaActual.idCuenta.tipo_cuenta == "Capital"):
+                                            LineasCapital.append(linea)
+                                        else:
+                                            LineasPasivos.append(linea)
+                                        linea.save()
+                            for cuentaActual in EstadosDeResultadosMonto:
+                                for cuentaAnterior in cuentasEstadoAnalisisAnt:
+                                    variacionHorizontal = 0.0
+                                    porcentajeHorizontal = 0.0
+                                    porcentajeVertical = 0.0
+                                    if(cuentaActual.idCuenta == cuentaAnterior.idCuenta and ventasNetas!=0.0):
+                                        porcentajeHorizontal = cuentaActual.monto_saldo_Resul/float(cuentaAnterior.monto_saldo_Resul) - 1
+                                        variacionHorizontal = cuentaActual.monto_saldo_Resul - float(cuentaAnterior.monto_saldo_Resul)
+                                        porcentajeVertical = cuentaActual.monto_saldo_Resul / ventasNetas
+                                        linea=LineaDeInforme(
+                                            idCuenta=cuentaActual.idCuenta,
+                                            idAnalisis=anali,
+                                            variacion_horizontal = round(float(variacionHorizontal),2),
+                                            porcentaje_horizontal = round(float(porcentajeHorizontal),4),
+                                            porcentaje_vertical = round(float(porcentajeVertical),4),
+                                        )
+                                        LineasEstados.append(linea)
+                                        linea.save()
+                                    else:
+                                        porcentajeHorizontal = cuentaActual.monto_saldo_Resul/float(cuentaAnterior.monto_saldo_Resul) - 1
+                                        variacionHorizontal = cuentaActual.monto_saldo_Resul - float(cuentaAnterior.monto_saldo_Resul)
+                                        porcentajeVertical = 0.0
+                                        linea=LineaDeInforme(
+                                            idCuenta=cuentaActual.idCuenta,
+                                            idAnalisis=anali,
+                                            variacion_horizontal = round(float(variacionHorizontal),2),
+                                            porcentaje_horizontal = round(float(porcentajeHorizontal),4),
+                                            porcentaje_vertical = round(float(porcentajeVertical),4),
+                                        )
+                                        LineasEstados.append(linea)
+                                        linea.save()
+                            activosOrdenadosVertical = sorted(LineasActivos,key=obtenerPorVertical)
+                            pasivosOrdenadosVertical = sorted(LineasPasivos,key=obtenerPorVertical)
+                            capitalOrdenadosVertical = sorted(LineasCapital,key=obtenerPorVertical)
+                            estadoOrdenadosVertical = sorted(LineasEstados,key=obtenerPorVertical)
+                            mayorVariacionActivoVertical = activosOrdenadosVertical[0].idCuenta.nombre_cuenta
+                            menorVariacionActivoVertical = activosOrdenadosVertical[len(activosOrdenadosVertical)-1:][0].idCuenta.nombre_cuenta
+                            cadenaVertical = "Se recomienda prestar atención a la cuenta " + mayorVariacionActivoVertical + " dado que presenta la mayor parte de los activos de la empresa. "
+                            cadenaVertical+= "Lo que quiere decir que la mayor parte de la inversión se encuentra en el " + activosOrdenadosVertical[0].idCuenta.tipo_cuenta + " de la empresa."
+                            if(activosOrdenadosVertical[len(activosOrdenadosVertical)-1:][0].porcentaje_vertical > 0):
+                                cadenaVertical +=  "Por otro lado, la cuenta "+ menorVariacionActivoVertical + " ha presentado la menor variación entre los activos."
+                            elif(activosOrdenadosVertical[len(activosOrdenadosVertical)-1:][0].porcentaje_vertical == 0):
+                                cadenaVertical +=  "Por otro lado, la cuenta "+ menorVariacionActivoVertical + " no ha presentado variación en lo absoluto."
+                            else:
+                                cadenaVertical +=  "Por otro lado, la cuenta "+ menorVariacionActivoVertical + " ha presentado una reducción entre los activos de la empresa."
+                            mayorVariacionPasivoVertical = pasivosOrdenadosVertical[0].idCuenta.nombre_cuenta
+                            cadenaVertical += "La inversión de la empresa se financia con un " + str(pasivosOrdenadosVertical[0].porcentaje_vertical*100) + str(chr(37)) +" de inversiones de terceros, representado en " + mayorVariacionPasivoVertical + " de la empresa, "
+                            cadenaVertical += "y con un " + str(capitalOrdenadosVertical[0].porcentaje_vertical*100) + str(chr(37)) +" de inversiones propias, representado en " + mayorVariacionPasivoVertical + ". "
+                            cadenaVertical += "La mayor reducción de utilidad proviene del " + estadoOrdenadosVertical[0].idCuenta.nombre_cuenta + " de la empresa, representando un " + str(estadoOrdenadosVertical[0].porcentaje_vertical*100) + str(chr(37)) + "del ingreso por ventas."
+                            anali.conclusion_vertical = cadenaVertical
+                            activosOrdenadosHorizontal = sorted(LineasActivos,key=obtenerPorHorizontal)
+                            pasivosOrdenadosHorizontal = sorted(LineasPasivos,key=obtenerPorHorizontal)
+                            captialOrdenadosHorizontal = sorted(LineasCapital,key=obtenerPorHorizontal)
+                            estadoOrdenadosHorizontal = sorted(LineasEstados,key=obtenerPorHorizontal)
+                            mayorVariacionActivoHorizontal = activosOrdenadosHorizontal[0].idCuenta.nombre_cuenta
+                            mayorPorcentajeActivoHorizontal = activosOrdenadosHorizontal[0].porcentaje_vertical*100
+                            mayorVariacionPasivoHorizontal = pasivosOrdenadosHorizontal[0].idCuenta.nombre_cuenta
+                            mayorPorcentajePasivoHorizontal = pasivosOrdenadosHorizontal[0].porcentaje_vertical*100
+                            mayorVariacionCapitalHorizontal = captialOrdenadosHorizontal[0].idCuenta.nombre_cuenta
+                            mayorPorcentajeCapitalHorizontal = captialOrdenadosHorizontal[0].porcentaje_vertical*100
+                            mayorVariacionEstadoHorizontal= estadoOrdenadosHorizontal[0].idCuenta.nombre_cuenta
+                            mayorPorcentajeEstadoHorizontal = estadoOrdenadosHorizontal[0].porcentaje_vertical*100
+                            cadenaHorizontal = "La mayor variación con respecto al año pasado, se presenta en los " + activosOrdenadosHorizontal[0].idCuenta.tipo_cuenta + " siendo la cuenta " + mayorVariacionActivoHorizontal + " la que presenta la mayor variación con un " + str(mayorPorcentajeActivoHorizontal) + str(chr(37)) + ". "
+                            cadenaHorizontal += "Por otro lado la mayor variación de la empresa se presentó en " + mayorVariacionCapitalHorizontal + " con una variación del " + str(mayorPorcentajeCapitalHorizontal) + str(chr(37)) + ". "
+                            cadenaHorizontal += "Mientras que, las inversiones de terceros tuvieron su mayor variación en " + mayorVariacionPasivoHorizontal + " con un " + str(mayorPorcentajePasivoHorizontal) + str(chr(37)) + " con respecto al año pasado. "
+                            if(estadoOrdenadosHorizontal[0].idCuenta.naturaleza_cuenta=="Acreedor"):
+                                cadenaHorizontal += "En el estado de resultados, se destaca el aumento en los ingresos de la empresa."
+                            else:
+                                cadenaHorizontal+="Es importante prestar especial atención a los gastos de la empresa, puesto que han presentado una variación importante con respecto al año pasado."
+                            anali.conclusion_horizontal = cadenaHorizontal
+                            anali.save()
+                            razonLiquidezCorriente = totalActivosCorriente / totalPasivosCorriente
+                            razonLiquidezRapida = (totalActivosCorriente  - inventario) / totalPasivosCorriente 
+                            razonCapitalTrabajo = (totalActivosCorriente - totalPasivosCorriente) / totalActivos
+                            razonEfectivo = (activosCortoPlazo + cuentasPorCobrar) / totalPasivosCorriente
+                            promedioInventario = (inventario+inventarioAnterior)/2
+                            razonRotacionInventario = costoVentas / promedioInventario
+                            diasInventario = promedioInventario / (costoVentas/365)
+                            promedioCuentasPorCobrar = (cuentasPorCobrar + cuentasPorCobraranterior) / 2
+                            razonRotacionCobros = ventasNetas / promedioCuentasPorCobrar
+                            periodoMedioCobranza =promedioCuentasPorCobrar * 365 / ventasNetas
+                            promedioCuentasPorPagar = (cuentasPorPagar + cuentasPorPagaranterior) / 2
+                            razonRotacionPagos = (costoVentas - inventario) / promedioCuentasPorPagar
+                            periodoMedioPagos = promedioCuentasPorPagar * 365 / (costoVentas - inventario)
+                            promedioActivoTotal = (activoTotalAnterior + totalActivos) / 2
+                            razonRotacionActivosTotales = ventasNetas / promedioActivoTotal
+                            promedioActivoFijo = (activoFijo + activoFijoAnterior) / 2
+                            razonRotacionActivosFijos = ventasNetas/promedioActivoFijo
+                            utilidadBruta = ventasNetas - costoVentas
+                            utilidadOperativa = utilidadBruta - costoOperacion - gastoFinanciero
+                            utilidadAntesImpuesto = utilidadOperativa + otrosIngresos - otrosGastos
+                            utilidadNeta = utilidadAntesImpuesto - impuesto
+                            indiceMargenBruto = utilidadBruta / ventasNetas
+                            indiceMargenOperativo = utilidadOperativa /ventasNetas
+                            gradoEndeudamiento = totalPasivos / totalActivos
+                            gradoPropiedad = totalCapital / totalActivos
+                            endeudamientoPatrimonial = totalPasivos / totalCapital
+                            coberturaGastosFinancieros = utilidadAntesImpuesto / gastoFinanciero
+                            ratios=[]
+                            ratios.append(razonLiquidezCorriente)
+                            ratios.append(razonLiquidezRapida)
+                            ratios.append(razonCapitalTrabajo)
+                            ratios.append(razonEfectivo)
+                            ratios.append(razonRotacionInventario)
+                            ratios.append(diasInventario)
+                            ratios.append(razonRotacionCobros)
+                            ratios.append(periodoMedioCobranza)
+                            ratios.append(razonRotacionPagos)
+                            ratios.append(periodoMedioPagos)
+                            ratios.append(razonRotacionActivosTotales)
+                            ratios.append(razonRotacionActivosFijos)
+                            ratios.append(indiceMargenBruto)
+                            ratios.append(indiceMargenOperativo)
+                            ratios.append(gradoEndeudamiento)
+                            ratios.append(gradoPropiedad)
+                            ratios.append(endeudamientoPatrimonial)
+                            ratios.append(coberturaGastosFinancieros)
+                            RatioUltimo = None
+                            #Inicializa variables de id a cero
+                            IdRatioUltimo = 0
+                            try:
+                                #Obtener el último Balance ingresado
+                                RatioUltimo = RatiosAnalisis.objects.latest('idRatioAnalisis')
+                            #Si no existe
+                            except RatiosAnalisis.DoesNotExist:
+                                #Asegurarse que sea None
+                                RatioUltimo = None
+                            #Si el último balance no existe
+                            if(RatioUltimo==None):
+                                #Definir el Id como 1
+                                IdRatioUltimo = 1
+                            else:
+                                #Caso contrario, tomar el id del último balance y sumar 1
+                                IdRatioUltimo = RatioUltimo.idRatioAnalisis + 1
+                            for ratio in enumerate(ratios):
+                                ratioanalisis=None
+                                RatioActual = Ratios.objects.filter(idRatio=int(ratio[0]) + 1).first()
+                                ratioanalisis = RatiosAnalisis(
+                                    idRatioAnalisis = IdRatioUltimo,
+                                    idAnalisis = anali,
+                                    idRatios = RatioActual,
+                                    valorRatiosAnalisis = float(ratio[1]),
+                                    conclusion = "",
+                                )
+                                #Se guarda el ratio
+                                ratioanalisis.save()
+                                #Se obtiene el giro actual
+                                GiroActual = empresaActual.idGiro
+                                #Se traen las empresas del giro actual
+                                EmpresasDelGiro = Empresa.objects.filter(idGiro = GiroActual.idGiro)
+                                #Se obtienen todos los detalles de ratios de todas las empresas del ratio actual
+                                DetallesDelRatioActual = RatiosAnalisis.objects.filter(idRatios = RatioActual.idRatio)
+                                sumatoria=0.0
+                                cantidad=0
+                                promedio=0
+                                for detalle in DetallesDelRatioActual:
+                                    for empresaGiro in EmpresasDelGiro:
+                                        #Si es detalle del ratio actual de una empresa del giro actual
+                                        if(detalle.idAnalisis.idEmpresa == empresaGiro):
+                                            #sumatoria general
+                                            sumatoria=sumatoria+float(detalle.valorRatiosAnalisis)
+                                            #contador
+                                            cantidad=cantidad+1
+                                if(cantidad!=0):
+                                    promedio = sumatoria / cantidad
+                                else:
+                                    promedio = 0
+                                #Se obtiene el dato de giro del giro actual y ratio actual
+                                DatoGiroActual = DatoGiro.objects.filter(idGiro = GiroActual.idGiro, idRatio = RatioActual.idRatio).first()
+                                UltimoDatoGiro = None
+                                #Inicializa variables de id a cero
+                                IdUltimoDatoGiro = 0
+                                try:
+                                    #Obtener el último Balance ingresado
+                                    UltimoDatoGiro = DatoGiro.objects.latest('idDato')
+                                #Si no existe
+                                except DatoGiro.DoesNotExist:
+                                    #Asegurarse que sea None
+                                    UltimoDatoGiro = None
+                                #Si el último balance no existe
+                                if(UltimoDatoGiro==None):
+                                    #Definir el Id como 1
+                                    IdUltimoDatoGiro = 1
+                                else:
+                                    #Caso contrario, tomar el id del último balance y sumar 1
+                                    IdUltimoDatoGiro = UltimoDatoGiro.idDato + 1
+                                if(DatoGiroActual==None):
+                                    datosDeGiro = DatoGiro(
+                                        idDato = IdUltimoDatoGiro,
+                                        idGiro = GiroActual,
+                                        idRatio = RatioActual,
+                                        valorParametro = 0,
+                                        valorPromedio = promedio,
+                                    )
+                                    datosDeGiro.save()
+                                else:
+                                    datosDeGiro = DatoGiro(
+                                        idDato = DatoGiroActual.idDato,
+                                        idGiro = GiroActual,
+                                        idRatio = RatioActual,
+                                        valorParametro = DatoGiroActual.valorParametro,
+                                        valorPromedio = promedio,
+                                    )
+                                    datosDeGiro.save()
+                                IdRatioUltimo = IdRatioUltimo + 1   
+                    else:
+                        analisisAuxiliar = analisisActual.first()
+                        try:
+                            ultimaLineaDeInforme=LineaDeInforme.objects.latest('idLineaInfo')
+                            ultimoIdLinea = int(ultimaLineaDeInforme.idLineaInfo) + 1
+                        except:
+                            ultimoIdLinea = 1
+                        cuentaAuxiliarTrabajo = Cuenta.objects.get(idCuenta=cuentaRecibida)
+                        totalER = 0.0
+                        totalActivo = 0.0
+                        totalNoActivo = 0.0
+                        porVert = 0.0
+                        estadoEmp = EstadoEmpresa.objects.filter(idEmpresa=empresa)
+                        for relacion in estadoEmp:
+                            if relacion.idResultado.yearEstado == analisisAuxiliar.year_analisis:
+                                estadoActl = relacion.idResultado
+                        balancEmp = BalanceEmpresa.objects.filter(idEmpresa=empresa)
+                        for relacion in balancEmp:
+                            if relacion.idbalance.yearEstado == analisisAuxiliar.year_analisis:
+                                balanceActl = relacion.idbalance
+                        if cuentaAuxiliarTrabajo.tipo_cuenta == "Estado de Resultado" or cuentaAuxiliarTrabajo.tipo_cuenta == "Estado\xa0de\xa0Resultado":
+                            for saldoCuenta in SaldoDeCuentaResultado.objects.filter(idResultado=estadoActl.idResultado,year_saldo_Resul=datetime(analisisAuxiliar.year_analisis,1,1)):
+                                totalER = float(totalER) + float(saldoCuenta.monto_saldo_Resul)
+                            if totalER != 0:
+                                porVert = float(montoRecibido) / float(totalER)
+                            else:
+                                porVert = 0.0
+                            saldoAnioanteriorTrabajo = SaldoDeCuentaResultado.objects.filter(idCuenta=cuentaRecibida, year_saldo_Resul = datetime(int(analisisAuxiliar.year_analisis)-1,1,1)).first()
+                            if saldoAnioanteriorTrabajo == None:
+                                saldoAnt = 0
+                            else:
+                                saldoAnt = saldoAnioanteriorTrabajo.monto_saldo_Resul
+                            varHori = float(montoRecibido) - float(saldoAnt)
+                            if(saldoAnt==0):
+                                porHori = 1
+                            else:
+                                porHori = float(varHori) / float(saldoAnt)
+                        elif cuentaAuxiliarTrabajo.tipo_cuenta == "Activo Corriente" or cuentaAuxiliarTrabajo.tipo_cuenta == "Activo\xa0Corriente" or cuentaAuxiliarTrabajo.tipo_cuenta == "Activo\xa0no\xa0Corriente" or cuentaAuxiliarTrabajo.tipo_cuenta == "Activo no Corriente":
+                            for saldoCuenta in SaldoDeCuentaBalace.objects.filter(idbalance=balanceActl.idBalance,year_saldo=datetime(analisisAuxiliar.year_analisis,1,1)):
+                                totalActivo = float(totalActivo) + float(saldoCuenta.monto_saldo)
+                            if totalActivo != 0:
+                                porVert = float(montoRecibido) / float(totalActivo)
+                            else:
+                                porVert = 0
+                            saldoAnioanteriorTrabajo = SaldoDeCuentaBalace.objects.filter(idCuenta=cuentaRecibida, year_saldo = datetime(int(analisisAuxiliar.year_analisis)-1,1,1)).first()
+                            if saldoAnioanteriorTrabajo == None:
+                                saldoAnt = 0
+                            else:
+                                saldoAnt = saldoAnioanteriorTrabajo.monto_saldo
+                            varHori = float(montoRecibido) - float(saldoAnt)
+                            if(saldoAnt==0):
+                                porHori = 1
+                            else:
+                                porHori = float(varHori) / float(saldoAnt)
+                        else:
+                            for saldoCuenta in SaldoDeCuentaBalace.objects.filter(idbalance=balanceActl.idBalance,year_saldo=datetime(analisisAuxiliar.year_analisis,1,1)):
+                                totalNoActivo = float(totalNoActivo) + float(saldoCuenta.monto_saldo)
+                            if totalNoActivo != 0:
+                                porVert = float(montoRecibido) / float(totalNoActivo)
+                            else:
+                                porVert = 0
+                            saldoAnioanteriorTrabajo = SaldoDeCuentaBalace.objects.filter(idCuenta=cuentaRecibida, year_saldo = datetime(int(analisisAuxiliar.year_analisis)-1,1,1)).first()
+                            if saldoAnioanteriorTrabajo == None:
+                                saldoAnt = 0
+                            else:
+                                saldoAnt = saldoAnioanteriorTrabajo.monto_saldo
+                            varHori = float(montoRecibido) - float(saldoAnt)
+                            if(saldoAnt==0):
+                                porHori = 1
+                            else:
+                                porHori = float(varHori) / float(saldoAnt)
+                        lineasDeInformeAuxiliar = LineaDeInforme.objects.filter(idAnalisis=analisisAuxiliar.idAnalisis,idCuenta=cuentaRecibida)
+                        if lineasDeInformeAuxiliar.first() == None:
+                            lineaDeInformeAuxiliar = LineaDeInforme(
+                                idLineaInfo=ultimoIdLinea,
+                                idCuenta=cuentaAuxiliarTrabajo,
+                                idAnalisis=analisisAuxiliar,
+                                variacion_horizontal=varHori,
+                                porcentaje_horizontal=porHori,
+                                porcentaje_vertical=porVert,
+                            )
+                        else:
+                            lineaDeInformeAuxiliar = lineasDeInformeAuxiliar.first()
+                            lineaDeInformeAuxiliar = LineaDeInforme(
+                                idLineaInfo=lineaDeInformeAuxiliar.idLineaInfo,
+                                idCuenta=lineaDeInformeAuxiliar.idCuenta,
+                                idAnalisis=lineaDeInformeAuxiliar.idAnalisis,
+                                variacion_horizontal=varHori,
+                                porcentaje_horizontal=porHori,
+                                porcentaje_vertical=porVert,
+                            )
+                        lineaDeInformeAuxiliar.save()
+                    return mostrarMensajeSegunRol(request,mensajeSalida,idempresadmin)
                 else:
                     raise Http404
         else:
@@ -1193,10 +1835,10 @@ def obtenerCuentas(tipoEstado,empresaid):
     listadoCuentasSalida = []
     for cuenta in cuentas:
         if tipoEstado=="Balance":
-            if cuenta.tipo_cuenta != 'Estado de Resultado' and cuenta.tipo_cuenta != 6:
+            if cuenta.tipo_cuenta != 'Estado de Resultado' and cuenta.tipo_cuenta != 'Estado\xa0de\xa0Resultado':
                 listadoCuentasSalida.append((cuenta.idCuenta,cuenta.codigo_cuenta,cuenta.nombre_cuenta))
         else:
-            if cuenta.tipo_cuenta == 'Estado de Resultado' or cuenta.tipo_cuenta == 6:
+            if cuenta.tipo_cuenta == 'Estado de Resultado' or cuenta.tipo_cuenta == 'Estado\xa0de\xa0Resultado':
                 listadoCuentasSalida.append((cuenta.idCuenta,cuenta.codigo_cuenta,cuenta.nombre_cuenta))
     return listadoCuentasSalida
         
